@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="es.maestre.juntos.view.CalendarioActivity"
+    android:padding="16dp">
+
+    <!-- Sección de Entrada de Datos del Evento -->
+
+    <!-- Título -->
+    <TextView
+        android:id="@+id/tvTituloFormulario"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/turquesa"
+        android:fontFamily="@font/times"
+        android:gravity="center"
+        android:text="@string/txt_evento_add_nuevo_evento"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <!-- Ubicación -->
+    <EditText
+        android:id="@+id/etTituloEvento"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:hint="@string/txt_titulo_del_evento"
+        android:inputType="textCapSentences"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvTituloFormulario"
+        app:layout_constraintVertical_bias="0.011" />
+
+    <!-- Descripción -->
+
+    <EditText
+        android:id="@+id/etUbicacionEvento"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:hint="@string/txt_ubi_evento"
+        android:inputType="text"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/etTituloEvento"
+        app:layout_constraintVertical_bias="0.0" />
+
+
+    <!-- Fecha -->
+
+    <!-- Hora -->
+
+    <EditText
+        android:id="@+id/etDetallesEvento"
+        android:layout_width="376dp"
+        android:layout_height="42dp"
+        android:layout_marginTop="8dp"
+        android:gravity="top|start"
+        android:hint="@string/txt_descripcion_evento"
+        android:inputType="textMultiLine"
+        android:minLines="3"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/etUbicacionEvento"
+        app:layout_constraintVertical_bias="0.001" />
+
+    <!-- Boton de guardado -->
+
+    <!-- Boton para volver -->
+    <Button
+        android:id="@+id/btnGuardarEvento"
+        android:layout_width="77dp"
+        android:layout_height="76dp"
+        android:backgroundTint="@color/purpleClaro"
+        app:icon="@android:drawable/ic_menu_save"
+        app:iconSize="30dp"
+        app:iconTint="@color/black"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/etDetallesEvento"
+        app:layout_constraintVertical_bias="0.046" />
+
+    <Button
+        android:id="@+id/btnVolverEventoCalendario"
+        android:layout_width="77dp"
+        android:layout_height="76dp"
+        android:backgroundTint="@color/purpleClaro"
+        app:icon="?attr/actionModeCloseDrawable"
+        app:iconSize="30dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.966"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnGuardarEvento"
+        app:layout_constraintVertical_bias="0.959" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Together</string>
+    <string name="txt_juntos">Together</string>
+    <string name="txt_breveIntro">Transform your work unit into an organized and friendly environment</string>
+    <string name="txt_vamos_btn">Let\'s Go!</string>
+    <string name="txt_calendario">Calendar</string>
+    <string name="txt_conectar">Connect</string>
+    <string name="txt_add">Invite</string>
+    <string name="txt_tareas">Tasks</string>
+    <string name="txt_docs">Documents</string>
+    <string name="txt_espacioTrabajo">Working Unit Space</string>
+    <string name="txt_Pregunta">What do you want to do?</string>
+    <string name="txt_hintDelComentario">Write here your comment</string>
+    <string name="txt_nombre_de_usuario_item_list">User name</string>
+    <string name="txt_texto_item_list">Text</string>
+    <string name="hint_nombre_activity_comentario">Name</string>
+    <string name="hint_texto_activity_comentario">Text</string>
+    <string name="txt_titulo_activity_comentario">Write here your comment</string>
+    <string name="txt_evento_add_nuevo_evento">Add new Event</string>
+    <string name="txt_titulo_del_evento">Event Title</string>
+    <string name="txt_ubi_evento">Event Location</string>
+    <string name="txt_descripcion_evento">Event Description</string>
+    <string name="txt_fecha_del_evento">Event Date</string>
+    <string name="txt_hora_de_inicio">Event Start Time</string>
+    <string name="btn_add_evento">Add Event</string>
+    <string name="txt_acerca_de">About Us</string>
+    <string name="info_acerca_de">This app was created in 2025-2026. Version 1.0. Developed by Javier Molina-Prados Moreno-Manzanaro. This app simulates a work unit organizer for users. Users are invited to families or work units where they can upload content, communicate, and post tasks and events on the calendar, which are the main features. Currently, the Connect and Calendar functions are provisionally implemented (not yet completed)</string>
+    <string name="btn_volver">Back</string>
+    <string name="btn_txt_DescargarDocumentos">Download Documents</string>
+    <string name="btn_txt_SubirDocumentos">Upload Documents</string>
+    <string name="txt_Descargas">To Download</string>
+    <string name="txt_NombreArchivo">File name</string>
+
+</resources>

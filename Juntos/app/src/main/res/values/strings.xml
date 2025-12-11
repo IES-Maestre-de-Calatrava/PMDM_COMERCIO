@@ -1,0 +1,34 @@
+<resources>
+    <string name="app_name">Juntos</string>
+    <string name="txt_juntos">Juntos</string>
+    <string name="txt_breveIntro">Transforma tu unidad de trabajo en un ambiente organizado y amigable</string>
+    <string name="txt_vamos_btn">¡VAMOS!</string>
+    <string name="txt_calendario">Calendario</string>
+    <string name="txt_conectar">Conectar</string>
+    <string name="txt_add">Invitar</string>
+    <string name="txt_tareas">Tareas</string>
+    <string name="txt_docs">Documentos</string>
+    <string name="txt_espacioTrabajo">NOMBRE DE ESPACIO DE TRABAJO</string>
+    <string name="txt_Pregunta">¿Que quieres hacer?</string>
+    <string name="txt_hintDelComentario">Escribe aqui tu comentario</string>
+    <string name="txt_nombre_de_usuario_item_list">Nombre de usuario</string>
+    <string name="txt_texto_item_list">Texto</string>
+    <string name="hint_nombre_activity_comentario">Nombre</string>
+    <string name="hint_texto_activity_comentario">Texto</string>
+    <string name="txt_titulo_activity_comentario">Escriba aqui su comentaio</string>
+    <string name="txt_evento_add_nuevo_evento">Añadir Nuevo Evento</string>
+    <string name="txt_titulo_del_evento">Título del Evento</string>
+    <string name="txt_ubi_evento">Ubicación del evento</string>
+    <string name="txt_descripcion_evento">Descripción del Evento</string>
+    <string name="txt_fecha_del_evento">Fecha del Evento</string>
+    <string name="txt_hora_de_inicio">Hora de Inicio</string>
+    <string name="btn_add_evento">Añadir Evento</string>
+    <string name="txt_acerca_de">Acerca De</string>
+    <string name="info_acerca_de">Esta aplicación fue creada en 2025-2026. Versión 1.0. Desarrollada por Javier Molina-Prados Moreno-Manzanaro. Esta app simula un organizador de unidades de trabajo para usuarios. Los usuarios son invitados a familias o unidades de trabajo en las cuales pueden subir contenido, comunicarse, poner tareas y eventos en el calendario que serian las funcionalidades principales. A dia de hoy están implementadas provisionalmente las funciones de Conectar y Calendario (no definitivas)</string>
+    <string name="btn_volver">Volver</string>
+    <string name="btn_txt_DescargarDocumentos">Descargar Documentos</string>
+    <string name="btn_txt_SubirDocumentos">Subir documentos</string>
+    <string name="txt_Descargas">Descargas</string>
+    <string name="txt_NombreArchivo">Nombre de Archivo</string>
+
+</resources>

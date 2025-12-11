@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".AbogadoActivity"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="92dp">
+
+        <EditText
+            android:id="@+id/nombre"
+            android:layout_width="322dp"
+            android:layout_height="51dp"
+            android:ems="10"
+            android:hint="@string/hint_nombre_activity_comentario"
+            android:inputType="text"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.449"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.125" />
+
+        <TextView
+            android:id="@+id/TituloActivityComentario"
+            android:layout_width="339dp"
+            android:layout_height="36dp"
+            android:background="@color/purple"
+            android:fontFamily="@font/times"
+            android:text="@string/txt_titulo_activity_comentario"
+            android:textAlignment="center"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.037" />
+
+        <Button
+            android:id="@+id/btnVolver"
+            android:layout_width="64dp"
+            android:layout_height="67dp"
+            android:backgroundTint="@color/purpleClaro"
+            app:icon="?attr/actionModeCloseDrawable"
+            app:iconSize="20dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.864"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.98" />
+
+        <Button
+            android:id="@+id/btnGuardar"
+            android:layout_width="64dp"
+            android:layout_height="67dp"
+            android:backgroundTint="@color/purpleClaro"
+            app:icon="@drawable/icons8_enviar_100"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.103"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.98" />
+
+        <EditText
+            android:id="@+id/texto"
+            android:layout_width="325dp"
+            android:layout_height="251dp"
+            android:ems="10"
+            android:gravity="start|top"
+            android:hint="@string/txt_texto_item_list"
+            android:inputType="textMultiLine"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.454"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/nombre"
+            app:layout_constraintVertical_bias="0.066" />
+
+        <Button
+            android:id="@+id/btnSubirFoto"
+            android:layout_width="88dp"
+            android:layout_height="73dp"
+            android:backgroundTint="@color/purpleClaro"
+            app:icon="@android:drawable/ic_menu_gallery"
+            app:iconSize="40dp"
+            app:iconTint="@color/black"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.111"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.577" />
+
+        <Button
+            android:id="@+id/btnSubirArchivo"
+            android:layout_width="88dp"
+            android:layout_height="73dp"
+            android:backgroundTint="@color/purpleClaro"
+            app:icon="@drawable/documentos_toolbar_removebg_preview"
+            app:iconSize="40dp"
+            app:iconTint="@color/black"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.433"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.577" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

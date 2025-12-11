@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="aquamarine">#5171E7</color>
+    <color name="turquesa">#AD7EECFF</color>
+    <color name="azulClaro">#DFF0F7</color>
+    <color name="purple">#8E7EEC</color>
+    <color name="purpleClaro">#C8C3E9</color>
+    <color name="fondoCabecera">#E4E2C6</color>
+    <color name="grey">#666464</color>
+</resources>

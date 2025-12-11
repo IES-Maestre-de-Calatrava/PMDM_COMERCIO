@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".view.AcercadeActivity">
+
+  <TextView
+      android:id="@+id/textViewACERCADE"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="@string/txt_acerca_de"
+      android:textColor="@color/black"
+      android:textSize="34sp"
+      android:textStyle="bold"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintHorizontal_bias="0.062"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintVertical_bias="0.018" />
+
+  <TextView
+      android:id="@+id/tv_about_info"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:padding="16dp"
+      android:text="@string/info_acerca_de"
+      android:textColor="@color/black"
+      android:textSize="16sp"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintHorizontal_bias="0.0"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/textViewACERCADE"
+      app:layout_constraintVertical_bias="0.014" />
+
+  <Button
+      android:id="@+id/btnVolverAcercaDe"
+      android:layout_width="98dp"
+      android:layout_height="50dp"
+      android:layout_weight="1"
+      android:backgroundTint="@color/purple"
+      android:text="@string/btn_volver"
+      app:iconSize="22dp"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintHorizontal_bias="0.948"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintVertical_bias="0.98" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
