@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">JUNTOS</string>
+    <string name="descripcion_imagenWorkUnit">Imagen de un grupo de trabajo</string>
+    <string name="descripcion_logo">Logo de una tienda de campaña morado</string>
+    <string name="txt_pantallaBienvenida">Convierte tu unidad de trabajo en un ambiente de agradable y organizado</string>
+    <string name="txt_btn_pantallaBienvenida">!VAMOS¡</string>
+    <string name="txt_Juntos">JUNTOS</string>
+</resources>
