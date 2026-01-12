@@ -11,6 +11,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+
+
+import es.maestre.juntosjc.componentes.GenerarComponentesMain
 import es.maestre.juntosjc.ui.theme.JUNTOSJCTheme
 
 class MainActivity : ComponentActivity() {
@@ -19,29 +22,15 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             JUNTOSJCTheme {
-                Scaffold( modifier = Modifier.fillMaxSize() ) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
+                MyAppMain(modifier = Modifier.fillMaxSize())
                 }
             }
         }
     }
-}
+
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
+fun MyAppMain(modifier: Modifier = Modifier) {
+    GenerarComponentesMain()
 }
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    JUNTOSJCTheme {
-        Greeting("Android")
-    }
-}

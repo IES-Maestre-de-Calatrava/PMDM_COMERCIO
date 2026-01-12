@@ -5,4 +5,7 @@
     <string name="txt_pantallaBienvenida">Convierte tu unidad de trabajo en un ambiente de agradable y organizado</string>
     <string name="txt_btn_pantallaBienvenida">!VAMOS¡</string>
     <string name="txt_Juntos">JUNTOS</string>
+    <string name="descripcion_btnPerfil_main">boton para ir al perfil del usuario</string>
+    <string name="descripcion_btnAyuda_main">boton para ir a ayuda al usuario</string>
+    <string name="descripcion_btnConfiguracion_main">boton para ir a la configuracion</string>
 </resources>

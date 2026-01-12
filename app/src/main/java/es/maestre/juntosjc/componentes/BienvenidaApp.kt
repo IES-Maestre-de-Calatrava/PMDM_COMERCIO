@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
@@ -25,7 +26,7 @@ import es.maestre.juntosjc.MainActivity
 import es.maestre.juntosjc.R
 
 @Composable
-fun GenerarComponentes(){
+fun GenerarComponentesBienvenida(){
 
     val context = LocalContext.current
 
@@ -44,22 +45,15 @@ fun GenerarComponentes(){
             )
 
             // Esto pone un espacio entre los componentes
-            Spacer(modifier = Modifier.height(130.dp))
+            Spacer(modifier = Modifier.height(100.dp))
 
 
             // Imagen con el logo
             Image(
-                painter = painterResource(R.drawable.icono_tiendacampa_a),
+                painter = painterResource(R.drawable.juntos),
                 contentDescription = stringResource(R.string.descripcion_logo),
-                modifier = Modifier.height(50.dp),
+                modifier = Modifier.size(150.dp),
                 contentScale = ContentScale.Crop
-            )
-
-            Text(
-                text = stringResource(R.string.txt_Juntos),
-                modifier = Modifier.padding(horizontal = 5.dp, vertical = 5.dp),
-                style = MaterialTheme.typography.titleLarge,
-                color = MaterialTheme.colorScheme.primary
             )
 
             Spacer(modifier = Modifier.height(100.dp))
