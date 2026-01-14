@@ -10,13 +10,28 @@
     <string name="descripcion_btnAyuda_main">boton para ir a ayuda al usuario</string>
     <string name="descripcion_btnConfiguracion_main">boton para ir a la configuracion</string>
     <string name="descripcion_btnDocumentos_main">boton para ir a documentos</string>
+    <string name="descripcion_btnRedSocial_main">boton para ir a red social</string>
+    <string name="descripcion_btnGuardar_detalle">boton para guardar los cambios de un comentarios</string>
+    <string name="descripcion_btnEliminar_detalle">boton para eliminar un comentario</string>
+    <string name="descripcion_btnCrear_detalle">boton para crear un comentario</string>
 
 
     <string name="txt_Juntos">JUNTOS</string>
     <string name="txt_Archivos">ARCHIVOS</string>
     <string name="txt_documentos">DOCUMENTOS</string>
     <string name="txt_descargar">DESCARGAR</string>
+    <string name="txt_redSocial">RED SOCIAL</string>
+    <string name="txt_detalle">DETALLES</string>
 
+
+
+
+    <string name="texto_ver_descargar_DESCARGAR">Toca para ver o descargar</string>
+    <string name="texto_ver_COMENTARIO">Toca para ver</string>
+
+    <string name="btn_Crear">Crear</string>
+    <string name="btn_Guardar">Guardar</string>
+    <string name="btn_Eliminar">Eliminar</string>
 
 
 

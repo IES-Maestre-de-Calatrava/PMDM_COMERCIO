@@ -127,11 +127,11 @@ fun ArchivoItem(archivo: Documento, onClick: () -> Unit) {
             Spacer(modifier = Modifier.width(16.dp))
             Column {
                 Text(
-                    text = archivo.nombreArchivo, // Usamos la propiedad de tu entidad
+                    text = archivo.nombreArchivo, // nombre del archivo
                     style = MaterialTheme.typography.titleMedium
                 )
                 Text(
-                    text = "Toca para ver o descargar",
+                    text = stringResource(R.string.texto_ver_descargar_DESCARGAR),
                     style = MaterialTheme.typography.bodySmall,
                 )
             }

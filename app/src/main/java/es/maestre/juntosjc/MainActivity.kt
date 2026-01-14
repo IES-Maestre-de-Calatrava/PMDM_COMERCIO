@@ -30,6 +30,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -99,7 +100,7 @@ fun GenerarComponentesMain() {
                 Text(
                     text = stringResource(R.string.txt_Juntos),
                     fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    color = colorResource(R.color.teal_700),//MaterialTheme.colorScheme.onPrimaryContainer,
                     style = MaterialTheme.typography.headlineSmall.copy( fontWeight = FontWeight.ExtraBold, letterSpacing = 2.sp)
                 )
 
@@ -147,6 +148,31 @@ fun GenerarComponentesMain() {
                     Spacer(modifier = Modifier.width(10.dp))
                     Text(
                         text = stringResource(R.string.txt_btnDocs),
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                }
+            }
+
+            // BOTÓN RED SOCIAL
+            Button(
+                onClick = {
+                    val intent = Intent(context, RedSocialActivity::class.java)
+                    context.startActivity(intent)
+                },
+                modifier = Modifier.fillMaxWidth().height(50.dp)
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.chat),
+                        contentDescription = stringResource(R.string.descripcion_btnRedSocial_main),
+                        modifier = Modifier.size(24.dp)
+                    )
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Text(
+                        text = stringResource(R.string.txt_redSocial),
                         style = MaterialTheme.typography.titleMedium
                     )
                 }

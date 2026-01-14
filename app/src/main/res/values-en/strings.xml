@@ -11,14 +11,30 @@
     <string name="descripcion_btnAyuda_main">Navigation button to go to help</string>
     <string name="descripcion_btnConfiguracion_main">Navigation button to go to configuration</string>
     <string name="descripcion_btnDocumentos_main">Navigation button to go to files</string>
+    <string name="descripcion_btnRedSocial_main">Navigation button to go to the social network</string>
+    <string name="descripcion_btnGuardar_detalle">Button to save the changes of a commentary</string>
+    <string name="descripcion_btnEliminar_detalle">Button to delete a comentary</string>
+    <string name="descripcion_btnCrear_detalle">Button to create a comentary</string>
+
 
 
     <string name="txt_Juntos">TOGETHER</string>
     <string name="txt_Archivos">FILES</string>
     <string name="txt_documentos">DOCUMENTS</string>
     <string name="txt_descargar">DOWNLOAD</string>
+    <string name="txt_redSocial">SOCIAL NETWORK</string>
+    <string name="txt_detalle">DETAILS</string>
+
+
 
     <string name="txt_btnDocs">Files</string>
+
+    <string name="texto_ver_descargar_DESCARGAR">Touch to see or download</string>
+    <string name="texto_ver_COMENTARIO">Touch to see</string>
+
+    <string name="btn_Crear">Create</string>
+    <string name="btn_Guardar">Save</string>
+    <string name="btn_Eliminar">Delete</string>
 
 
 
