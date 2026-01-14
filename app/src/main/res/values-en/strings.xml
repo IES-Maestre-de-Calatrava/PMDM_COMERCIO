@@ -5,8 +5,24 @@
     <string name="descripcion_logo">Purple tent logo</string>
     <string name="txt_pantallaBienvenida">Transform your work unit into an kind and tidy environment</string>
     <string name="txt_btn_pantallaBienvenida">!LET`S GO¡</string>
-    <string name="txt_Juntos">TOGETHER</string>
+
+
     <string name="descripcion_btnPerfil_main">Navigation button to go to the profile</string>
     <string name="descripcion_btnAyuda_main">Navigation button to go to help</string>
     <string name="descripcion_btnConfiguracion_main">Navigation button to go to configuration</string>
+    <string name="descripcion_btnDocumentos_main">Navigation button to go to files</string>
+
+
+    <string name="txt_Juntos">TOGETHER</string>
+    <string name="txt_Archivos">FILES</string>
+    <string name="txt_documentos">DOCUMENTS</string>
+    <string name="txt_descargar">DOWNLOAD</string>
+
+    <string name="txt_btnDocs">Files</string>
+
+
+
+    <string name="btn_subirDoc">Upload File</string>
+    <string name="btn_descargarDoc">Download File</string>
+
 </resources>

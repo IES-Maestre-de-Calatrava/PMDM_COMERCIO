@@ -1,13 +1,21 @@
 package es.maestre.juntosjc
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -15,13 +23,16 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import es.maestre.juntosjc.ui.theme.JUNTOSJCTheme
-
-// funciones de la clase BienvenidaApp
-import es.maestre.juntosjc.componentes.GenerarComponentesBienvenida
 
 class BienvenidoActivity : ComponentActivity() {
 
@@ -41,4 +52,64 @@ class BienvenidoActivity : ComponentActivity() {
 fun MyAppBienvenida(modifier: Modifier = Modifier,
 ) {
     GenerarComponentesBienvenida()
+}
+
+
+@Composable
+fun GenerarComponentesBienvenida(){
+
+    val context = LocalContext.current
+
+    Card(modifier = Modifier.padding(30.dp)){
+        Column(
+            modifier = Modifier.fillMaxSize(), // Ocupa toda la pantalla
+            horizontalAlignment = Alignment.CenterHorizontally // centra todos los componentes que esten dentro
+        ) {
+
+            // Imagen principal
+            Image(
+                painter = painterResource(R.drawable.imagen_unidadtrabajo),
+                contentDescription = stringResource(R.string.descripcion_imagenWorkUnit),
+                modifier = Modifier.fillMaxWidth().height(300.dp),
+                contentScale = ContentScale.Crop
+            )
+
+            // Esto pone un espacio entre los componentes
+            Spacer(modifier = Modifier.height(100.dp))
+
+
+            // Imagen con el logo
+            Image(
+                painter = painterResource(R.drawable.juntos),
+                contentDescription = stringResource(R.string.descripcion_logo),
+                modifier = Modifier.size(150.dp),
+                contentScale = ContentScale.Crop
+            )
+
+            Spacer(modifier = Modifier.height(100.dp))
+
+            Text(
+                text = stringResource(R.string.txt_pantallaBienvenida),
+                modifier = Modifier.padding(horizontal = 10.dp, vertical = 10.dp),
+                style = MaterialTheme.typography.titleLarge
+            )
+
+
+            Button(
+                onClick = {
+                    // intent a la mainActivity
+                    val intent = Intent(context, MainActivity::class.java)
+                    context.startActivity(intent) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(30.dp)
+                    .height(55.dp)
+            ) {
+                Text(text = stringResource(R.string.txt_btn_pantallaBienvenida), fontSize = 18.sp)
+            }
+        }
+
+
+    }
+
 }

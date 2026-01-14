@@ -2,10 +2,36 @@
     <string name="app_name">JUNTOS</string>
     <string name="descripcion_imagenWorkUnit">Imagen de un grupo de trabajo</string>
     <string name="descripcion_logo">Logo de una tienda de campaña morado</string>
-    <string name="txt_pantallaBienvenida">Convierte tu unidad de trabajo en un ambiente de agradable y organizado</string>
+    <string name="txt_pantallaBienvenida">Convierte tu unidad de trabajo en un ambiente agradable y organizado</string>
     <string name="txt_btn_pantallaBienvenida">!VAMOS¡</string>
-    <string name="txt_Juntos">JUNTOS</string>
+
+
     <string name="descripcion_btnPerfil_main">boton para ir al perfil del usuario</string>
     <string name="descripcion_btnAyuda_main">boton para ir a ayuda al usuario</string>
     <string name="descripcion_btnConfiguracion_main">boton para ir a la configuracion</string>
+    <string name="descripcion_btnDocumentos_main">boton para ir a documentos</string>
+
+
+    <string name="txt_Juntos">JUNTOS</string>
+    <string name="txt_Archivos">ARCHIVOS</string>
+    <string name="txt_documentos">DOCUMENTOS</string>
+    <string name="txt_descargar">DESCARGAR</string>
+
+
+
+
+
+    <string name="txt_btnDocs">Documentos</string>
+
+
+
+
+
+
+
+
+
+    <string name="btn_subirDoc">Subir Archivo</string>
+    <string name="btn_descargarDoc">Descargar Archivo</string>
+
 </resources>
