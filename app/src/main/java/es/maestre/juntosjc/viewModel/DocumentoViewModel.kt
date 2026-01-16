@@ -13,6 +13,9 @@ import io.github.jan.supabase.storage.storage
 import kotlinx.coroutines.Dispatchers
 import java.util.UUID
 
+/**
+ * ViewModel de los documentos
+ */
 class DocumentoViewModel (application: Application) : AndroidViewModel(application){
 
     private val repository: DocumentoRepository
@@ -68,7 +71,7 @@ class DocumentoViewModel (application: Application) : AndroidViewModel(applicati
             try {
                 // Generar nombre único
                 val fileName = "${UUID.randomUUID()}.$extension"
-                val bucketName = "AppJUNTOS" // El nombre que pusiste en Supabase
+                val bucketName = "AppJUNTOS" // El nombre de Supabase
 
                 // Subir el archivo
                 val bucket = SupabaseClient.client.storage.from(bucketName)
@@ -77,7 +80,7 @@ class DocumentoViewModel (application: Application) : AndroidViewModel(applicati
                 // Obtener la URL pública (si el bucket es público), para guardarla en bbdd
                 val publicUrl = bucket.publicUrl(fileName)
 
-                // Tras la subida a supabase, guardamos el documento en nuestra base de datos
+                // Tras la subida a supabase, se guarda un documento en supabase con los mismos datos
                 val documento = Documento(nombreArchivo = fileName, rutaArchivo = publicUrl)
                 insert(documento)
 

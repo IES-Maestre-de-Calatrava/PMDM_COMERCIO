@@ -10,6 +10,9 @@ import es.maestre.juntosjc.model.Comentario
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.Dispatchers
 
+/**
+ * ViewModel de los comentarios
+ */
 class ComentarioViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository: ComentarioRepository

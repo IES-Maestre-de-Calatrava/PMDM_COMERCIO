@@ -11,6 +11,10 @@ import java.io.Serializable
  */
 @Entity(tableName = "evento")
 data class Evento(
+
+    /**
+     * Clave primaria autogenerada, que se autoincrementa, tiene el titulo del evento, la descripcion y la fecha
+     */
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id_evento")
     val idEvento: Long = 0,

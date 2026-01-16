@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -50,13 +49,18 @@ import es.maestre.juntosjc.ui.theme.JUNTOSJCTheme
 import es.maestre.juntosjc.viewModel.EventoViewModel
 import java.util.Calendar
 import kotlin.getValue
-import androidx.compose.material.icons.Icons
 import androidx.compose.material3.AlertDialog
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 
+/**
+ * Clase CalendarioActivity: en esta clase se podrán añadir eventos
+ * a días en un calendario y eliminarlos, los eventos aparecerán al
+ * seleccionar el día, en una LazyColumn
+ */
 class CalendarioActivity: ComponentActivity()  {
 
+    // instancio mi viewModel para el acceso a BBDD
     private val viewModel: EventoViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -72,6 +76,10 @@ class CalendarioActivity: ComponentActivity()  {
 }
 
 
+/**
+ * Inserta los principales componentes de la activity como el datePicker, el
+ * boton de añadir y filtrar los items de la LazyColumn. Tambien llama al resto de funciones
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyAppCalendario(viewModel: EventoViewModel) {
@@ -104,11 +112,12 @@ fun MyAppCalendario(viewModel: EventoViewModel) {
             )
         },
 
+        // al pulsar el boton de añadir, nos muestra un cuadro de diálogo para añadir un evento
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { showDialog = true },
-                containerColor = colorResource(R.color.verde_esmeralda), // El verde que definimos antes
-                contentColor = Color.Unspecified
+                containerColor = colorResource(R.color.verde_esmeralda),
+                contentColor = Color.Unspecified // esto hace que el contenido no coja ningun color
             ) {
                 Icon(painter = painterResource(R.drawable.add_to_svgrepo_com), contentDescription = stringResource(R.string.addevento))
             }
@@ -121,10 +130,10 @@ fun MyAppCalendario(viewModel: EventoViewModel) {
                 .padding(padding)
                 .fillMaxSize()
         ) {
-            // 1. EL CALENDARIO (DatePicker fijo)
+            // El calendario (DatePicker)
             DatePicker(
                 state = datePickerState,
-                showModeToggle = false, // Para que no cambien a modo escribir
+                showModeToggle = false, // Para que no cambie a modo escribir
                 title = null,
                 headline = null,
                 modifier = Modifier.weight(1.2f) // Ocupa la parte de arriba
@@ -132,7 +141,7 @@ fun MyAppCalendario(viewModel: EventoViewModel) {
 
             HorizontalDivider()
 
-            // 2. LA LISTA FILTRADA (LazyColumn)
+            // La LazyColumn
             Text(
                 text = stringResource(R.string.eventosDelDia),
                 modifier = Modifier.padding(16.dp),
@@ -169,7 +178,7 @@ fun MyAppCalendario(viewModel: EventoViewModel) {
         }
     }
 
-
+    // cuando clicamos a añadir evento, showDialog cambia a true y lo muestra
     if (showDialog) {
         AlertDialog(
             onDismissRequest = { showDialog = false },
@@ -220,6 +229,10 @@ fun MyAppCalendario(viewModel: EventoViewModel) {
     }
 }
 
+/**
+ * Esta funcion me comprueba que dos fechas coincidan para el filtrado
+ * de los eventos del LazyColumn
+ */
 fun esMismoDia(millis1: Long, millis2: Long?): Boolean {
     if (millis2 == null) return false
     val cal1 = Calendar.getInstance().apply { timeInMillis = millis1 }
@@ -228,12 +241,16 @@ fun esMismoDia(millis1: Long, millis2: Long?): Boolean {
             cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR)
 }
 
+/**
+ * Funcion que establece la estructura de cada uno de los items que
+ * se cargan en el LazyColumn
+ */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CardEvento(evento: Evento, onDeleteConfirmed: () -> Unit) {
     var showDeleteDialog by remember { mutableStateOf(false) }
 
-    // Diálogo de confirmación de borrado
+    // Diálogo de confirmación de borrado, solo aparece si mantenemos pulsado el evento
     if (showDeleteDialog) {
         AlertDialog(
             onDismissRequest = { showDeleteDialog = false },

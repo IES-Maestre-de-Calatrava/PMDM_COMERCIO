@@ -10,7 +10,9 @@ import es.maestre.juntosjc.conexion.TareaRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-
+/**
+ * ViewModel de las tareas
+ */
 class TareaViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository: TareaRepository

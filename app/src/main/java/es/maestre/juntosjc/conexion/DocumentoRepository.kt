@@ -3,6 +3,7 @@ package es.maestre.juntos.conexion
 import androidx.lifecycle.LiveData
 import es.maestre.juntos.model.Documento
 
+
 class DocumentoRepository(private val documentoDAO: DocumentoDAO) {
 
     // Creo una lista con Documentos, para el caso de no haber ninguno al iniciar la app

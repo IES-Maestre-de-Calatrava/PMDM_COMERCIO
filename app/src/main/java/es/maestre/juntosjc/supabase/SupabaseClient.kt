@@ -3,6 +3,10 @@ import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.storage.Storage
+
+/**
+ * Objero Cliente de supabase, para enlazar con el proyecto de supabase
+ */
 object SupabaseClient {
 
     // Reemplaza con tus credenciales reales de Supabase

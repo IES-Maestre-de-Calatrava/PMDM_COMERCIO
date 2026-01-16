@@ -25,7 +25,6 @@ import androidx.compose.ui.unit.dp
 import es.maestre.juntos.model.Documento
 import es.maestre.juntos.viewModel.DocumentoViewModel
 import es.maestre.juntosjc.ui.theme.JUNTOSJCTheme
-
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -33,8 +32,14 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 
+/**
+ * Clase ArchivoActivity: en esta clase se mostrarán los documentos
+ * cargados en la base de datos para que el usuario pueda descargarlos
+ * al pulsarlos
+ */
 class ArchivoActivity : ComponentActivity() {
 
+    // instancio mi viewModel para el acceso a BBDD
     private val viewModel: DocumentoViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,6 +53,11 @@ class ArchivoActivity : ComponentActivity() {
     }
 }
 
+
+/**
+ * Funcion que me genera la cabecera de la Activity con su nombre correspondiente
+ * y me llama a la funcion de generar sus componentes
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyAppArchivo(viewModel: DocumentoViewModel) {
@@ -70,17 +80,21 @@ fun MyAppArchivo(viewModel: DocumentoViewModel) {
             )
         }
     ) { paddingSobrante ->
-        // El contenido (la lista) se ajusta debajo de la cabecera gracias a paddingSobrante
+        // Mi lazyColumn se ajusta debajo de la cabecera gracias a paddingSobrante
         Column(modifier = Modifier.padding(paddingSobrante)) {
             ListaArchivosScreen(viewModel = viewModel)
         }
     }
 }
 
+/**
+ * Funcion que carga los items de la BBDD en el LazyColumn
+ */
 @Composable
 fun ListaArchivosScreen(viewModel: DocumentoViewModel) {
-    // Observamos los datos del LiveData definido en el ViewModel
-    val listaDocumentos by viewModel.data.observeAsState(initial = emptyList())
+
+    // Observamos los datos del LiveData del ViewModel
+    val listaDocumentos by viewModel.data.observeAsState(initial = emptyList()) // data es como hemos llamado a la lista
     val context = LocalContext.current
 
     LazyColumn(
@@ -88,7 +102,6 @@ fun ListaArchivosScreen(viewModel: DocumentoViewModel) {
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        // Al importar foundation.lazy.items, "documento" se reconoce como tipo Documento
         items(listaDocumentos) { documento ->
             ArchivoItem(
                 archivo = documento,
@@ -106,6 +119,10 @@ fun ListaArchivosScreen(viewModel: DocumentoViewModel) {
     }
 }
 
+/**
+ * Funcion que establece la estructura de cada uno de los items que
+ * se cargan en el LazyColumn
+ */
 @Composable
 fun ArchivoItem(archivo: Documento, onClick: () -> Unit) {
     Card(

@@ -6,11 +6,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import es.maestre.juntos.conexion.AppDatabase
 import es.maestre.juntosjc.conexion.EventoRepository
-import es.maestre.juntosjc.model.Comentario
 import es.maestre.juntosjc.model.Evento
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
+/**
+ * ViewModel de los eventos
+ */
 class EventoViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository: EventoRepository

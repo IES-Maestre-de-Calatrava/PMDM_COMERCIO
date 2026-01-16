@@ -45,14 +45,18 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import es.maestre.juntos.model.Tarea
 import es.maestre.juntos.viewModel.ComentarioViewModel
 import es.maestre.juntosjc.model.Comentario
 import es.maestre.juntosjc.ui.theme.JUNTOSJCTheme
 import kotlin.getValue
 
+/**
+ * Clase RedSocialActivity: en esta clase se muestra una LazyColumn con
+ * los comentarios. Se puede añadir comentarios, visualizarlos, modificarlo y borrarlos
+ */
 class RedSocialActivity : ComponentActivity() {
 
+    // instancio mi viewModel para el acceso a BBDD
     private val viewModel: ComentarioViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -67,6 +71,10 @@ class RedSocialActivity : ComponentActivity() {
 }
 
 
+/**
+ * Funcion que me genera la cabecera de la Activity con su nombre correspondiente
+ * y me llama a la funcion que me lista los datos
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyAppRedSocial(viewModel: ComentarioViewModel) {
@@ -91,7 +99,7 @@ fun MyAppRedSocial(viewModel: ComentarioViewModel) {
             )
         }
     ) { paddingSobrante ->
-        // El contenido (la lista) se ajusta debajo de la cabecera gracias a paddingSobrante
+        // El contenido de la LazyColumn se ajusta debajo de la cabecera gracias a paddingSobrante
         Column(
             modifier = Modifier.padding(paddingSobrante),
             horizontalAlignment = Alignment.CenterHorizontally
@@ -133,8 +141,12 @@ fun MyAppRedSocial(viewModel: ComentarioViewModel) {
     }
 }
 
+/**
+ * Funcion que carga los items de la BBDD en el LazyColumn
+ */
 @Composable
 fun ListaComentarios(viewModel: ComentarioViewModel) {
+
     // Observamos los datos del LiveData definido en el ViewModel
     val listaComentarios by viewModel.data.observeAsState(initial = emptyList())
     val context = LocalContext.current
@@ -144,7 +156,7 @@ fun ListaComentarios(viewModel: ComentarioViewModel) {
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        // Al importar foundation.lazy.items, "comentario" se reconoce como tipo Comentario
+
         items(listaComentarios) { comentario ->
             ComentarioItem(
                 comentario = comentario,
@@ -161,7 +173,10 @@ fun ListaComentarios(viewModel: ComentarioViewModel) {
     }
 }
 
-
+/**
+ * Funcion que establece la estructura de cada uno de los items que
+ * se cargan en el LazyColumn
+ */
 @Composable
 fun ComentarioItem(comentario: Comentario, onClick: () -> Unit) {
     Card(

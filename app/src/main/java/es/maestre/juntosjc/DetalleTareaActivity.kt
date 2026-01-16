@@ -1,6 +1,5 @@
 package es.maestre.juntosjc
 
-import android.Manifest
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -49,7 +48,13 @@ import es.maestre.juntosjc.ui.theme.JUNTOSJCTheme
 import es.maestre.juntosjc.viewModel.TareaViewModel
 import kotlin.getValue
 
+/**
+ * Clase DetalleActivity: esta clase es la que muestra la informacion
+ * de cada uno de los items del LazyView de la TareasActivity, pudiendo guardarlos o eliminarlos
+ */
 class DetalleTareaActivity: ComponentActivity() {
+
+    // instancio mi viewModel para el acceso a BBDD
     private val viewModel: TareaViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -67,6 +72,11 @@ class DetalleTareaActivity: ComponentActivity() {
 }
 
 
+/**
+ * Funcion que me arma la cabecera, me comprueba el id de la tarea
+ * para saber si vamos a crear una nuevo o a modificar otra y me llama a
+ * los campos de edicion de la tarea
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyAppDetalleTarea(viewModel: TareaViewModel, idTarea: Int) {
@@ -112,6 +122,9 @@ fun MyAppDetalleTarea(viewModel: TareaViewModel, idTarea: Int) {
     }
 }
 
+/**
+ * Funcion que arma la pantalla con los campos editables y los botones de guardado y eliminado
+ */
 @Composable
 fun CamposDetalleTarea(
     tarea: Tarea,
@@ -120,14 +133,14 @@ fun CamposDetalleTarea(
     onActionDone: () -> Unit
 ) {
     // Usamos estados para que los campos sean editables
-    // Nota: Para editar realmente, luego usaremos estos valores en el botón Guardar
+    // Para editar realmente, luego usaremos estos valores en el botón Guardar
     var titulo by remember { mutableStateOf(tarea.tituloTarea) }
     var descripcion by remember { mutableStateOf(tarea.descripcionTarea) }
     var fecha by remember { mutableStateOf(tarea.fechaEntrega) }
     var completada by remember { mutableStateOf(tarea.completada) }
     var persona by remember { mutableStateOf(tarea.personaEncargada) }
 
-
+    // Campos editables segun los atributos de la tarea
     Text(text = "Titulo de la tarea:", fontWeight = FontWeight.Bold)
     OutlinedTextField(
         value = titulo,
@@ -154,7 +167,7 @@ fun CamposDetalleTarea(
         minLines = 1
     )
 
-    /* Para el dato booleano, voy a usar un switch (como un combobox) */
+    /* Para el dato booleano, voy a usar un switch */
     Text(text = "Estado de la tarea:", fontWeight = FontWeight.Bold)
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -181,7 +194,7 @@ fun CamposDetalleTarea(
     Button(
         onClick = {
             if (esNuevo) {
-                // INSERTAR: se autogenera el ID porque mandamos idTarea = 0
+                // se autogenera el ID porque mandamos idTarea = 0
                 viewModel.insert(Tarea(tituloTarea = titulo, descripcionTarea = descripcion, fechaEntrega = fecha, completada = completada, personaEncargada = persona))
             } else {
                 // Mantenemos el actualizar normal con el id normal para sobreescribir

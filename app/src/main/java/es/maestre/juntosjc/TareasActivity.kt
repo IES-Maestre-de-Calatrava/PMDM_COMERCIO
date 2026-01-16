@@ -46,15 +46,18 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import es.maestre.juntos.model.Tarea
-import es.maestre.juntos.viewModel.ComentarioViewModel
 import es.maestre.juntosjc.ui.theme.JUNTOSJCTheme
 import es.maestre.juntosjc.viewModel.TareaViewModel
 import kotlin.getValue
 
+/**
+ * Clase TareasActivity: en esta clase se muestra una LazyColumn con
+ * las tareas. Se puede añadir tareas, visualizarlas, modificarlas y borrarlas
+ */
 class TareasActivity: ComponentActivity()  {
 
+    // instancio mi viewModel para el acceso a BBDD
     private val viewModel: TareaViewModel by viewModels()
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -68,6 +71,10 @@ class TareasActivity: ComponentActivity()  {
     }
 }
 
+/**
+ * Funcion que me genera la cabecera de la Activity con su nombre correspondiente
+ * y me llama a la funcion que me lista los datos
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyAppTareas(viewModel: TareaViewModel) {
@@ -92,7 +99,7 @@ fun MyAppTareas(viewModel: TareaViewModel) {
             )
         }
     ) { paddingSobrante ->
-        // El contenido (la lista) se ajusta debajo de la cabecera gracias a paddingSobrante
+        // El contenido de la LazyColumn se ajusta debajo de la cabecera gracias a paddingSobrante
         Column(
             modifier = Modifier.padding(paddingSobrante),
             horizontalAlignment = Alignment.CenterHorizontally
@@ -134,9 +141,12 @@ fun MyAppTareas(viewModel: TareaViewModel) {
     }
 }
 
-
+/**
+ * Funcion que carga los items de la BBDD en el LazyColumn
+ */
 @Composable
 fun ListaTareas(viewModel: TareaViewModel) {
+
     // Observamos los datos del LiveData definido en el ViewModel
     val listaTareas by viewModel.data.observeAsState(initial = emptyList())
     val context = LocalContext.current
@@ -146,7 +156,7 @@ fun ListaTareas(viewModel: TareaViewModel) {
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        // Al importar foundation.lazy.items, "tarea" se reconoce como tipo Tarea
+
         items(listaTareas) { tarea ->
             TareaItem(
                 tarea = tarea,
@@ -163,7 +173,10 @@ fun ListaTareas(viewModel: TareaViewModel) {
     }
 }
 
-
+/**
+ * Funcion que establece la estructura de cada uno de los items que
+ * se cargan en el LazyColumn
+ */
 @Composable
 fun TareaItem(tarea: Tarea, onClick: () -> Unit) {
     Card(

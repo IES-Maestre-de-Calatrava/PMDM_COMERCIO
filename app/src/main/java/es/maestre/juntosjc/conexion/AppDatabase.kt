@@ -12,7 +12,7 @@ import es.maestre.juntosjc.model.Comentario
 import es.maestre.juntosjc.model.Evento
 
 /**
- * Base de datos de la aplicación con Room, los comentarios se guardan en un archivo "comentarios.db3"
+ * Base de datos de la aplicación con Room, se guarda en el archivo "JUNTOS.db3"
  */
 @Database(version = 1, entities = [Tarea::class, Documento::class, Comentario::class, Evento::class])
 abstract class AppDatabase : RoomDatabase(){

@@ -40,13 +40,18 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import es.maestre.juntos.model.Tarea
 import es.maestre.juntos.viewModel.ComentarioViewModel
 import es.maestre.juntosjc.model.Comentario
 import es.maestre.juntosjc.ui.theme.JUNTOSJCTheme
 import kotlin.getValue
 
+/**
+ * Clase DetalleComentarioActivity: esta clase es la que muestra la informacion
+ * de cada uno de los items del LazyView de la RedSocialActivity, pudiendo guardarlos o eliminarlos
+ */
 class DetalleComentarioActivity: ComponentActivity() {
+
+    // instancio mi viewModel para el acceso a BBDD
     private val viewModel: ComentarioViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,7 +68,11 @@ class DetalleComentarioActivity: ComponentActivity() {
     }
 }
 
-
+/**
+ * Funcion que me arma la cabecera, me comprueba el id del comentario
+ * para saber si vamos a crear uno nuevo o a modificar otro y me llama a
+ * los campos de edicion del comentario
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyAppDetalle(viewModel: ComentarioViewModel, idComentario: Int) {
@@ -108,6 +117,9 @@ fun MyAppDetalle(viewModel: ComentarioViewModel, idComentario: Int) {
     }
 }
 
+/**
+ * Funcion que arma la pantalla con los campos editables y los botones de guardado y eliminado
+ */
 @Composable
 fun CamposDetalle(
     comentario: Comentario,
@@ -120,6 +132,7 @@ fun CamposDetalle(
     var nombre by remember { mutableStateOf(comentario.nombre) }
     var texto by remember { mutableStateOf(comentario.texto) }
 
+    // Campos editables segun los atributos del comentario
     Text(text = stringResource(R.string.lb_nombreUsuario), fontWeight = FontWeight.Bold)
     OutlinedTextField(
         value = nombre,
@@ -140,7 +153,7 @@ fun CamposDetalle(
     Button(
         onClick = {
             if (esNuevo) {
-                // INSERTAR: se autogenera el ID porque mandamos idComentario = 0
+                // se autogenera el ID porque mandamos idComentario = 0
                 viewModel.insert(Comentario(nombre = nombre, texto = texto))
             } else {
                 // Mantenemos el actualizar normal con el id normal para sobreescribir
@@ -172,6 +185,7 @@ fun CamposDetalle(
             )
         }
     }
+
 
     if (!esNuevo) {
         Button(

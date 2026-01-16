@@ -1,7 +1,6 @@
 package es.maestre.juntos.conexion
 
 import androidx.lifecycle.LiveData
-import es.maestre.juntos.model.Tarea
 import es.maestre.juntosjc.model.Comentario
 
 class ComentarioRepository(private val comentarioDAO: ComentarioDAO) {

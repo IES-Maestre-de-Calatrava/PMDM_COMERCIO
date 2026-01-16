@@ -39,7 +39,15 @@ import androidx.compose.ui.unit.dp
 import es.maestre.juntos.viewModel.DocumentoViewModel
 import es.maestre.juntosjc.ui.theme.JUNTOSJCTheme
 
+/**
+ * Clase DocumentoActivity: en esta clase se muestra dos botones, uno para subir
+ * documentos y otro par descargarlos. Subir elementos, guarda el archivo en supabase
+ * Storage y recupera la ruta en un objeto documento que se guarda en la BBDD. Descargar documentos,
+ * muestra la LazyColumn con los documentos, para descargarlos.
+ */
 class DocumentoActivity: ComponentActivity(){
+
+    // instancio mi viewModel para el acceso a BBDD
     private val viewModel: DocumentoViewModel by viewModels()
 
 
@@ -48,7 +56,7 @@ class DocumentoActivity: ComponentActivity(){
         enableEdgeToEdge()
 
 
-        // El launcher se debe declarar en la activity no, en una funcion
+        // El launcher se debe declarar en la activity, no en una funcion
         val pickImageLauncher = registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
 
             uri?.let {
@@ -109,12 +117,16 @@ class DocumentoActivity: ComponentActivity(){
     }
 }
 
+/**
+ * Funcion que me genera la cabecera de la Activity con su nombre correspondiente
+ * y me llama a la funcion que me genera los componentes del Activity
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable fun MyAppDocumentos(onPickDocument: () -> Unit) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
-            // Cabecera idéntica a ArchivoActivity
+            // Cabecera
             TopAppBar(
                 title = {
                     Text(
@@ -137,6 +149,9 @@ class DocumentoActivity: ComponentActivity(){
     }
 }
 
+/**
+ * Funcion que me genera el layout de la Activity
+ */
 @Composable
 fun GenerarComponentesDocumento(
     onPickDocument: () -> Unit
@@ -171,7 +186,7 @@ fun GenerarComponentesDocumento(
                 )
             }
 
-            // Boton para las descargas (lazy column), hace un intent a una nueva actividad llamada archivo
+            // Boton para visualizar las descargas , hace un intent a una nueva actividad llamada ArchivoActivity
             Button(
                 onClick = {
                     val intent = Intent(context, ArchivoActivity::class.java)

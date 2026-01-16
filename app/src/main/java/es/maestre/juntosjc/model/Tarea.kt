@@ -13,7 +13,7 @@ data class Tarea(
 
     /**
      * Clave primaria autogenerada, que se autoincrementa, luego el titulo de la tarea, descripcion,
-     * fecha de entrega, un booleano que diga si la tarea esta completado o no y la persona encargada de dicha tarea
+     * fecha de entrega, un booleano que diga si la tarea esta completada o no y la persona encargada de dicha tarea
      */
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id_tarea")

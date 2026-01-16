@@ -8,7 +8,6 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
-import es.maestre.juntos.model.Tarea
 import es.maestre.juntosjc.model.Comentario
 
 @Dao

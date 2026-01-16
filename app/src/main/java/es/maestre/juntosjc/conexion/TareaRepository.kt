@@ -3,6 +3,7 @@ package es.maestre.juntosjc.conexion
 import androidx.lifecycle.LiveData
 import es.maestre.juntos.model.Tarea
 
+
 class TareaRepository(private val tareaDAO: TareaDAO) {
 
     // Creo una lista con tareas, para el caso de no haber ninguna al iniciar la app

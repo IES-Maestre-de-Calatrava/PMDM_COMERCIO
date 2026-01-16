@@ -9,6 +9,7 @@ import androidx.room.Query
 import androidx.room.Update
 import es.maestre.juntos.model.Tarea
 
+
 @Dao
 interface TareaDAO {
 

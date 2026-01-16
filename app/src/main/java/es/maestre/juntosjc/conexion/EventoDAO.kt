@@ -27,13 +27,13 @@ interface EventoDAO {
     fun getEventosByFecha(fechaSeleccionada: Long): LiveData<List<Evento>>
 
     /**
-     * Actualiza una tarea en la BBDD
+     * Actualiza un Evento en la BBDD
      */
     @Update
     suspend fun update(evento: Evento)
 
     /**
-     * Elimina una tarea en la BBDD
+     * Elimina una Evento en la BBDD
      */
     @Delete
     suspend fun delete(evento: Evento)
