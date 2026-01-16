@@ -31,6 +31,9 @@
     <string name="descripcion_btnEliminar_calendario">Button to delete an event</string>
     <string name="descripcion_btnCrear_calendario">Button to create an event</string>
 
+    <string name="descripcion_subirDocumento">Button to upload a document</string>
+    <string name="descripcion_descargarDocumento">Button to download a document</string>
+
 
     <string name="txt_Juntos">TOGETHER</string>
     <string name="txt_Archivos">FILES</string>
@@ -40,6 +43,10 @@
     <string name="txt_detalle">DETAILS</string>
     <string name="txt_tareas">TASKS</string>
     <string name="txt_calendario">CALENDAR</string>
+    <string name="txt_contactos">CONTACTS</string>
+    <string name="txt_invitar">INVITE</string>
+    <string name="txt_fotos">FOTOS</string>
+    <string name="txt_configuracion">CONFIGURATE</string>
 
 
 

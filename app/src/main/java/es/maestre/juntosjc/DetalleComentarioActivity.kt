@@ -33,6 +33,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -159,9 +160,10 @@ fun CamposDetalle(
             horizontalArrangement = Arrangement.Center
         ) {
             Icon(
-                painter = painterResource(id = R.drawable.salvar),
+                painter = painterResource(id = R.drawable.save_svgrepo_com),
                 contentDescription = stringResource(R.string.descripcion_btnGuardar_detalle),
-                modifier = Modifier.size(24.dp)
+                modifier = Modifier.size(24.dp),
+                tint = Color.Unspecified
             )
             Spacer(modifier = Modifier.width(10.dp))
             Text(
@@ -188,9 +190,10 @@ fun CamposDetalle(
                 horizontalArrangement = Arrangement.Center
             ) {
                 Icon(
-                    painter = painterResource(id = R.drawable.papelera),
+                    painter = painterResource(id = R.drawable.trash_svgrepo_com),
                     contentDescription = stringResource(R.string.descripcion_btnEliminar_detalle),
-                    modifier = Modifier.size(24.dp)
+                    modifier = Modifier.size(24.dp),
+                    tint = Color.Unspecified
                 )
                 Spacer(modifier = Modifier.width(10.dp))
                 Text(

@@ -52,6 +52,8 @@ import java.util.Calendar
 import kotlin.getValue
 import androidx.compose.material.icons.Icons
 import androidx.compose.material3.AlertDialog
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 
 class CalendarioActivity: ComponentActivity()  {
 
@@ -106,9 +108,9 @@ fun MyAppCalendario(viewModel: EventoViewModel) {
             FloatingActionButton(
                 onClick = { showDialog = true },
                 containerColor = colorResource(R.color.verde_esmeralda), // El verde que definimos antes
-                contentColor = colorResource(R.color.white)
+                contentColor = Color.Unspecified
             ) {
-                Icon(Icons.Default.Add, contentDescription = stringResource(R.string.addevento))
+                Icon(painter = painterResource(R.drawable.add_to_svgrepo_com), contentDescription = stringResource(R.string.addevento))
             }
         }
 

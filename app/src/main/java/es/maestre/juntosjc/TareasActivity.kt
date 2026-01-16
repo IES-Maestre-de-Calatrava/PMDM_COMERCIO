@@ -38,6 +38,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -92,7 +93,10 @@ fun MyAppTareas(viewModel: TareaViewModel) {
         }
     ) { paddingSobrante ->
         // El contenido (la lista) se ajusta debajo de la cabecera gracias a paddingSobrante
-        Column(modifier = Modifier.padding(paddingSobrante)) {
+        Column(
+            modifier = Modifier.padding(paddingSobrante),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             Button(
                 onClick = {
                     // Creamos el Intent para ir a DetalleTareaActivity
@@ -102,10 +106,10 @@ fun MyAppTareas(viewModel: TareaViewModel) {
                     }
                     context.startActivity(intent)
                 },
-                modifier = Modifier.fillMaxWidth().height(50.dp),
+                modifier = Modifier.height(50.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = colorResource(R.color.verde_esmeralda),
-                    contentColor = colorResource(R.color.white)
+                    contentColor = Color.Unspecified
                 )
             ) {
                 Row(
@@ -113,9 +117,10 @@ fun MyAppTareas(viewModel: TareaViewModel) {
                     horizontalArrangement = Arrangement.Center
                 ) {
                     Icon(
-                        painter = painterResource(id = R.drawable.agregar),
+                        painter = painterResource(id = R.drawable.add_to_svgrepo_com),
                         contentDescription = stringResource(R.string.descripcion_btnCrear_tarea),
-                        modifier = Modifier.size(24.dp)
+                        modifier = Modifier.size(30.dp),
+                        tint = Color.Unspecified
                     )
                     Spacer(modifier = Modifier.width(10.dp))
                     Text(
