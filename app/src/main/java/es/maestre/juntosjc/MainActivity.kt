@@ -42,6 +42,8 @@ import es.maestre.juntos.viewModel.DocumentoViewModel
 
 
 import es.maestre.juntosjc.ui.theme.JUNTOSJCTheme
+import es.maestre.juntosjc.viewModel.EventoViewModel
+import es.maestre.juntosjc.viewModel.TareaViewModel
 import kotlin.getValue
 
 class MainActivity : ComponentActivity() {
@@ -49,6 +51,9 @@ class MainActivity : ComponentActivity() {
     // instancias a los viewModels
     private val comentarioViewModel: ComentarioViewModel by viewModels()
     private val documentosViewModel: DocumentoViewModel by viewModels()
+    private val tareasViewModel: TareaViewModel by viewModels()
+    private val eventosViewModel: EventoViewModel by viewModels()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,6 +62,9 @@ class MainActivity : ComponentActivity() {
         // Llamada para insertar datos al iniciar en caso de no haber
         comentarioViewModel.insertarComentariosInicio()
         documentosViewModel.insertarDocumentosInicio()
+        tareasViewModel.insertarTareasInicio()
+        eventosViewModel.insertarEventoInicio()
+
 
         setContent {
             JUNTOSJCTheme {
@@ -100,7 +108,7 @@ fun GenerarComponentesMain() {
                 Text(
                     text = stringResource(R.string.txt_Juntos),
                     fontWeight = FontWeight.Bold,
-                    color = colorResource(R.color.teal_700),//MaterialTheme.colorScheme.onPrimaryContainer,
+                    color = colorResource(R.color.content),
                     style = MaterialTheme.typography.headlineSmall.copy( fontWeight = FontWeight.ExtraBold, letterSpacing = 2.sp)
                 )
 
@@ -111,7 +119,8 @@ fun GenerarComponentesMain() {
                         Icon(
                             painter = painterResource(id = R.drawable.perfil),
                             contentDescription = stringResource(R.string.descripcion_btnPerfil_main),
-                            modifier = Modifier.size(28.dp)
+                            modifier = Modifier.size(28.dp),
+                            tint = colorResource(R.color.grisOscuro)
                         )
                     }
 
@@ -120,7 +129,8 @@ fun GenerarComponentesMain() {
                         Icon(
                             painter = painterResource(id = R.drawable.ayudar),
                             contentDescription = stringResource(R.string.descripcion_btnPerfil_main),
-                            modifier = Modifier.size(28.dp)
+                            modifier = Modifier.size(28.dp),
+                            tint = colorResource(R.color.grisOscuro)
                         )
                     }
                 }
@@ -177,6 +187,62 @@ fun GenerarComponentesMain() {
                     )
                 }
             }
+
+
+            // BOTÓN TAREAS
+            Button(
+                onClick = {
+                    val intent = Intent(context, TareasActivity::class.java)
+                    context.startActivity(intent)
+                },
+                modifier = Modifier.fillMaxWidth().height(50.dp)
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.tareas),
+                        contentDescription = stringResource(R.string.descripcion_btnTareas_main),
+                        modifier = Modifier.size(24.dp)
+                    )
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Text(
+                        text = stringResource(R.string.txt_tareas),
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                }
+            }
+
+
+            // BOTÓN CALENDARIO
+            Button(
+                onClick = {
+                    val intent = Intent(context, CalendarioActivity::class.java)
+                    context.startActivity(intent)
+                },
+                modifier = Modifier.fillMaxWidth().height(50.dp)
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.calendario),
+                        contentDescription = stringResource(R.string.descripcion_btnCalendario_main),
+                        modifier = Modifier.size(24.dp)
+                    )
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Text(
+                        text = stringResource(R.string.txt_calendario),
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                }
+            }
+
+
+
+
         }
     }
 }

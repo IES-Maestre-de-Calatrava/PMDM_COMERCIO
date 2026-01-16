@@ -1,4 +1,4 @@
-package es.maestre.juntos.model
+package es.maestre.juntosjc.model
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
@@ -6,17 +6,14 @@ import androidx.room.PrimaryKey
 
 /**
  * Clase Comentario que representa la entidad comentario en la BBDD
- * para esta primera entrega he usado mi base de datos para hacer el apartado
- * de los comentarios de la app con recyclerView
+ * con una lazyColumn en el apartado de RedSocial
  */
 @Entity (tableName = "comentario")
 data class Comentario(
 
     /**
      * Clave primaria autogenerada, que se autoincrementa, luego el nombre de quien pone el comentario
-     * y finalmente el texto del comentario, en un futuro cuando veamos los inicio de sesion, se podria coger
-     * el nombre de usuario dependiendo de quien entre en la app y ponerlo automaticamente en los comentarios,
-     * ademas de controlar el acceso de otros usuarios a la unidad familiar
+     * y finalmente el texto del comentario
      */
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id_comentario")
@@ -28,5 +25,4 @@ data class Comentario(
     @ColumnInfo(name = "texto")
     var texto:String): java.io.Serializable {
 
-    }
-
+}

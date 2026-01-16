@@ -6,13 +6,13 @@ import androidx.room.PrimaryKey
 
 /**
  * Clase Documento que representa la entidad documento en la BBDD
- * se hará con recyclerView en el apartado Documentos
+ * se hará con lazyColumn en el apartado ArchivoActivity
  */
 @Entity (tableName = "documento")
 data class Documento(
 
     /**
-     * Clave primaria autogenerada, que se autoincrementa, tiene el nombre del archivo y su ruta de firebase
+     * Clave primaria autogenerada, que se autoincrementa, tiene el nombre del archivo y su ruta de supabase
      */
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id_documento")

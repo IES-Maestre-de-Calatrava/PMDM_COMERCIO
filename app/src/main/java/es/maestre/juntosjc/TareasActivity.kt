@@ -46,29 +46,30 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import es.maestre.juntos.model.Tarea
 import es.maestre.juntos.viewModel.ComentarioViewModel
-import es.maestre.juntosjc.model.Comentario
 import es.maestre.juntosjc.ui.theme.JUNTOSJCTheme
+import es.maestre.juntosjc.viewModel.TareaViewModel
 import kotlin.getValue
 
-class RedSocialActivity : ComponentActivity() {
+class TareasActivity: ComponentActivity()  {
 
-    private val viewModel: ComentarioViewModel by viewModels()
+    private val viewModel: TareaViewModel by viewModels()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
         setContent {
             JUNTOSJCTheme {
-                MyAppRedSocial(viewModel = viewModel)
+                MyAppTareas(viewModel = viewModel)
             }
         }
     }
 }
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyAppRedSocial(viewModel: ComentarioViewModel) {
+fun MyAppTareas(viewModel: TareaViewModel) {
     val context = LocalContext.current
 
     Scaffold(
@@ -78,7 +79,7 @@ fun MyAppRedSocial(viewModel: ComentarioViewModel) {
             TopAppBar(
                 title = {
                     Text(
-                        text = stringResource(R.string.txt_redSocial),
+                        text = stringResource(R.string.txt_tareas),
                         fontWeight = FontWeight.Bold,
                         style = MaterialTheme.typography.headlineMedium
                     )
@@ -94,10 +95,10 @@ fun MyAppRedSocial(viewModel: ComentarioViewModel) {
         Column(modifier = Modifier.padding(paddingSobrante)) {
             Button(
                 onClick = {
-                    // Creamos el Intent para ir a DetalleComentarioActivity
-                    val intent = Intent(context, DetalleComentarioActivity::class.java).apply {
-                        // Pasamos el ID como 0, ya q al no haber, para que mi clase comentario al tener el autoGenerate = true, me genere el id que vale
-                        putExtra("ID_COMENTARIO", 0)
+                    // Creamos el Intent para ir a DetalleTareaActivity
+                    val intent = Intent(context, DetalleTareaActivity::class.java).apply {
+                        // Pasamos el ID como 0, ya q al no haber, para que mi clase tarea al tener el autoGenerate = true, me genere el id que vale
+                        putExtra("ID_TAREA", 0)
                     }
                     context.startActivity(intent)
                 },
@@ -113,7 +114,7 @@ fun MyAppRedSocial(viewModel: ComentarioViewModel) {
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.agregar),
-                        contentDescription = stringResource(R.string.descripcion_btnCrear_detalle),
+                        contentDescription = stringResource(R.string.descripcion_btnCrear_tarea),
                         modifier = Modifier.size(24.dp)
                     )
                     Spacer(modifier = Modifier.width(10.dp))
@@ -123,15 +124,16 @@ fun MyAppRedSocial(viewModel: ComentarioViewModel) {
                     )
                 }
             }
-            ListaComentarios(viewModel = viewModel)
+            ListaTareas(viewModel = viewModel)
         }
     }
 }
 
+
 @Composable
-fun ListaComentarios(viewModel: ComentarioViewModel) {
+fun ListaTareas(viewModel: TareaViewModel) {
     // Observamos los datos del LiveData definido en el ViewModel
-    val listaComentarios by viewModel.data.observeAsState(initial = emptyList())
+    val listaTareas by viewModel.data.observeAsState(initial = emptyList())
     val context = LocalContext.current
 
     LazyColumn(
@@ -139,15 +141,15 @@ fun ListaComentarios(viewModel: ComentarioViewModel) {
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        // Al importar foundation.lazy.items, "comentario" se reconoce como tipo Comentario
-        items(listaComentarios) { comentario ->
-            ComentarioItem(
-                comentario = comentario,
+        // Al importar foundation.lazy.items, "tarea" se reconoce como tipo Tarea
+        items(listaTareas) { tarea ->
+            TareaItem(
+                tarea = tarea,
                 onClick = {
-                    // Creamos el Intent para ir a DetalleComentarioActivity
-                    val intent = Intent(context, DetalleComentarioActivity::class.java).apply {
-                        // Pasamos el ID del comentario como "extra"
-                        putExtra("ID_COMENTARIO", comentario.idComentario.toInt())
+                    // Creamos el Intent para ir a DetalleTareaActivity
+                    val intent = Intent(context, DetalleTareaActivity::class.java).apply {
+                        // Pasamos el ID de la tarea como "extra"
+                        putExtra("ID_TAREA", tarea.idTarea.toInt())
                     }
                     context.startActivity(intent)
                 }
@@ -158,7 +160,7 @@ fun ListaComentarios(viewModel: ComentarioViewModel) {
 
 
 @Composable
-fun ComentarioItem(comentario: Comentario, onClick: () -> Unit) {
+fun TareaItem(tarea: Tarea, onClick: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -173,13 +175,13 @@ fun ComentarioItem(comentario: Comentario, onClick: () -> Unit) {
         ) {
             Icon(
                 imageVector = Icons.Default.Description,
-                contentDescription = "Icon",
+                contentDescription = "Icono Tarea",
                 tint = MaterialTheme.colorScheme.primary
             )
             Spacer(modifier = Modifier.width(16.dp))
             Column {
                 Text(
-                    text = comentario.nombre, // nombre del comentario
+                    text = tarea.tituloTarea, // titulo de la tarea
                     style = MaterialTheme.typography.titleMedium
                 )
                 Text(

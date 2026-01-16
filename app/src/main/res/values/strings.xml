@@ -11,9 +11,20 @@
     <string name="descripcion_btnConfiguracion_main">boton para ir a la configuracion</string>
     <string name="descripcion_btnDocumentos_main">boton para ir a documentos</string>
     <string name="descripcion_btnRedSocial_main">boton para ir a red social</string>
+    <string name="descripcion_btnTareas_main">boton para ir a tareas</string>
+    <string name="descripcion_btnCalendario_main">boton para ir al calendario</string>
+
     <string name="descripcion_btnGuardar_detalle">boton para guardar los cambios de un comentarios</string>
     <string name="descripcion_btnEliminar_detalle">boton para eliminar un comentario</string>
     <string name="descripcion_btnCrear_detalle">boton para crear un comentario</string>
+
+    <string name="descripcion_btnGuardar_tarea">boton para guardar los cambios de una tarea</string>
+    <string name="descripcion_btnEliminar_tarea">boton para eliminar una tarea</string>
+    <string name="descripcion_btnCrear_tarea">boton para crear una tarea</string>
+
+    <string name="descripcion_btnGuardar_calendario">boton para guardar los cambios de un evento</string>
+    <string name="descripcion_btnEliminar_calendario">boton para eliminar un evento</string>
+    <string name="descripcion_btnCrear_calendario">boton para crear un evento</string>
 
 
     <string name="txt_Juntos">JUNTOS</string>
@@ -22,9 +33,12 @@
     <string name="txt_descargar">DESCARGAR</string>
     <string name="txt_redSocial">RED SOCIAL</string>
     <string name="txt_detalle">DETALLES</string>
+    <string name="txt_tareas">TAREAS</string>
+    <string name="txt_calendario">CALENDARIO</string>
 
 
 
+    <string name="txt_btnDocs">Documentos</string>
 
     <string name="texto_ver_descargar_DESCARGAR">Toca para ver o descargar</string>
     <string name="texto_ver_COMENTARIO">Toca para ver</string>
@@ -32,21 +46,36 @@
     <string name="btn_Crear">Crear</string>
     <string name="btn_Guardar">Guardar</string>
     <string name="btn_Eliminar">Eliminar</string>
-
-
-
-
-    <string name="txt_btnDocs">Documentos</string>
-
-
-
-
-
+    <string name="btn_Cancelar">Cancelar</string>
 
 
 
 
     <string name="btn_subirDoc">Subir Archivo</string>
     <string name="btn_descargarDoc">Descargar Archivo</string>
+
+
+
+
+
+    <string name="lb_nombreUsuario">Nombre del Usuario:</string>
+    <string name="lbNombre">Nombre:</string>
+
+    <string name="lb_comentario">Comentario:</string>
+    <string name="lbComentario">Comentario</string>
+
+    <string name="eventosDelDia">Eventos del dia</string>
+    <string name="nohayeventos">No hay eventos para este día</string>
+    <string name="addevento">Añadir Evento</string>
+    <string name="nuevoevento">Nuevo Evento para el día seleccionado</string>
+    <string name="titulo">Titulo:</string>
+    <string name="descripcion">Descripcion:</string>
+    <string name="preguntaEliminar">¿Eliminar Evento?</string>
+    <string name="confirmacionEliminar">¿Estás seguro/a?</string>
+
+
+
+
+
 
 </resources>

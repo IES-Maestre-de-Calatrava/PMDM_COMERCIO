@@ -4,10 +4,10 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
-import es.maestre.juntos.conexion.ComentarioRepository
 import es.maestre.juntos.conexion.AppDatabase
+import es.maestre.juntos.conexion.ComentarioRepository
+import es.maestre.juntosjc.model.Comentario
 import kotlinx.coroutines.launch
-import es.maestre.juntos.model.Comentario
 import kotlinx.coroutines.Dispatchers
 
 class ComentarioViewModel(application: Application) : AndroidViewModel(application) {

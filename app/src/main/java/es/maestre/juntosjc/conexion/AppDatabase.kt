@@ -4,17 +4,24 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import es.maestre.juntos.model.Comentario
+import es.maestre.juntos.model.Tarea
 import es.maestre.juntos.model.Documento
+import es.maestre.juntosjc.conexion.EventoDAO
+import es.maestre.juntosjc.conexion.TareaDAO
+import es.maestre.juntosjc.model.Comentario
+import es.maestre.juntosjc.model.Evento
 
 /**
  * Base de datos de la aplicación con Room, los comentarios se guardan en un archivo "comentarios.db3"
  */
-@Database(version = 1, entities = [Comentario::class, Documento::class])
+@Database(version = 1, entities = [Tarea::class, Documento::class, Comentario::class, Evento::class])
 abstract class AppDatabase : RoomDatabase(){
 
     abstract fun comentarioDAO(): ComentarioDAO
     abstract fun documentoDAO(): DocumentoDAO
+    abstract fun tareaDAO(): TareaDAO
+    abstract fun eventoDAO(): EventoDAO
+
     companion object {
         @Volatile private var INSTANCE: es.maestre.juntos.conexion.AppDatabase? = null
 

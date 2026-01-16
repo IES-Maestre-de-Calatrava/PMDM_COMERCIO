@@ -29,6 +29,7 @@ import es.maestre.juntosjc.ui.theme.JUNTOSJCTheme
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 
@@ -63,8 +64,8 @@ fun MyAppArchivo(viewModel: DocumentoViewModel) {
                     )
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                    containerColor = colorResource(R.color.container),
+                    titleContentColor = colorResource(R.color.content)
                 )
             )
         }
