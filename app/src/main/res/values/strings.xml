@@ -44,10 +44,6 @@
     <string name="txt_configuracion">CONFIGURAR</string>
 
 
-
-
-
-
     <string name="txt_btnDocs">Documentos</string>
 
     <string name="texto_ver_descargar_DESCARGAR">Toca para ver o descargar</string>
@@ -59,13 +55,8 @@
     <string name="btn_Cancelar">Cancelar</string>
 
 
-
-
     <string name="btn_subirDoc">Subir Archivo</string>
     <string name="btn_descargarDoc">Descargar Archivo</string>
-
-
-
 
 
     <string name="lb_nombreUsuario">Nombre del Usuario:</string>
@@ -82,10 +73,7 @@
     <string name="descripcion">Descripcion:</string>
     <string name="preguntaEliminar">¿Eliminar Evento?</string>
     <string name="confirmacionEliminar">¿Estás seguro/a?</string>
-
-
-
-
+    <string name="title_activity_ayuda">AyudaActivity</string>
 
 
 </resources>

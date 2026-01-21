@@ -1,5 +1,6 @@
 package es.maestre.juntosjc
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -127,7 +128,10 @@ fun GenerarComponentesMain() {
                     )
                 }
                 // Icono Ayuda (no implementado)
-                IconButton(onClick = { /* TODO */ }) {
+                IconButton(onClick = {
+                    val intent = Intent(context, AyudaActivity::class.java)
+                    context.startActivity(intent)
+                }) {
                     Icon(
                         painter = painterResource(id = R.drawable.help_question_svgrepo_com),
                         contentDescription = stringResource(R.string.descripcion_btnAyuda_main),
