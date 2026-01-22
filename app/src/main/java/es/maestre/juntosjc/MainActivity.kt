@@ -227,7 +227,8 @@ fun GenerarComponentesMain() {
                     iconRes = R.drawable.photo_album_svgrepo_com,
                     iconColor = Color.Unspecified
                 ) {
-                    /*TODO intent al fotos Activity*/
+                    val intent = Intent(context, FotosActivity::class.java)
+                    context.startActivity(intent)
                 }
             }
 
