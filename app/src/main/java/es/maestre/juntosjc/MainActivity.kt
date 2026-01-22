@@ -39,8 +39,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import es.maestre.juntos.viewModel.ComentarioViewModel
-import es.maestre.juntos.viewModel.DocumentoViewModel
+import es.maestre.juntosjc.viewModel.ComentarioViewModel
+import es.maestre.juntosjc.viewModel.DocumentoViewModel
 import es.maestre.juntosjc.ui.theme.JUNTOSJCTheme
 import es.maestre.juntosjc.viewModel.EventoViewModel
 import es.maestre.juntosjc.viewModel.TareaViewModel

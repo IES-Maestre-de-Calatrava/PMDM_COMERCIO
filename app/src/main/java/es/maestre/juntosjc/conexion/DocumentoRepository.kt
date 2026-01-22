@@ -1,7 +1,7 @@
-package es.maestre.juntos.conexion
+package es.maestre.juntosjc.conexion
 
 import androidx.lifecycle.LiveData
-import es.maestre.juntos.model.Documento
+import es.maestre.juntosjc.model.Documento
 
 
 class DocumentoRepository(private val documentoDAO: DocumentoDAO) {

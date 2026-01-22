@@ -36,7 +36,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import es.maestre.juntos.viewModel.DocumentoViewModel
+import es.maestre.juntosjc.viewModel.DocumentoViewModel
 import es.maestre.juntosjc.ui.theme.JUNTOSJCTheme
 
 /**

@@ -1,4 +1,4 @@
-package es.maestre.juntos.model
+package es.maestre.juntosjc.model
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

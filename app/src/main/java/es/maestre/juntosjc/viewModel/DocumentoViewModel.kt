@@ -1,14 +1,14 @@
-package es.maestre.juntos.viewModel
+package es.maestre.juntosjc.viewModel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
-import es.maestre.juntos.conexion.DocumentoRepository
-import es.maestre.juntos.conexion.AppDatabase
-import es.maestre.juntos.model.Documento
+import es.maestre.juntosjc.conexion.DocumentoRepository
+import es.maestre.juntosjc.conexion.AppDatabase
+import es.maestre.juntosjc.model.Documento
 import kotlinx.coroutines.launch
-import es.maestre.juntos.supabase.SupabaseClient
+import es.maestre.juntosjc.supabase.SupabaseClient
 import io.github.jan.supabase.storage.storage
 import kotlinx.coroutines.Dispatchers
 import java.util.UUID

@@ -1,4 +1,4 @@
-package es.maestre.juntos.conexion
+package es.maestre.juntosjc.conexion
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
@@ -7,7 +7,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
-import es.maestre.juntos.model.Documento
+import es.maestre.juntosjc.model.Documento
 
 
 @Dao

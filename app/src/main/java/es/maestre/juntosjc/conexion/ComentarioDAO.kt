@@ -1,4 +1,4 @@
-package es.maestre.juntos.conexion
+package es.maestre.juntosjc.conexion
 
 
 import androidx.lifecycle.LiveData

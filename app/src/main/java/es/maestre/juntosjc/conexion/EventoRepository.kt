@@ -1,8 +1,9 @@
 package es.maestre.juntosjc.conexion
 
 import androidx.lifecycle.LiveData
-import es.maestre.juntosjc.model.Evento
 import java.util.Calendar
+import es.maestre.juntosjc.conexion.EventoDAO
+import es.maestre.juntosjc.model.Evento
 
 class EventoRepository(private val eventoDAO: EventoDAO) {
 

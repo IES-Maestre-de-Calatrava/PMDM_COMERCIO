@@ -4,8 +4,8 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
-import es.maestre.juntos.conexion.AppDatabase
-import es.maestre.juntos.model.Tarea
+import es.maestre.juntosjc.conexion.AppDatabase
+import es.maestre.juntosjc.model.Tarea
 import es.maestre.juntosjc.conexion.TareaRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

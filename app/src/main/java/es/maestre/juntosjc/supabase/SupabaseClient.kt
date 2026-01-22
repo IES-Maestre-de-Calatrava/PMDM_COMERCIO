@@ -1,4 +1,4 @@
-package es.maestre.juntos.supabase
+package es.maestre.juntosjc.supabase
 import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.postgrest.Postgrest

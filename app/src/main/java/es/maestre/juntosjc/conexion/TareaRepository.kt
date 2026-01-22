@@ -1,7 +1,7 @@
 package es.maestre.juntosjc.conexion
 
 import androidx.lifecycle.LiveData
-import es.maestre.juntos.model.Tarea
+import es.maestre.juntosjc.model.Tarea
 
 
 class TareaRepository(private val tareaDAO: TareaDAO) {

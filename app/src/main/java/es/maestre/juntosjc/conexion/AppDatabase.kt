@@ -1,11 +1,11 @@
-package es.maestre.juntos.conexion
+package es.maestre.juntosjc.conexion
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import es.maestre.juntos.model.Tarea
-import es.maestre.juntos.model.Documento
+import es.maestre.juntosjc.model.Tarea
+import es.maestre.juntosjc.model.Documento
 import es.maestre.juntosjc.conexion.EventoDAO
 import es.maestre.juntosjc.conexion.TareaDAO
 import es.maestre.juntosjc.model.Comentario
@@ -23,12 +23,12 @@ abstract class AppDatabase : RoomDatabase(){
     abstract fun eventoDAO(): EventoDAO
 
     companion object {
-        @Volatile private var INSTANCE: es.maestre.juntos.conexion.AppDatabase? = null
+        @Volatile private var INSTANCE: es.maestre.juntosjc.conexion.AppDatabase? = null
 
-        fun getDatabase(context: Context): es.maestre.juntos.conexion.AppDatabase {
+        fun getDatabase(context: Context): es.maestre.juntosjc.conexion.AppDatabase {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder( context.applicationContext,
-                    es.maestre.juntos.conexion.AppDatabase::class.java,
+                    es.maestre.juntosjc.conexion.AppDatabase::class.java,
                     "JUNTOS.db3" ).build()
                 INSTANCE = instance
                 instance

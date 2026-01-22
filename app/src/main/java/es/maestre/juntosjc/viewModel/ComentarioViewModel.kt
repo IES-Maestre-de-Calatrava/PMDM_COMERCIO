@@ -1,11 +1,11 @@
-package es.maestre.juntos.viewModel
+package es.maestre.juntosjc.viewModel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
-import es.maestre.juntos.conexion.AppDatabase
-import es.maestre.juntos.conexion.ComentarioRepository
+import es.maestre.juntosjc.conexion.AppDatabase
+import es.maestre.juntosjc.conexion.ComentarioRepository
 import es.maestre.juntosjc.model.Comentario
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.Dispatchers
