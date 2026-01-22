@@ -11,6 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavController
 import es.maestre.juntosjc.ui.theme.JUNTOSJCTheme
 
 class AyudaActivity : ComponentActivity() {
@@ -19,29 +20,33 @@ class AyudaActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             JUNTOSJCTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
+
             }
         }
     }
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
+fun AyudaPrincipal(navController: NavController){
+
 }
 
-@Preview(showBackground = true)
 @Composable
-fun GreetingPreview() {
-    JUNTOSJCTheme {
-        Greeting("Android")
-    }
+fun AyudaCalendario(navController: NavController){
+
+}
+
+@Composable
+fun AyudaTareas(navController: NavController){
+
+}
+
+@Composable
+fun AyudaDocumentos(navController: NavController){
+
+}
+
+@Composable
+fun AyudaRedSocial(navController: NavController){
+    
 }
