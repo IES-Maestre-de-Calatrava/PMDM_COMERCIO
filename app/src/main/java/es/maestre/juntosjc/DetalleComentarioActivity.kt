@@ -44,6 +44,7 @@ import es.maestre.juntosjc.viewModel.ComentarioViewModel
 import es.maestre.juntosjc.model.Comentario
 import es.maestre.juntosjc.ui.theme.JUNTOSJCTheme
 import kotlin.getValue
+import es.maestre.juntosjc.model.ComentarioItem
 
 /**
  * Clase DetalleComentarioActivity: esta clase es la que muestra la informacion
@@ -57,12 +58,26 @@ class DetalleComentarioActivity: ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // recupero el id del comentario que hayamos seleccionado
+        // recupero los parámetros que hemos pasado
         val idComentario = intent.getIntExtra("ID_COMENTARIO", -1)
+        val nombreBackup = intent.getStringExtra("NOMBRE_USUARIO") ?: ""
+        val textoBackup = intent.getStringExtra("TEXTO") ?: ""
+
+
         enableEdgeToEdge()
         setContent {
             JUNTOSJCTheme {
-                MyAppDetalle(viewModel = viewModel, idComentario = idComentario) // hay que pasarselo a la funcion para completar los campos
+                val comentarioActual = remember(idComentario) {
+                    if (idComentario > 0) {
+                        // Buscamos en la lista descargada de Supabase
+                        viewModel.listaComentariosSupabase.find { it.id_comentario == idComentario }
+                            ?: ComentarioItem(idComentario, nombreBackup, textoBackup) // Si no lo encuentra, usa el backup
+                    } else {
+                        ComentarioItem(null, "", "") // Nuevo comentario
+                    }
+                }
+
+                MyAppDetalle(viewModel = viewModel, idComentario = idComentario, comentarioRecibido = comentarioActual) // hay que pasarselo a la funcion para completar los campos
             }
         }
     }
@@ -75,17 +90,9 @@ class DetalleComentarioActivity: ComponentActivity() {
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyAppDetalle(viewModel: ComentarioViewModel, idComentario: Int) {
+fun MyAppDetalle(viewModel: ComentarioViewModel, idComentario: Int, comentarioRecibido: ComentarioItem?) {
 
     val context = LocalContext.current // Para cerrar la pantalla tras la acción
-
-    // Si idComentario > 0, buscamos el comentario real. Si es 0, creamos uno vacío.
-    val comentarioActual by if (idComentario > 0) {
-        viewModel.getComentarioById(idComentario).observeAsState()
-    } else {
-        // Objeto temporal vacío para el modo creación
-        remember { mutableStateOf(Comentario(idComentario = 0, nombre = "", texto = "")) }
-    }
 
     Scaffold(
         topBar = {
@@ -111,8 +118,8 @@ fun MyAppDetalle(viewModel: ComentarioViewModel, idComentario: Int) {
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             // Solo mostramos los campos si el comentario ha cargado
-            comentarioActual?.let { comentario ->
-                CamposDetalle(comentario = comentario, viewModel = viewModel, esNuevo = idComentario == 0, onActionDone = { (context as ComponentActivity).finish() })            }
+            comentarioRecibido?.let { comentario ->
+                CamposDetalle(comentario = comentario, viewModel = viewModel, esNuevo = idComentario <= 0, onActionDone = { (context as ComponentActivity).finish() })            }
         }
     }
 }
@@ -122,14 +129,14 @@ fun MyAppDetalle(viewModel: ComentarioViewModel, idComentario: Int) {
  */
 @Composable
 fun CamposDetalle(
-    comentario: Comentario,
+    comentario: ComentarioItem,
     viewModel: ComentarioViewModel,
     esNuevo: Boolean,
     onActionDone: () -> Unit
 ) {
     // Usamos estados para que los campos sean editables
     // Nota: Para editar realmente, luego usaremos estos valores en el botón Guardar
-    var nombre by remember { mutableStateOf(comentario.nombre) }
+    var nombre by remember { mutableStateOf(comentario.nombre_usuario) }
     var texto by remember { mutableStateOf(comentario.texto) }
 
     // Campos editables segun los atributos del comentario
@@ -152,15 +159,16 @@ fun CamposDetalle(
 
     Button(
         onClick = {
+            val nuevoItem = ComentarioItem(
+                id_comentario = if (esNuevo) null else comentario.id_comentario,
+                nombre_usuario = nombre,
+                texto = texto
+            )
             if (esNuevo) {
-                // se autogenera el ID porque mandamos idComentario = 0
-                viewModel.insert(Comentario(nombre = nombre, texto = texto))
+                viewModel.insertarComentarioSupabase(nuevoItem) { onActionDone() }
             } else {
-                // Mantenemos el actualizar normal con el id normal para sobreescribir
-                val comentarioEditado = comentario.copy(nombre = nombre, texto = texto)
-                viewModel.update(comentarioEditado)
+                viewModel.actualizarComentarioSupabase(nuevoItem) { onActionDone() }
             }
-            onActionDone()
         },
         modifier = Modifier.fillMaxWidth().height(50.dp),
         colors = ButtonDefaults.buttonColors(
@@ -190,8 +198,11 @@ fun CamposDetalle(
     if (!esNuevo) {
         Button(
             onClick = {
-                viewModel.delete(comentario)
-                onActionDone() // Volvemos a la lista tras eliminar
+                comentario.id_comentario?.let { idSeguro ->
+                    viewModel.borrarComentarioSupabase(idSeguro) {
+                        onActionDone()
+                    }
+                }
             },
             modifier = Modifier.fillMaxWidth().height(50.dp),
             colors = ButtonDefaults.buttonColors(

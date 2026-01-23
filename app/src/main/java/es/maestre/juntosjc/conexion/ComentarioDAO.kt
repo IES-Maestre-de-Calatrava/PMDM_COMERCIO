@@ -9,7 +9,6 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import es.maestre.juntosjc.model.Comentario
-
 @Dao
 interface ComentarioDAO {
 

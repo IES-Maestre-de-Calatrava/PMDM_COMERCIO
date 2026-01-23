@@ -3,7 +3,7 @@
     <string name="descripcion_imagenWorkUnit">Imagen de un grupo de trabajo</string>
     <string name="descripcion_logo">Logo de una tienda de campaña morado</string>
     <string name="txt_pantallaBienvenida">Convierte tu unidad de trabajo en un ambiente agradable y organizado</string>
-    <string name="txt_btn_pantallaBienvenida">!VAMOS¡</string>
+    <string name="txt_btn_pantallaBienvenida">¡VAMOS!</string>
 
 
     <string name="descripcion_btnPerfil_main">boton para ir al perfil del usuario</string>
@@ -71,6 +71,7 @@
     <string name="nuevoevento">Nuevo Evento para el día seleccionado</string>
     <string name="titulo">Titulo:</string>
     <string name="descripcion">Descripcion:</string>
+    <string name="asistentes">Asistentes:</string>
     <string name="preguntaEliminar">¿Eliminar Evento?</string>
     <string name="confirmacionEliminar">¿Estás seguro/a?</string>
     <string name="title_activity_ayuda">AyudaActivity</string>

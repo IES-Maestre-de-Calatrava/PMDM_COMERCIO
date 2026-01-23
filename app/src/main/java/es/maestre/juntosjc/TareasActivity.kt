@@ -46,6 +46,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import es.maestre.juntosjc.model.Tarea
+import es.maestre.juntosjc.model.TareaItem
 import es.maestre.juntosjc.ui.theme.JUNTOSJCTheme
 import es.maestre.juntosjc.viewModel.TareaViewModel
 import kotlin.getValue
@@ -63,11 +64,19 @@ class TareasActivity: ComponentActivity()  {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
+        // Pido los datos al abrir
+        viewModel.obtenerTareasSupabase()
+
         setContent {
             JUNTOSJCTheme {
                 MyAppTareas(viewModel = viewModel)
             }
         }
+    }
+    override fun onResume() {
+        super.onResume()
+        // Cada vez que la pantalla vuelve a estar visible, pedimos los datos
+        viewModel.obtenerTareasSupabase()
     }
 }
 
@@ -79,6 +88,10 @@ class TareasActivity: ComponentActivity()  {
 @Composable
 fun MyAppTareas(viewModel: TareaViewModel) {
     val context = LocalContext.current
+
+    androidx.compose.runtime.LaunchedEffect(Unit) {
+        viewModel.obtenerTareasSupabase()
+    }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -148,7 +161,7 @@ fun MyAppTareas(viewModel: TareaViewModel) {
 fun ListaTareas(viewModel: TareaViewModel) {
 
     // Observamos los datos del LiveData definido en el ViewModel
-    val listaTareas by viewModel.data.observeAsState(initial = emptyList())
+    val listaTareas = viewModel.listaTareasSupabase
     val context = LocalContext.current
 
     LazyColumn(
@@ -164,7 +177,12 @@ fun ListaTareas(viewModel: TareaViewModel) {
                     // Creamos el Intent para ir a DetalleTareaActivity
                     val intent = Intent(context, DetalleTareaActivity::class.java).apply {
                         // Pasamos el ID de la tarea como "extra"
-                        putExtra("ID_TAREA", tarea.idTarea.toInt())
+                        putExtra("ID_TAREA", tarea.id_tarea ?: -1)
+                        putExtra("TITULO_TAREA", tarea.titulo_tarea)
+                        putExtra("DESCRIPCION_TAREA", tarea.descripcion_tarea)
+                        putExtra("FECHA_ENTREGA", tarea.fecha_entrega)
+                        putExtra("COMPLETA", tarea.completa)
+                        putExtra("PERSONA_ENCARGADA", tarea.persona_encargada)
                     }
                     context.startActivity(intent)
                 }
@@ -178,7 +196,7 @@ fun ListaTareas(viewModel: TareaViewModel) {
  * se cargan en el LazyColumn
  */
 @Composable
-fun TareaItem(tarea: Tarea, onClick: () -> Unit) {
+fun TareaItem(tarea: TareaItem, onClick: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -199,7 +217,7 @@ fun TareaItem(tarea: Tarea, onClick: () -> Unit) {
             Spacer(modifier = Modifier.width(16.dp))
             Column {
                 Text(
-                    text = tarea.tituloTarea, // titulo de la tarea
+                    text = tarea.titulo_tarea, // titulo de la tarea
                     style = MaterialTheme.typography.titleMedium
                 )
                 Text(

@@ -1,14 +1,18 @@
 package es.maestre.juntosjc.viewModel
 
 import android.app.Application
+import android.util.Log
+import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import es.maestre.juntosjc.conexion.DocumentoRepository
 import es.maestre.juntosjc.conexion.AppDatabase
+import es.maestre.juntosjc.model.ArchivoItem
 import es.maestre.juntosjc.model.Documento
 import kotlinx.coroutines.launch
 import es.maestre.juntosjc.supabase.SupabaseClient
+import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.storage.storage
 import kotlinx.coroutines.Dispatchers
 import java.util.UUID
@@ -21,6 +25,27 @@ class DocumentoViewModel (application: Application) : AndroidViewModel(applicati
     private val repository: DocumentoRepository
 
     public val data: LiveData<List<Documento>>
+
+
+    // Creamos una lista observable para Compose
+    val listaArchivosSupabase = mutableStateListOf<ArchivoItem>()
+
+    fun obtenerArchivosSupabase() {
+        viewModelScope.launch {
+            try {
+                // Hacemos el SELECT a la tabla "documento"
+                val resultado = SupabaseClient.client.from("documento")
+                    .select().decodeList<ArchivoItem>()
+
+                listaArchivosSupabase.clear()
+                listaArchivosSupabase.addAll(resultado)
+
+                Log.d("Supabase.Fetch", "Datos traídos: ${resultado.size}")
+            } catch (e: Exception) {
+                Log.e("Supabase.Fetch", "Error: ${e.message}")
+            }
+        }
+    }
 
     init {
         val documentoDAO = AppDatabase.getDatabase(application.applicationContext).documentoDAO()
@@ -80,9 +105,16 @@ class DocumentoViewModel (application: Application) : AndroidViewModel(applicati
                 // Obtener la URL pública (si el bucket es público), para guardarla en bbdd
                 val publicUrl = bucket.publicUrl(fileName)
 
-                // Tras la subida a supabase, se guarda un documento en supabase con los mismos datos
-                val documento = Documento(nombreArchivo = fileName, rutaArchivo = publicUrl)
-                insert(documento)
+                // INSERTAR EN LA TABLA DE SUPABASE
+
+                val nuevoArchivo = ArchivoItem(
+                    id_documento = null,
+                    nombre_archivo = fileName,
+                    ruta_archivo = publicUrl
+                )
+
+                // USAMOS 'await' o simplemente la llamada directa sin abrir otro launch
+                SupabaseClient.client.from("documento").insert(nuevoArchivo)
 
                 // Devolver la URL para guardarla en tu base de datos
                 onSuccess(publicUrl)

@@ -43,7 +43,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import es.maestre.juntosjc.model.ComentarioItem
 import es.maestre.juntosjc.model.Tarea
+import es.maestre.juntosjc.model.TareaItem
 import es.maestre.juntosjc.ui.theme.JUNTOSJCTheme
 import es.maestre.juntosjc.viewModel.TareaViewModel
 import kotlin.getValue
@@ -60,12 +62,31 @@ class DetalleTareaActivity: ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // recupero el id de la tarea que hayamos seleccionado
+        // recupero los parámetros que hemos pasado
         val idTarea = intent.getIntExtra("ID_TAREA", -1)
+        val tituloTarea = intent.getStringExtra("TITULO_TAREA") ?: ""
+        val descripcionTarea = intent.getStringExtra("DESCRIPCION_TAREA") ?: ""
+        val fechaEntrega = intent.getStringExtra("FECHA_ENTREGA") ?: ""
+        val completa = intent.getBooleanExtra("COMPLETA", false)
+        val personaEncargada = intent.getStringExtra("PERSONA_ENCARGADA") ?: ""
+
+
         enableEdgeToEdge()
         setContent {
             JUNTOSJCTheme {
-                MyAppDetalleTarea(viewModel = viewModel, idTarea = idTarea) // hay que pasárselo a la funcion para completar los campos
+
+                val tareaActual = remember(idTarea) {
+                    if (idTarea > 0) {
+                        // Buscamos en la lista descargada de Supabase
+                        viewModel.listaTareasSupabase.find { it.id_tarea == idTarea }
+                            ?: TareaItem(idTarea, tituloTarea, descripcionTarea, fechaEntrega, completa, personaEncargada) // Si no la encuentra, usa el backup
+                    } else {
+                        TareaItem(null, "", "", "", false, "") // Nueva tarea
+                    }
+                }
+
+
+                MyAppDetalleTarea(viewModel = viewModel, idTarea = idTarea, tareaRecibida = tareaActual) // hay que pasárselo a la funcion para completar los campos
             }
         }
     }
@@ -79,17 +100,9 @@ class DetalleTareaActivity: ComponentActivity() {
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyAppDetalleTarea(viewModel: TareaViewModel, idTarea: Int) {
+fun MyAppDetalleTarea(viewModel: TareaViewModel, idTarea: Int, tareaRecibida: TareaItem?) {
 
     val context = LocalContext.current // Para cerrar la pantalla tras la acción
-
-    // Si idTarea > 0, buscamos la tarea real. Si es 0, creamos una nueva vacía.
-    val tareaActual by if (idTarea > 0) {
-        viewModel.getTareaById(idTarea).observeAsState()
-    } else {
-        // Objeto temporal vacío para el modo creación
-        remember { mutableStateOf(Tarea(idTarea = 0, tituloTarea = "", descripcionTarea = "", fechaEntrega = "", completada = false, personaEncargada = "")) }
-    }
 
     Scaffold(
         topBar = {
@@ -116,8 +129,9 @@ fun MyAppDetalleTarea(viewModel: TareaViewModel, idTarea: Int) {
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             // Solo mostramos los campos si la tarea se ha cargado
-            tareaActual?.let { tarea ->
-                CamposDetalleTarea(tarea = tarea, viewModel = viewModel, esNuevo = idTarea == 0, onActionDone = { (context as ComponentActivity).finish() })            }
+            tareaRecibida?.let { tarea ->
+                CamposDetalleTarea(tarea = tarea, viewModel = viewModel, esNuevo = idTarea <= 0, onActionDone = { (context as ComponentActivity).finish() })
+            }
         }
     }
 }
@@ -127,18 +141,18 @@ fun MyAppDetalleTarea(viewModel: TareaViewModel, idTarea: Int) {
  */
 @Composable
 fun CamposDetalleTarea(
-    tarea: Tarea,
+    tarea: TareaItem,
     viewModel: TareaViewModel,
     esNuevo: Boolean,
     onActionDone: () -> Unit
 ) {
     // Usamos estados para que los campos sean editables
     // Para editar realmente, luego usaremos estos valores en el botón Guardar
-    var titulo by remember { mutableStateOf(tarea.tituloTarea) }
-    var descripcion by remember { mutableStateOf(tarea.descripcionTarea) }
-    var fecha by remember { mutableStateOf(tarea.fechaEntrega) }
-    var completada by remember { mutableStateOf(tarea.completada) }
-    var persona by remember { mutableStateOf(tarea.personaEncargada) }
+    var titulo by remember { mutableStateOf(tarea.titulo_tarea) }
+    var descripcion by remember { mutableStateOf(tarea.descripcion_tarea) }
+    var fecha by remember { mutableStateOf(tarea.fecha_entrega) }
+    var completada by remember { mutableStateOf(tarea.completa) }
+    var persona by remember { mutableStateOf(tarea.persona_encargada) }
 
     // Campos editables segun los atributos de la tarea
     Text(text = "Titulo de la tarea:", fontWeight = FontWeight.Bold)
@@ -193,15 +207,23 @@ fun CamposDetalleTarea(
 
     Button(
         onClick = {
+
+            val nuevoItem = TareaItem(
+                id_tarea = if (esNuevo) null else tarea.id_tarea,
+                titulo_tarea = titulo,
+                descripcion_tarea = descripcion,
+                fecha_entrega = fecha,
+                completa = completada,
+                persona_encargada = persona
+            )
+
+
             if (esNuevo) {
-                // se autogenera el ID porque mandamos idTarea = 0
-                viewModel.insert(Tarea(tituloTarea = titulo, descripcionTarea = descripcion, fechaEntrega = fecha, completada = completada, personaEncargada = persona))
+                viewModel.insertarTareaSupabase(nuevoItem) { onActionDone() }
             } else {
-                // Mantenemos el actualizar normal con el id normal para sobreescribir
-                val tareaEditado = tarea.copy(tituloTarea = titulo, descripcionTarea = descripcion, fechaEntrega = fecha, completada = completada, personaEncargada = persona)
-                viewModel.update(tareaEditado)
+                viewModel.actualizarTareaSupabase(nuevoItem) { onActionDone() }
+
             }
-            onActionDone()
         },
         modifier = Modifier.fillMaxWidth().height(50.dp),
         colors = ButtonDefaults.buttonColors(
@@ -232,8 +254,11 @@ fun CamposDetalleTarea(
     if (!esNuevo) {
         Button(
             onClick = {
-                viewModel.delete(tarea)
-                onActionDone() // Volvemos a la lista tras eliminar
+                tarea.id_tarea?.let { idSeguro ->
+                    viewModel.borrarTareaSupabase(idSeguro) {
+                        onActionDone()
+                    }
+                }
             },
             modifier = Modifier.fillMaxWidth().height(50.dp),
             colors = ButtonDefaults.buttonColors(

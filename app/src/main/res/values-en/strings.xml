@@ -4,7 +4,7 @@
     <string name="descripcion_imagenWorkUnit">Unit work image</string>
     <string name="descripcion_logo">Purple tent logo</string>
     <string name="txt_pantallaBienvenida">Transform your work unit into an kind and tidy environment</string>
-    <string name="txt_btn_pantallaBienvenida">!LET`S GO¡</string>
+    <string name="txt_btn_pantallaBienvenida">LET`S GO!</string>
     <string name="descripcion_btnTareas_main">Navigation Button to go to Tasks</string>
     <string name="descripcion_btnCalendario_main">Navigation Button to go to Calendar</string>
 
@@ -81,8 +81,11 @@
     <string name="nuevoevento">New event on the selected day</string>
     <string name="titulo">Tittle:</string>
     <string name="descripcion">Description:</string>
+    <string name="asistentes">Assistants:</string>
     <string name="preguntaEliminar">Delete Event?</string>
     <string name="confirmacionEliminar">Are you sure?</string>
+    <string name="title_activity_ayuda">HelpActivity</string>
+    <string name="title_activity_fotos">PhotosActivity</string>
 
 
 
