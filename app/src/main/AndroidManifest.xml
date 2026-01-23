@@ -20,6 +20,16 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.JUNTOSJC">
         <activity
+            android:name=".ConfiguracionActivity"
+            android:exported="false"
+            android:label="Configuración"
+            android:theme="@style/Theme.JUNTOSJC" />
+        <activity
+            android:name=".PerfilActivity"
+            android:exported="false"
+            android:label="@string/title_activity_perfil"
+            android:theme="@style/Theme.JUNTOSJC" />
+        <activity
             android:name=".FotosActivity"
             android:exported="false"
             android:label="@string/title_activity_fotos"
@@ -31,6 +41,12 @@
             android:theme="@style/Theme.JUNTOSJC" />
         <activity
             android:name=".MainActivity"
+            android:exported="true" />
+        <activity
+            android:name=".ContactosActivity"
+            android:exported="true" />
+        <activity
+            android:name=".DetalleContactoActivity"
             android:exported="true" />
         <activity
             android:name=".DocumentoActivity"
