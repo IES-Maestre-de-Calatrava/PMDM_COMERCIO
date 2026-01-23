@@ -27,7 +27,6 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -41,7 +40,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import es.maestre.juntosjc.viewModel.ComentarioViewModel
-import es.maestre.juntosjc.model.Comentario
 import es.maestre.juntosjc.ui.theme.JUNTOSJCTheme
 import kotlin.getValue
 import es.maestre.juntosjc.model.ComentarioItem

@@ -16,13 +16,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Description
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import es.maestre.juntosjc.model.Documento
 import es.maestre.juntosjc.viewModel.DocumentoViewModel
 import es.maestre.juntosjc.ui.theme.JUNTOSJCTheme
 import androidx.compose.material3.ExperimentalMaterial3Api

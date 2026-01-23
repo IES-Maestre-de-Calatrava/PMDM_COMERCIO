@@ -6,10 +6,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
-import es.maestre.juntosjc.conexion.DocumentoRepository
-import es.maestre.juntosjc.conexion.AppDatabase
 import es.maestre.juntosjc.model.ArchivoItem
-import es.maestre.juntosjc.model.Documento
 import kotlinx.coroutines.launch
 import es.maestre.juntosjc.supabase.SupabaseClient
 import io.github.jan.supabase.postgrest.from
@@ -21,11 +18,6 @@ import java.util.UUID
  * ViewModel de los documentos
  */
 class DocumentoViewModel (application: Application) : AndroidViewModel(application){
-
-    private val repository: DocumentoRepository
-
-    public val data: LiveData<List<Documento>>
-
 
     // Creamos una lista observable para Compose
     val listaArchivosSupabase = mutableStateListOf<ArchivoItem>()
@@ -46,46 +38,6 @@ class DocumentoViewModel (application: Application) : AndroidViewModel(applicati
             }
         }
     }
-
-    init {
-        val documentoDAO = AppDatabase.getDatabase(application.applicationContext).documentoDAO()
-        data = documentoDAO.getAllDocumentos()
-        repository = DocumentoRepository(documentoDAO)
-
-    }
-
-    private fun getAllDocumentos(): LiveData<List<Documento>> {
-        return repository.getAllDocumentos()
-    }
-
-    fun getDocumentoById(id:Int):LiveData<Documento> {
-        return repository.getDocumentoById(id)
-    }
-
-    fun getDocumentoByRuta(ruta:String):LiveData<Documento> {
-        return repository.getDocumentoByRuta(ruta)
-    }
-
-    fun insert(documento: Documento) = viewModelScope.launch {
-        repository.insert(documento)
-    }
-
-    fun update(documento: Documento) = viewModelScope.launch{
-        repository.update(documento)
-    }
-
-    fun delete(documento: Documento) = viewModelScope.launch{
-        repository.delete(documento)
-    }
-
-
-    // Aqui va la funcion de insertar documentos al iniciar la app
-    fun insertarDocumentosInicio(){
-        viewModelScope.launch(Dispatchers.IO) { // Esto de dispatchers.IO es un elemento de coroutines de kotlin, le indica al sistema que ejecute esta tarea sin bloquear el hilo principal, lo redirige a otro mas delicado
-            repository.insertarDocumentosInicio()
-        }
-    }
-
 
     /**
      * Funcion de subida de imagenes a supabase
