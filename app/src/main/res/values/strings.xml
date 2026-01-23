@@ -76,6 +76,7 @@
     <string name="confirmacionEliminar">¿Estás seguro/a?</string>
     <string name="title_activity_ayuda">AyudaActivity</string>
     <string name="title_activity_fotos">FotosActivity</string>
+    <string name="logout">Cerrar sesión</string>
 
 
 </resources>

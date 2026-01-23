@@ -86,8 +86,7 @@
     <string name="confirmacionEliminar">Are you sure?</string>
     <string name="title_activity_ayuda">HelpActivity</string>
     <string name="title_activity_fotos">PhotosActivity</string>
-
-
+    <string name="logout">Log out</string>
 
 
 </resources>

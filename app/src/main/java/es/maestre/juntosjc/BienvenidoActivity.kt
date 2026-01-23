@@ -101,7 +101,7 @@ fun GenerarComponentesBienvenida(){
             Button(
                 onClick = {
                     // intent a la MainActivity
-                    val intent = Intent(context, MainActivity::class.java)
+                    val intent = Intent(context, LoginActivity::class.java)
                     context.startActivity(intent) },
                 modifier = Modifier
                     .fillMaxWidth()

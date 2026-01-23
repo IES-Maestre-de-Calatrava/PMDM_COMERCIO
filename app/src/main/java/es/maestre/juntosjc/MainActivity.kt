@@ -22,6 +22,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -31,6 +33,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -43,6 +46,7 @@ import es.maestre.juntosjc.viewModel.DocumentoViewModel
 import es.maestre.juntosjc.ui.theme.JUNTOSJCTheme
 import es.maestre.juntosjc.viewModel.EventoViewModel
 import es.maestre.juntosjc.viewModel.TareaViewModel
+import es.maestre.juntosjc.viewModel.AuthenticationViewModel
 import kotlin.getValue
 
 /**
@@ -56,6 +60,7 @@ class MainActivity : ComponentActivity() {
     private val documentosViewModel: DocumentoViewModel by viewModels()
     private val tareasViewModel: TareaViewModel by viewModels()
     private val eventosViewModel: EventoViewModel by viewModels()
+    private val authViewModel : AuthenticationViewModel by viewModels()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,26 +68,26 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             JUNTOSJCTheme {
-                MyAppMain(modifier = Modifier.fillMaxSize())
-                }
+                MyAppMain(modifier = Modifier.fillMaxSize(),authViewModel)
             }
         }
     }
+}
 
 
 /**
  * Función que llama a la función que crea los componentes de la Activity
  */
 @Composable
-fun MyAppMain(modifier: Modifier = Modifier) {
-    GenerarComponentesMain()
+fun MyAppMain(modifier: Modifier = Modifier , authViewModel: AuthenticationViewModel) {
+    GenerarComponentesMain(authViewModel)
 }
 
 /**
  * Funcion que me genera los componentes
  */
 @Composable
-fun GenerarComponentesMain() {
+fun GenerarComponentesMain(authViewModel: AuthenticationViewModel) {
     val context = LocalContext.current
 
     // Contenedor principal
@@ -126,6 +131,21 @@ fun GenerarComponentesMain() {
                     Icon(
                         painter = painterResource(id = R.drawable.help_question_svgrepo_com),
                         contentDescription = stringResource(R.string.descripcion_btnAyuda_main),
+                        modifier = Modifier.size(28.dp),
+                        tint = Color.Unspecified
+                    )
+                }
+
+                // Icono cerrar sesión
+                IconButton(onClick = {
+                        authViewModel.signOut() // cierra la sesion en supabase y redirige al loginActivity
+                        context.startActivity(Intent(context, LoginActivity::class.java))
+                        // esto cierra la actividad actual para que no se pueda volver atras
+                        (context as?  android.app.Activity)?.finish()
+                    }) {
+                    Icon(
+                        painter = rememberVectorPainter(Icons.Default.ExitToApp),
+                        contentDescription = stringResource(R.string.logout),
                         modifier = Modifier.size(28.dp),
                         tint = Color.Unspecified
                     )

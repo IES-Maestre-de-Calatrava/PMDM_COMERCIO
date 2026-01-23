@@ -6,4 +6,10 @@ interface AuthenticationRepository {
 
     suspend fun signUp(email : String, password: String): Boolean
 
+    suspend fun signOut(): Boolean
+
+    fun isUserLoggedIn(): Boolean
+
+    fun getCurrentUserEmail(): String?
+
 }
