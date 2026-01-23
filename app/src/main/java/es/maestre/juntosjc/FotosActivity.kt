@@ -36,6 +36,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.unit.dp
 import okio.IOException
+import es.maestre.juntosjc.model.FotoCamaraItem
+import es.maestre.juntosjc.supabase.SupabaseClient
+import io.github.jan.supabase.postgrest.postgrest
+import io.github.jan.supabase.storage.storage
+import io.github.jan.supabase.storage.upload
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import java.io.File
+import java.util.UUID
 
 /**
  * Clase FotosActivity: en esta clase se muestran dos botones, uno que permite abrir la cámara y echar una foto,
@@ -121,11 +131,12 @@ class FotosActivity : ComponentActivity() {
     // Guardar imagen
     private fun guardarImagen(bitmap: Bitmap?, nombreArchivo: String) {
         if(bitmap != null && nombreArchivo.isNotBlank()){
-            guardarEnGaleria(bitmap, nombreArchivo)
+            // Subir directamente a Supabase sin guardar en lista local
+            CoroutineScope(Dispatchers.IO).launch {
+                subirASupabase(bitmap, nombreArchivo)
+            }
 
-            fotosGuardadas.add(bitmap)
-
-            Toast.makeText(this, "Imagen guardada", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "Subiendo imagen al servidor...", Toast.LENGTH_LONG).show()
         } else {
             val mensaje = if (bitmap == null){
                 "No hay ninguna imagen para guardar"
@@ -255,6 +266,82 @@ class FotosActivity : ComponentActivity() {
             Button(onClick = onGuardar) {
                 Text("Guardar")
             }
+        }
+    }
+
+    private suspend fun subirASupabase(bitmap: Bitmap, nombreArchivo: String) {
+        try {
+            // Convertir bitmap a archivo
+            val file = convertBitmapToFile(bitmap, nombreArchivo)
+
+            // Generar nombre único para el archivo
+            val nombreUnico = "${UUID.randomUUID()}_$nombreArchivo.png"
+
+            // Subir a Supabase Storage
+            val urlImagen = subirAlBucket(file, nombreUnico)
+
+            if (urlImagen != null) {
+                // Guardar la URL en la base de datos
+                guardarEnBaseDatos(urlImagen)
+                Log.d("FotosActivity", "Imagen subida exitosamente: $urlImagen")
+
+                // Ejecutar en Main para actualizar UI
+                CoroutineScope(Dispatchers.Main).launch {
+                    Toast.makeText(this@FotosActivity, "Imagen subida al servidor", Toast.LENGTH_LONG).show()
+                    // Resetear estados
+                    imagenBitmap.value = null
+                    pantallaActual.value = PantallaActual.CAMARA
+                }
+            } else {
+                Log.e("FotosActivity", "Error al subir la imagen")
+                CoroutineScope(Dispatchers.Main).launch {
+                    Toast.makeText(this@FotosActivity, "Error al subir la imagen", Toast.LENGTH_LONG).show()
+                }
+            }
+        } catch (e: Exception) {
+            Log.e("FotosActivity", "Exception al subir imagen: ${e.message}", e)
+            CoroutineScope(Dispatchers.Main).launch {
+                Toast.makeText(this@FotosActivity, "Error: ${e.message}", Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
+    private fun convertBitmapToFile(bitmap: Bitmap, nombreArchivo: String): File {
+        val file = File(cacheDir, "${nombreArchivo}_${System.currentTimeMillis()}.png")
+        file.outputStream().use { outputStream ->
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+        }
+        return file
+    }
+
+    private suspend fun subirAlBucket(file: File, nombreArchivo: String): String? {
+        return try {
+            val bucket = SupabaseClient.client.storage.from("CameraPhotos")
+            bucket.upload(nombreArchivo, file)
+
+            // Construir la URL pública del archivo
+            val publicUrl = "https://lxmkwegowscwhgrfsqcw.supabase.co/storage/v1/object/public/CameraPhotos/$nombreArchivo"
+            publicUrl
+        } catch (e: Exception) {
+            Log.e("FotosActivity", "Error subiendo al bucket: ${e.message}", e)
+            null
+        }
+    }
+
+    private suspend fun guardarEnBaseDatos(urlImagen: String) {
+        try {
+            val fotoCamara = FotoCamaraItem(
+                urlImagen = urlImagen
+            )
+
+            SupabaseClient.client.postgrest
+                .from("fotosCamara")
+                .insert(fotoCamara)
+
+            Log.d("FotosActivity", "Registro guardado en BD")
+        } catch (e: Exception) {
+            Log.e("FotosActivity", "Error guardando en BD: ${e.message}", e)
+            throw e
         }
     }
 
