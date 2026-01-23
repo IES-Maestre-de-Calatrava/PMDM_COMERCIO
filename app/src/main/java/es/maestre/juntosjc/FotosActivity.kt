@@ -1,5 +1,6 @@
 package es.maestre.juntosjc
 
+import android.Manifest
 import android.content.ContentValues
 import android.content.Intent
 import android.graphics.Bitmap
@@ -9,32 +10,56 @@ import android.provider.MediaStore
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.camera.core.CameraSelector
+import androidx.camera.core.ImageCapture
+import androidx.camera.core.Preview
+import androidx.camera.lifecycle.ProcessCameraProvider
+import androidx.camera.view.PreviewView
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import okio.IOException
 import es.maestre.juntosjc.model.FotoCamaraItem
 import es.maestre.juntosjc.supabase.SupabaseClient
@@ -54,8 +79,8 @@ import java.util.UUID
 class FotosActivity : ComponentActivity() {
     // Estados
     private val imagenBitmap = mutableStateOf<Bitmap?>(null)
-    private val nombreArchivo = mutableStateOf("")
-    private val pantallaActual = mutableStateOf(PantallaActual.CAMARA)
+    //private val nombreArchivo = mutableStateOf("")
+    //private val pantallaActual = mutableStateOf(PantallaActual.CAMARA)
 
     // Lista de fotos
     private val fotosGuardadas = mutableStateListOf<Bitmap>()
@@ -66,7 +91,7 @@ class FotosActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+/**
         // Abrir camara
         abrirCamara = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if(result.resultCode == RESULT_OK){
@@ -94,9 +119,12 @@ class FotosActivity : ComponentActivity() {
                 pantallaActual.value = PantallaActual.PREVIEW
             }
         }
-
+**/
         setContent {
+            FullCameraScreen()
+            /**
             when (pantallaActual.value){
+
                 PantallaActual.CAMARA -> PantallaCamara(
                     onAbrirCamara = {
                         pedirPermiso.launch(android.Manifest.permission.CAMERA)
@@ -124,7 +152,7 @@ class FotosActivity : ComponentActivity() {
                         pantallaActual.value = PantallaActual.CAMARA
                     }
                 )
-            }
+            }**/
         }
     }
 
@@ -133,7 +161,7 @@ class FotosActivity : ComponentActivity() {
         if(bitmap != null && nombreArchivo.isNotBlank()){
             // Subir directamente a Supabase sin guardar en lista local
             CoroutineScope(Dispatchers.IO).launch {
-                subirASupabase(bitmap, nombreArchivo)
+                //subirASupabase(bitmap, nombreArchivo)
             }
 
             Toast.makeText(this, "Subiendo imagen al servidor...", Toast.LENGTH_LONG).show()
@@ -170,7 +198,7 @@ class FotosActivity : ComponentActivity() {
             Toast.makeText(this, "Error al guardar la imagen", Toast.LENGTH_LONG).show()
         }
     }
-
+/**
     @Composable
     fun PantallaCamara(
         onAbrirCamara: () -> Unit,
@@ -268,7 +296,156 @@ class FotosActivity : ComponentActivity() {
             }
         }
     }
+ **/
 
+    @Composable
+    fun FullCameraScreen() {
+        val context = LocalContext.current
+        val cameraPermissionGranted = remember { mutableStateOf(false) }
+
+        // pedir permiso de camara
+        val permissionLauncher = rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.RequestPermission()
+        ) { isGranted ->
+            cameraPermissionGranted.value = isGranted
+        }
+        LaunchedEffect(Unit) {
+            val cameraPermission = Manifest.permission.CAMERA
+            if (ContextCompat.checkSelfPermission(context, cameraPermission) == android.content.pm.PackageManager.PERMISSION_GRANTED) {
+                cameraPermissionGranted.value = true
+            } else {
+                permissionLauncher.launch(cameraPermission)
+            }
+        }
+
+        if (cameraPermissionGranted.value) {
+            // Configuración de captura de imagen
+            val imageCapture = remember { ImageCapture.Builder().build() }
+
+            Box(modifier = Modifier.fillMaxSize().background(Color.Black)) {
+
+                // feed de camara
+                CameraPreviewView(
+                    imageCapture = imageCapture,
+                    modifier = Modifier.fillMaxSize()
+                )
+
+                // botones inferiores
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(bottom = 50.dp),
+                    contentAlignment = Alignment.BottomCenter
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 40.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+
+                        // Botón de Galería
+                        IconButton(
+                            onClick = {
+                                // TODO: Navegar a la vista de galería (gabri) y quitar toast
+                                Toast.makeText(context, "abrir galeria", Toast.LENGTH_SHORT).show()
+                            },
+                            modifier = Modifier
+                                .size(56.dp)
+                                .background(Color.Black.copy(alpha = 0.4f), CircleShape)
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_galeria),
+                                contentDescription = "Ver Galería",
+                                tint = Color.White
+                            )
+                        }
+
+                        // Botón Obturador (Hacer Foto)
+                        Box(
+                            modifier = Modifier
+                                .size(80.dp)
+                                .border(5.dp, Color.White, CircleShape)
+                                .padding(5.dp)
+                        ) {
+                            Button(
+                                onClick = {
+                                    // TODO: Implementar lógica de captura de foto y quitar toast
+                                    Toast.makeText(context, "hecha foto", Toast.LENGTH_SHORT).show()
+                                },
+                                modifier = Modifier.fillMaxSize(),
+                                shape = CircleShape,
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = Color.White.copy(alpha = 0.8f)
+                                )
+                            ) { }
+                        }
+
+                        // espacio a la derecha del boton de camara
+                        Spacer(modifier = Modifier.size(56.dp))
+                    }
+                }
+            }
+        } else {
+            // mensaje si no se ha dado permiso
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "Permiso de cámara denegado",
+                    color = Color.White
+                )
+            }
+        }
+    }
+
+    @Composable
+    fun CameraPreviewView(
+        imageCapture: ImageCapture,
+        modifier: Modifier = Modifier
+    ) {
+        val context = LocalContext.current
+        val lifecycleOwner = LocalLifecycleOwner.current
+        val cameraProviderFuture = remember { ProcessCameraProvider.getInstance(context) }
+
+        AndroidView(
+            factory = { ctx ->
+                val previewView = PreviewView(ctx).apply {
+                    scaleType = PreviewView.ScaleType.FILL_CENTER
+                }
+
+                cameraProviderFuture.addListener({
+                    val cameraProvider = cameraProviderFuture.get()
+
+                    val preview = Preview.Builder().build().also { previewBuilder ->
+                        previewBuilder.setSurfaceProvider(previewView.surfaceProvider)
+                    }
+
+                    val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+
+                    try {
+                        cameraProvider.unbindAll()
+                        cameraProvider.bindToLifecycle(
+                            lifecycleOwner,
+                            cameraSelector,
+                            preview,
+                            imageCapture
+                        )
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }, ContextCompat.getMainExecutor(context))
+
+                previewView
+            },
+            modifier = modifier
+        )
+    }
+    /**
     private suspend fun subirASupabase(bitmap: Bitmap, nombreArchivo: String) {
         try {
             // Convertir bitmap a archivo
@@ -304,7 +481,7 @@ class FotosActivity : ComponentActivity() {
                 Toast.makeText(this@FotosActivity, "Error: ${e.message}", Toast.LENGTH_LONG).show()
             }
         }
-    }
+    }**/
 
     private fun convertBitmapToFile(bitmap: Bitmap, nombreArchivo: String): File {
         val file = File(cacheDir, "${nombreArchivo}_${System.currentTimeMillis()}.png")
@@ -344,9 +521,10 @@ class FotosActivity : ComponentActivity() {
             throw e
         }
     }
-
+/**
     // Enum para controlar las pantallas
     enum class PantallaActual {
         CAMARA, GALERIA, PREVIEW
-    }
+    }**/
 }
+
