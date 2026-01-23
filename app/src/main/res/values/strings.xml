@@ -78,5 +78,8 @@
     <string name="title_activity_fotos">FotosActivity</string>
     <string name="title_activity_perfil">PerfilActivity</string>
 
+    <string name="lb_telefono">Teléfono</string>
+    <string name="lb_email">Email</string>
+    <string name="lb_direccion">Dirección</string>
 
 </resources>

@@ -43,6 +43,12 @@
             android:name=".MainActivity"
             android:exported="true" />
         <activity
+            android:name=".ContactosActivity"
+            android:exported="true" />
+        <activity
+            android:name=".DetalleContactoActivity"
+            android:exported="true" />
+        <activity
             android:name=".DocumentoActivity"
             android:exported="true" />
         <activity

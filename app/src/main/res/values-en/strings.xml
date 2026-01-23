@@ -87,7 +87,9 @@
     <string name="title_activity_ayuda">HelpActivity</string>
     <string name="title_activity_fotos">PhotosActivity</string>
 
-
+    <string name="lb_telefono">Phone</string>
+    <string name="lb_email">Email</string>
+    <string name="lb_direccion">Address</string>
 
 
 </resources>

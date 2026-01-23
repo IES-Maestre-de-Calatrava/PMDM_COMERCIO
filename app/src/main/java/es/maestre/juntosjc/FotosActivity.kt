@@ -334,7 +334,7 @@ class FotosActivity : ComponentActivity() {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(bottom = 50.dp),
+                        .padding(bottom = 80.dp),
                     contentAlignment = Alignment.BottomCenter
                 ) {
                     Row(
