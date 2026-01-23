@@ -14,6 +14,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -21,10 +22,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,11 +37,18 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.unit.dp
 import okio.IOException
 
+/**
+ * Clase FotosActivity: en esta clase se muestran varios botones, uno para abrir la cámara y echar una foto,
+ * otro para guardar la foto en la galería y un último botón para ver todas las fotos guardadas en la galería
+ */
 class FotosActivity : ComponentActivity() {
     // Estados
     private val imagenBitmap = mutableStateOf<Bitmap?>(null)
     private val nombreArchivo = mutableStateOf("")
+    private val pantallaActual = mutableStateOf(PantallaActual.CAMARA)
 
+    // Lista de fotos
+    private val fotosGuardadas = mutableStateListOf<Bitmap>()
     // Launchers
     private lateinit var abrirCamara: ActivityResultLauncher<Intent>
     private lateinit var pedirPermiso: ActivityResultLauncher<String>
@@ -51,6 +63,7 @@ class FotosActivity : ComponentActivity() {
                 val data = result.data!!
                 val bitmap = data.extras!!.get("data") as Bitmap
                 imagenBitmap.value = bitmap
+                pantallaActual.value = PantallaActual.PREVIEW
             }
         }
 
@@ -68,25 +81,40 @@ class FotosActivity : ComponentActivity() {
         escoger = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
             if(uri != null){
                 imagenBitmap.value = MediaStore.Images.Media.getBitmap(contentResolver, uri)
+                pantallaActual.value = PantallaActual.PREVIEW
             }
         }
+
         setContent {
-            PantallaCamara(
-                imagenBitmap = imagenBitmap.value,
-                nombreArchivo = nombreArchivo.value,
-                onNombreChange = { nombreArchivo.value = it },
-                onAbrirCamara = {
-                    pedirPermiso.launch(android.Manifest.permission.CAMERA)
-                },
-                onAbrirGaleria = {
-                    escoger.launch(
-                        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
-                    )
-                },
-                onGuardar = {
-                    guardarImagen(imagenBitmap.value, nombreArchivo.value)
-                }
-            )
+            when (pantallaActual.value){
+                PantallaActual.CAMARA -> PantallaCamara(
+                    onAbrirCamara = {
+                        pedirPermiso.launch(android.Manifest.permission.CAMERA)
+                    },
+                    onAbrirGaleria = {
+                        pantallaActual.value = PantallaActual.GALERIA
+                    }
+                )
+                PantallaActual.GALERIA -> PantallaGaleria(
+                    fotos = fotosGuardadas,
+                    onVolver = { pantallaActual.value = PantallaActual.CAMARA },
+                    onSeleccionar = { bitmap ->
+                        imagenBitmap.value = bitmap
+                        pantallaActual.value = PantallaActual.PREVIEW
+                    }
+                )
+                PantallaActual.PREVIEW -> PantallaPreview(
+                    imagenBitmap = imagenBitmap.value,
+                    nombreArchivo = nombreArchivo.value,
+                    onNombreChange = { nombreArchivo.value = it },
+                    onGuardar = {
+                        guardarImagen(imagenBitmap.value, nombreArchivo.value)
+                    },
+                    onVolver = {
+                        pantallaActual.value = PantallaActual.CAMARA
+                    }
+                )
+            }
         }
     }
 
@@ -94,6 +122,10 @@ class FotosActivity : ComponentActivity() {
     private fun guardarImagen(bitmap: Bitmap?, nombreArchivo: String) {
         if(bitmap != null && nombreArchivo.isNotBlank()){
             guardarEnGaleria(bitmap, nombreArchivo)
+
+            fotosGuardadas.add(bitmap)
+
+            Toast.makeText(this, "Imagen guardada", Toast.LENGTH_LONG).show()
         } else {
             val mensaje = if (bitmap == null){
                 "No hay ninguna imagen para guardar"
@@ -114,7 +146,7 @@ class FotosActivity : ComponentActivity() {
         val uri = contentResolver.insert(
             MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues
         )
-        
+
         try{
             val outputStream = contentResolver.openOutputStream(uri!!)
             outputStream?.let {
@@ -130,20 +162,16 @@ class FotosActivity : ComponentActivity() {
 
     @Composable
     fun PantallaCamara(
-        imagenBitmap: Bitmap?,
-        nombreArchivo: String,
-        onNombreChange: (String) -> Unit,
         onAbrirCamara: () -> Unit,
-        onAbrirGaleria: () -> Unit,
-        onGuardar: () -> Unit
+        onAbrirGaleria: () -> Unit
     ) {
         Column(
-            modifier = Modifier.fillMaxSize().padding(20.dp),
+            modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement =  Arrangement.Top
+            verticalArrangement =  Arrangement.Center
         ) {
             Button(onClick = onAbrirCamara){
-                Text("Abrir cámara")
+                Text("Tomar foto")
             }
 
             Spacer(modifier = Modifier.height(10.dp))
@@ -151,13 +179,65 @@ class FotosActivity : ComponentActivity() {
             Button(onClick = onAbrirGaleria){
                 Text("Abrir galería")
             }
+        }
+    }
+
+    @Composable
+    fun PantallaGaleria (
+        fotos: List<Bitmap>,
+        onVolver: () -> Unit,
+        onSeleccionar: (Bitmap) -> Unit
+    ) {
+        Column(
+            modifier = Modifier.fillMaxSize().padding(10.dp)
+        ) {
+            Button(onClick = onVolver) {
+                Text("Volver")
+            }
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            Text("Fotos")
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(3),
+                modifier = Modifier.fillMaxSize()
+            ) {
+                items(fotos) { img ->
+                    Image(
+                        bitmap = img.asImageBitmap(),
+                        contentDescription = null,
+                        modifier = Modifier.size(100.dp).padding(4.dp).clickable { onSeleccionar(img) }
+                    )
+                }
+            }
+        }
+    }
+
+    @Composable
+    fun PantallaPreview(
+        imagenBitmap: Bitmap?,
+        nombreArchivo: String,
+        onNombreChange: (String) -> Unit,
+        onGuardar: () -> Unit,
+        onVolver: () -> Unit
+    ) {
+        Column(
+            modifier = Modifier.fillMaxSize().padding(20.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Button(onClick = onVolver) {
+                Text("Volver")
+            }
 
             Spacer(modifier = Modifier.height(10.dp))
 
             imagenBitmap?.let {
                 Image(
                     bitmap = it.asImageBitmap(),
-                    contentDescription = "Imagen seleccionada",
+                    contentDescription = null,
                     modifier = Modifier.size(300.dp)
                 )
             }
@@ -173,8 +253,13 @@ class FotosActivity : ComponentActivity() {
             Spacer(modifier = Modifier.height(10.dp))
 
             Button(onClick = onGuardar) {
-                Text("Guardar imagen")
+                Text("Guardar")
             }
         }
+    }
+
+    // Enum para controlar las pantallas
+    enum class PantallaActual {
+        CAMARA, GALERIA, PREVIEW
     }
 }
