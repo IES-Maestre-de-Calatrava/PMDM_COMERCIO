@@ -38,8 +38,8 @@ import androidx.compose.ui.unit.dp
 import okio.IOException
 
 /**
- * Clase FotosActivity: en esta clase se muestran varios botones, uno para abrir la cámara y echar una foto,
- * otro para guardar la foto en la galería y un último botón para ver todas las fotos guardadas en la galería
+ * Clase FotosActivity: en esta clase se muestran dos botones, uno que permite abrir la cámara y echar una foto,
+ * y el otro que te permite abrir la galería y visualizar las imágenes que has añadido anteriormente
  */
 class FotosActivity : ComponentActivity() {
     // Estados
