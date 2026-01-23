@@ -41,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import es.maestre.juntosjc.viewModel.ComentarioViewModel
 import es.maestre.juntosjc.viewModel.DocumentoViewModel
 import es.maestre.juntosjc.ui.theme.JUNTOSJCTheme
+import es.maestre.juntosjc.viewModel.ContactoViewModel
 import es.maestre.juntosjc.viewModel.EventoViewModel
 import es.maestre.juntosjc.viewModel.TareaViewModel
 import kotlin.getValue
@@ -56,7 +57,7 @@ class MainActivity : ComponentActivity() {
     private val documentosViewModel: DocumentoViewModel by viewModels()
     private val tareasViewModel: TareaViewModel by viewModels()
     private val eventosViewModel: EventoViewModel by viewModels()
-
+    private val contactoViewModel: ContactoViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -208,7 +209,8 @@ fun GenerarComponentesMain() {
                     iconRes = R.drawable.recruitment_svgrepo_com,
                     iconColor = Color.Unspecified
                 ) {
-                    /*TODO intent al contactos Activity*/
+                    val intent = Intent(context, ContactosActivity::class.java)
+                    context.startActivity(intent)
                 }
             }
 
