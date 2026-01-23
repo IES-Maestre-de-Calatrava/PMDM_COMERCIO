@@ -231,8 +231,8 @@ fun GenerarComponentesMain() {
                     iconRes = R.drawable.configuracion,
                     iconColor = Color.Unspecified
                 ) {
-                   /*TODO intent al configuracion Activity*/
-                }
+                    val intent = Intent(context, ConfiguracionActivity::class.java)
+                    context.startActivity(intent)                }
             }
 
         }
