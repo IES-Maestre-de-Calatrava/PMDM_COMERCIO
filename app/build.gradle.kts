@@ -3,7 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     id("org.jetbrains.kotlin.kapt")
-    id("org.jetbrains.kotlin.plugin.serialization") version "1.9.24"
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -64,6 +64,7 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.navigation.runtime.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -78,7 +79,7 @@ dependencies {
     kapt("androidx.room:room-compiler:2.8.3")
 
     implementation("io.github.jan-tennert.supabase:auth-kt:3.0.3")
-    implementation("io.github.jan-tennert.supabase:postgrest-kt:3.0.3")
+    implementation("io.github.jan-tennert.supabase:postgrest-kt:3.0.0")
     implementation("io.github.jan-tennert.supabase:storage-kt:3.0.3")
     implementation("io.ktor:ktor-client-android:3.0.0")
     implementation("io.ktor:ktor-client-serialization:3.0.0")

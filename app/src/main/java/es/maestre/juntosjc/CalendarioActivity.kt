@@ -35,7 +35,6 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -44,14 +43,14 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import es.maestre.juntosjc.model.Evento
 import es.maestre.juntosjc.ui.theme.JUNTOSJCTheme
 import es.maestre.juntosjc.viewModel.EventoViewModel
-import java.util.Calendar
 import kotlin.getValue
 import androidx.compose.material3.AlertDialog
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import es.maestre.juntosjc.model.EventoItem
 
 /**
  * Clase CalendarioActivity: en esta clase se podrán añadir eventos
@@ -83,16 +82,21 @@ class CalendarioActivity: ComponentActivity()  {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyAppCalendario(viewModel: EventoViewModel) {
-    val eventos by viewModel.data.observeAsState(initial = emptyList())
+    // Estado del DatePicker
+    val datePickerState = rememberDatePickerState()
+    val eventos = viewModel.listaEventosFiltrados
 
     var showDialog by remember { mutableStateOf(false) }
     var nuevoTitulo by remember { mutableStateOf("") }
     var nuevaDesc by remember { mutableStateOf("") }
+    var nuevosAsistentes by remember{mutableStateOf("")}
 
-    // Estado del DatePicker
-    val datePickerState = rememberDatePickerState(
-        initialSelectedDateMillis = System.currentTimeMillis() // Actual por defecto
-    )
+    // Efecto para cargar eventos cuando cambie la fecha seleccionada
+    LaunchedEffect(datePickerState.selectedDateMillis) {
+        datePickerState.selectedDateMillis?.let { milis ->
+            viewModel.obtenerEventosPorFechaSupabase(milis)
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -149,28 +153,25 @@ fun MyAppCalendario(viewModel: EventoViewModel) {
                 fontWeight = FontWeight.Bold
             )
 
-            val fechaSeleccionada = datePickerState.selectedDateMillis
-
-            // Filtramos los eventos que coincidan con el día seleccionado
-            val eventosDelDia = eventos.filter { ev ->
-                esMismoDia(ev.fechaEvento, fechaSeleccionada)
-            }
-
             LazyColumn(
                 modifier = Modifier.weight(1f).fillMaxWidth(),
                 contentPadding = PaddingValues(16.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                if (eventosDelDia.isEmpty()) {
+                if (eventos.isEmpty()) {
                     item { Text(
                         stringResource(R.string.nohayeventos),
                         color = colorResource(R.color.gris))
                     }
                 } else {
-                    items(eventosDelDia) { evento ->
-                        CardEvento(
+                    items(eventos) { evento ->
+                        EventoItemRow(
                             evento = evento,
-                            onDeleteConfirmed = { viewModel.delete(evento) }
+                            onDeleteConfirmed = {
+                                evento.id_evento?.let { id ->
+                                    viewModel.borrarEventoSupabase(id, datePickerState.selectedDateMillis ?: 0L)
+                                }
+                            }
                         )
                     }
                 }
@@ -195,6 +196,11 @@ fun MyAppCalendario(viewModel: EventoViewModel) {
                         onValueChange = { nuevaDesc = it },
                         label = { Text(stringResource(R.string.descripcion)) }
                     )
+                    OutlinedTextField(
+                        value = nuevosAsistentes,
+                        onValueChange = { nuevosAsistentes = it },
+                        label = { Text(stringResource(R.string.asistentes)) }
+                    )
                 }
             },
             confirmButton = {
@@ -204,16 +210,20 @@ fun MyAppCalendario(viewModel: EventoViewModel) {
                             // Usamos la fecha que está marcada en el DatePicker
                             val fechaParaEvento = datePickerState.selectedDateMillis ?: System.currentTimeMillis()
 
-                            viewModel.insert(Evento(
-                                tituloEvento = nuevoTitulo,
-                                descripcionEvento = nuevaDesc,
-                                fechaEvento = fechaParaEvento
-                            ))
+                            val nuevoEvento = EventoItem(
+                                titulo_evento = nuevoTitulo,
+                                descripcion_evento = nuevaDesc,
+                                fecha_evento = fechaParaEvento,
+                                asistentes = nuevosAsistentes
+                            )
 
-                            // Limpiar y cerrar
-                            nuevoTitulo = ""
-                            nuevaDesc = ""
-                            showDialog = false
+                            viewModel.insertarEventoSupabase(nuevoEvento){
+                                // Limpiar y cerrar
+                                nuevoTitulo = ""
+                                nuevaDesc = ""
+                                nuevosAsistentes = ""
+                                showDialog = false
+                            }
                         }
                     }
                 ) {
@@ -230,24 +240,12 @@ fun MyAppCalendario(viewModel: EventoViewModel) {
 }
 
 /**
- * Esta funcion me comprueba que dos fechas coincidan para el filtrado
- * de los eventos del LazyColumn
- */
-fun esMismoDia(millis1: Long, millis2: Long?): Boolean {
-    if (millis2 == null) return false
-    val cal1 = Calendar.getInstance().apply { timeInMillis = millis1 }
-    val cal2 = Calendar.getInstance().apply { timeInMillis = millis2 }
-    return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
-            cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR)
-}
-
-/**
  * Funcion que establece la estructura de cada uno de los items que
  * se cargan en el LazyColumn
  */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun CardEvento(evento: Evento, onDeleteConfirmed: () -> Unit) {
+fun EventoItemRow(evento: EventoItem, onDeleteConfirmed: () -> Unit) {
     var showDeleteDialog by remember { mutableStateOf(false) }
 
     // Diálogo de confirmación de borrado, solo aparece si mantenemos pulsado el evento
@@ -283,9 +281,13 @@ fun CardEvento(evento: Evento, onDeleteConfirmed: () -> Unit) {
         colors = CardDefaults.cardColors(containerColor = colorResource(R.color.container))
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text(text = evento.tituloEvento, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleLarge)
+            Text(text = evento.titulo_evento, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleLarge)
             Spacer(modifier = Modifier.height(4.dp))
-            Text(text = evento.descripcionEvento, style = MaterialTheme.typography.bodyMedium)
+            Text(text = stringResource(R.string.descripcion), style = MaterialTheme.typography.titleMedium)
+            Text(text = evento.descripcion_evento, style = MaterialTheme.typography.bodyMedium)
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(text = stringResource(R.string.asistentes), style = MaterialTheme.typography.titleMedium)
+            Text(text = evento.asistentes, style = MaterialTheme.typography.bodyMedium)
         }
     }
 }

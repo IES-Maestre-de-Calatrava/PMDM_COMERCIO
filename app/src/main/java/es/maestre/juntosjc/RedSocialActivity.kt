@@ -34,8 +34,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -45,8 +43,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import es.maestre.juntos.viewModel.ComentarioViewModel
-import es.maestre.juntosjc.model.Comentario
+import es.maestre.juntosjc.viewModel.ComentarioViewModel
+import es.maestre.juntosjc.model.ComentarioItem
 import es.maestre.juntosjc.ui.theme.JUNTOSJCTheme
 import kotlin.getValue
 
@@ -62,11 +60,20 @@ class RedSocialActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        // Pido los datos al abrir
+        viewModel.obtenerComentariosSupabase()
+
         setContent {
             JUNTOSJCTheme {
                 MyAppRedSocial(viewModel = viewModel)
             }
         }
+    }
+    override fun onResume() {
+        super.onResume()
+        // Cada vez que la pantalla vuelve a estar visible, pedimos los datos
+        viewModel.obtenerComentariosSupabase()
     }
 }
 
@@ -80,6 +87,9 @@ class RedSocialActivity : ComponentActivity() {
 fun MyAppRedSocial(viewModel: ComentarioViewModel) {
     val context = LocalContext.current
 
+    androidx.compose.runtime.LaunchedEffect(Unit) {
+        viewModel.obtenerComentariosSupabase()
+    }
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
@@ -148,7 +158,7 @@ fun MyAppRedSocial(viewModel: ComentarioViewModel) {
 fun ListaComentarios(viewModel: ComentarioViewModel) {
 
     // Observamos los datos del LiveData definido en el ViewModel
-    val listaComentarios by viewModel.data.observeAsState(initial = emptyList())
+    val listaComentarios = viewModel.listaComentariosSupabase
     val context = LocalContext.current
 
     LazyColumn(
@@ -164,7 +174,9 @@ fun ListaComentarios(viewModel: ComentarioViewModel) {
                     // Creamos el Intent para ir a DetalleComentarioActivity
                     val intent = Intent(context, DetalleComentarioActivity::class.java).apply {
                         // Pasamos el ID del comentario como "extra"
-                        putExtra("ID_COMENTARIO", comentario.idComentario.toInt())
+                        putExtra("ID_COMENTARIO", comentario.id_comentario ?: -1)
+                        putExtra("NOMBRE_USUARIO", comentario.nombre_usuario)
+                        putExtra("TEXTO", comentario.texto)
                     }
                     context.startActivity(intent)
                 }
@@ -178,7 +190,7 @@ fun ListaComentarios(viewModel: ComentarioViewModel) {
  * se cargan en el LazyColumn
  */
 @Composable
-fun ComentarioItem(comentario: Comentario, onClick: () -> Unit) {
+fun ComentarioItem(comentario: ComentarioItem, onClick: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -199,7 +211,7 @@ fun ComentarioItem(comentario: Comentario, onClick: () -> Unit) {
             Spacer(modifier = Modifier.width(16.dp))
             Column {
                 Text(
-                    text = comentario.nombre, // nombre del comentario
+                    text = comentario.nombre_usuario, // nombre del comentario
                     style = MaterialTheme.typography.titleMedium
                 )
                 Text(

@@ -16,14 +16,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Description
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import es.maestre.juntos.model.Documento
-import es.maestre.juntos.viewModel.DocumentoViewModel
+import es.maestre.juntosjc.viewModel.DocumentoViewModel
 import es.maestre.juntosjc.ui.theme.JUNTOSJCTheme
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TopAppBar
@@ -45,6 +42,11 @@ class ArchivoActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        // Obtenemos los datos de supabase
+        viewModel.obtenerArchivosSupabase()
+
+
         setContent {
             JUNTOSJCTheme {
                 MyAppArchivo(viewModel = viewModel)
@@ -94,7 +96,7 @@ fun MyAppArchivo(viewModel: DocumentoViewModel) {
 fun ListaArchivosScreen(viewModel: DocumentoViewModel) {
 
     // Observamos los datos del LiveData del ViewModel
-    val listaDocumentos by viewModel.data.observeAsState(initial = emptyList()) // data es como hemos llamado a la lista
+    val listaDocumentos = viewModel.listaArchivosSupabase
     val context = LocalContext.current
 
     LazyColumn(
@@ -103,12 +105,12 @@ fun ListaArchivosScreen(viewModel: DocumentoViewModel) {
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         items(listaDocumentos) { documento ->
-            ArchivoItem(
+            FileArchivoItem(
                 archivo = documento,
                 onClick = {
                     try {
                         // Accedemos a rutaArchivo de la clase Documento
-                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(documento.rutaArchivo))
+                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(documento.ruta_archivo))
                         context.startActivity(intent)
                     } catch (e: Exception) {
                         Toast.makeText(context, "No se pudo abrir el enlace", Toast.LENGTH_SHORT).show()
@@ -124,7 +126,7 @@ fun ListaArchivosScreen(viewModel: DocumentoViewModel) {
  * se cargan en el LazyColumn
  */
 @Composable
-fun ArchivoItem(archivo: Documento, onClick: () -> Unit) {
+fun FileArchivoItem(archivo: es.maestre.juntosjc.model.ArchivoItem, onClick: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -145,7 +147,7 @@ fun ArchivoItem(archivo: Documento, onClick: () -> Unit) {
             Spacer(modifier = Modifier.width(16.dp))
             Column {
                 Text(
-                    text = archivo.nombreArchivo, // nombre del archivo
+                    text = archivo.nombre_archivo, // nombre del archivo
                     style = MaterialTheme.typography.titleMedium
                 )
                 Text(

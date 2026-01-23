@@ -1,6 +1,5 @@
 package es.maestre.juntosjc
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -39,8 +38,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import es.maestre.juntos.viewModel.ComentarioViewModel
-import es.maestre.juntos.viewModel.DocumentoViewModel
+import es.maestre.juntosjc.viewModel.ComentarioViewModel
+import es.maestre.juntosjc.viewModel.DocumentoViewModel
 import es.maestre.juntosjc.ui.theme.JUNTOSJCTheme
 import es.maestre.juntosjc.viewModel.EventoViewModel
 import es.maestre.juntosjc.viewModel.TareaViewModel
@@ -62,14 +61,6 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-
-        // Llamada para insertar datos al iniciar en caso de no haber
-        comentarioViewModel.insertarComentariosInicio()
-        documentosViewModel.insertarDocumentosInicio()
-        tareasViewModel.insertarTareasInicio()
-        eventosViewModel.insertarEventoInicio()
-
-
         setContent {
             JUNTOSJCTheme {
                 MyAppMain(modifier = Modifier.fillMaxSize())
@@ -227,7 +218,8 @@ fun GenerarComponentesMain() {
                     iconRes = R.drawable.photo_album_svgrepo_com,
                     iconColor = Color.Unspecified
                 ) {
-                    /*TODO intent al fotos Activity*/
+                    val intent = Intent(context, FotosActivity::class.java)
+                    context.startActivity(intent)
                 }
             }
 
