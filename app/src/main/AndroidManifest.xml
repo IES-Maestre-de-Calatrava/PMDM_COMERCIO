@@ -25,11 +25,6 @@
             android:label="Configuración"
             android:theme="@style/Theme.JUNTOSJC" />
         <activity
-            android:name=".PerfilActivity"
-            android:exported="false"
-            android:label="@string/title_activity_perfil"
-            android:theme="@style/Theme.JUNTOSJC" />
-        <activity
             android:name=".FotosActivity"
             android:exported="false"
             android:label="@string/title_activity_fotos"
