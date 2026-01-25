@@ -82,4 +82,31 @@
     <string name="lb_email">Email</string>
     <string name="lb_direccion">Dirección</string>
 
+    <!-- Configuración - Apariencia -->
+    <string name="settings_appearance">Apariencia</string>
+    <string name="settings_theme">Tema de la aplicación</string>
+    <string name="theme_light">Claro</string>
+    <string name="theme_light_desc">Siempre usar tema claro</string>
+    <string name="theme_dark">Oscuro</string>
+    <string name="theme_dark_desc">Siempre usar tema oscuro</string>
+    <string name="theme_auto">Automático</string>
+    <string name="theme_auto_desc">Claro de 6:00 a 20:00, oscuro el resto</string>
+
+    <!-- Configuración - Funcionalidades -->
+    <string name="settings_features">Funcionalidades</string>
+    <string name="settings_features_description">Activa o desactiva las funcionalidades que quieres ver en el menú principal</string>
+    <string name="settings_reset_features">Restablecer todas</string>
+
+    <!-- Descripciones de funcionalidades -->
+    <string name="feature_calendario_desc">Gestiona eventos y citas</string>
+    <string name="feature_tareas_desc">Organiza tus tareas pendientes</string>
+    <string name="feature_documentos_desc">Sube y descarga documentos</string>
+    <string name="feature_red_social_desc">Comparte comentarios con el equipo</string>
+    <string name="feature_invitar_desc">Invita a nuevos miembros</string>
+    <string name="feature_contactos_desc">Gestiona tu lista de contactos</string>
+    <string name="feature_fotos_desc">Captura y comparte fotos</string>
+
+    <!-- Botones y navegación -->
+    <string name="btn_volver">Volver</string>
+
 </resources>

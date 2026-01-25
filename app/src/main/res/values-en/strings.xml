@@ -92,5 +92,32 @@
     <string name="lb_email">Email</string>
     <string name="lb_direccion">Address</string>
 
+    <!-- Settings - Appearance -->
+    <string name="settings_appearance">Appearance</string>
+    <string name="settings_theme">App Theme</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_light_desc">Always use light theme</string>
+    <string name="theme_dark">Dark</string>
+    <string name="theme_dark_desc">Always use dark theme</string>
+    <string name="theme_auto">Automatic</string>
+    <string name="theme_auto_desc">Light from 6:00 to 20:00, dark otherwise</string>
+
+    <!-- Settings - Features -->
+    <string name="settings_features">Features</string>
+    <string name="settings_features_description">Enable or disable features you want to see in the main menu</string>
+    <string name="settings_reset_features">Reset all</string>
+
+    <!-- Feature descriptions -->
+    <string name="feature_calendario_desc">Manage events and appointments</string>
+    <string name="feature_tareas_desc">Organize your pending tasks</string>
+    <string name="feature_documentos_desc">Upload and download documents</string>
+    <string name="feature_red_social_desc">Share comments with the team</string>
+    <string name="feature_invitar_desc">Invite new members</string>
+    <string name="feature_contactos_desc">Manage your contact list</string>
+    <string name="feature_fotos_desc">Capture and share photos</string>
+
+    <!-- Buttons and navigation -->
+    <string name="btn_volver">Back</string>
+
 
 </resources>
