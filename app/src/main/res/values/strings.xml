@@ -76,10 +76,24 @@
     <string name="confirmacionEliminar">¿Estás seguro/a?</string>
     <string name="title_activity_ayuda">AyudaActivity</string>
     <string name="title_activity_fotos">FotosActivity</string>
-    <string name="title_activity_perfil">PerfilActivity</string>
+    <string name="title_activity_perfil" translatable="false">PerfilActivity</string>
 
     <string name="lb_telefono">Teléfono</string>
     <string name="lb_email">Email</string>
     <string name="lb_direccion">Dirección</string>
+    <string name="txt_btn_calendario">Calendario</string>
+    <string name="txt_eventos">Eventos</string>
+    <string name="txt_add">Añadir</string>
+    <string name="txt_eliminar">Eliminar</string>
+    <string name="txt_eventos_content">En la mitad inferior se muestran los eventos planeados para el día seleccionado</string>
+    <string name="txt_add_evento_content">Pulsa el botón que está abajo a la derecha con un símbolo de más, introduce los datos en el diálogo flotante y pulsa Guardar para añadir un nuevo evento al día seleccionado</string>
+    <string name="txt_eliminar_evento">Mantén pulsado el evento que quieres eliminar y pulsa eliminar en el diálogo flotante</string>
+    <string name="txt_btn_tareas">Tareas</string>
+    <string name="txt_add_tarea_content">Para añadir una nueva tarea pulsa el botón Crear, introduce todos los datos y pulsa el botón Guardar</string>
+    <string name="txt_eliminar_tarea_content">Para eliminar una tarea pulsa la tarea que quieras eliminar y presiona el botón Eliminar</string>
+    <string name="txt_editar_tarea_content">Para editar una tarea pulsa la tarea que quieras modificar, cambia los datos que quieras y pulsa Guardar</string>
+    <string name="txt_editar">Editar</string>
+    <string name="txt_ocultar_detalles">Ocultar detalles</string>
+    <string name="txt_ayuda">Ayuda</string>
 
 </resources>
