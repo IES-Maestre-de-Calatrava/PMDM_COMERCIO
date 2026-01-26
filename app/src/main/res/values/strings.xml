@@ -110,5 +110,10 @@
     <string name="feature_fotos_desc">Capturar y compartir fotos</string>
     <string name="btn_volver">Volver</string>
     <string name="txt_eventos_content">En la mitad inferior se muestran los eventos planeados para el día seleccionado</string>
+    <string name="txt_add_evento_content">Pulsa el botón en la parte inferior derecha con el símbolo más, introduce los detalles en el diálogo flotante y pulsa Guardar para añadir un nuevo evento al día seleccionado</string>
+    <string name="txt_eliminar_evento">Mantén pulsado el evento que quieras eliminar y pulsa Eliminar</string>
+    <string name="txt_add_tarea_content">Para añadir una nueva tarea pulsa el botón Crear, introduce los detalles y pulsa Guardar</string>
+    <string name="txt_eliminar_tarea_content">Para eliminar una tarea pulsa la tarea que quieres eliminar y pulsa Eliminar</string>
+    <string name="txt_editar_tarea_content">Para editar una tarea pulsa la tarea que quieres modificar, cambia los detalles que quieras y pulsa Guardar</string>
 
 </resources>
