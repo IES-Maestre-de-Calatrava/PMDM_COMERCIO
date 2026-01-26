@@ -1,42 +1,98 @@
 package es.maestre.juntosjc
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import es.maestre.juntosjc.model.AppFeature
+import es.maestre.juntosjc.model.ThemeMode
 import es.maestre.juntosjc.ui.theme.JUNTOSJCTheme
+import es.maestre.juntosjc.ui.theme.JuntosTheme
+import es.maestre.juntosjc.viewModel.UserPreferencesViewModel
 
 class ConfiguracionActivity : ComponentActivity() {
+
+    private val preferencesViewModel: UserPreferencesViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        
         setContent {
-            JUNTOSJCTheme {
-                ConfiguracionScreen(onBack = { finish() })
+            val isDarkTheme by preferencesViewModel.isDarkTheme.collectAsStateWithLifecycle()
+            
+            JUNTOSJCTheme(darkTheme = isDarkTheme) {
+                ConfiguracionScreen(
+                    viewModel = preferencesViewModel,
+                    onBack = { 
+                        // Al volver, enviamos resultado para que MainActivity recargue
+                        setResult(RESULT_OK)
+                        finish() 
+                    }
+                )
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Recalcular tema por si ha cambiado la hora
+        preferencesViewModel.recalculateTheme()
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ConfiguracionScreen(onBack: () -> Unit) {
+fun ConfiguracionScreen(
+    viewModel: UserPreferencesViewModel,
+    onBack: () -> Unit
+) {
+    val themeMode by viewModel.themeMode.collectAsStateWithLifecycle()
+    val enabledFeatures by viewModel.enabledFeatures.collectAsStateWithLifecycle()
+    val isLoading by viewModel.isLoading.collectAsStateWithLifecycle()
+    val error by viewModel.error.collectAsStateWithLifecycle()
+
+    var showThemeDialog by remember { mutableStateOf(false) }
+
+    // Snackbar para errores
+    val snackbarHostState = remember { SnackbarHostState() }
+    
+    LaunchedEffect(error) {
+        error?.let {
+            snackbarHostState.showSnackbar(it)
+            viewModel.clearError()
+        }
+    }
+
     Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             TopAppBar(
                 title = {
                     Text(
-                        text = "Configuración",
+                        text = stringResource(R.string.txt_configuracion),
                         fontWeight = FontWeight.Bold,
                         style = MaterialTheme.typography.headlineMedium
                     )
@@ -45,37 +101,388 @@ fun ConfiguracionScreen(onBack: () -> Unit) {
                     IconButton(onClick = onBack) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "Volver"
+                            contentDescription = stringResource(R.string.btn_volver)
                         )
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = colorResource(R.color.container),
-                    titleContentColor = colorResource(R.color.content)
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                    navigationIconContentColor = MaterialTheme.colorScheme.onPrimaryContainer
                 )
             )
         }
     ) { paddingValues ->
-        Column(
+        Box(
             modifier = Modifier
                 .padding(paddingValues)
-                .padding(16.dp)
-                .fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
         ) {
-            Text(
-                text = "Ajustes de la aplicación",
-                style = MaterialTheme.typography.titleLarge
-            )
-
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                Text("Modo Oscuro")
-                var checked by remember { mutableStateOf(false) }
-                Switch(checked = checked, onCheckedChange = { checked = it })
+                // SECCIÓN: APARIENCIA
+                item {
+                    SettingsSection(title = stringResource(R.string.settings_appearance)) {
+                        SettingsItem(
+                            icon = Icons.Default.Palette,
+                            title = stringResource(R.string.settings_theme),
+                            subtitle = when (themeMode) {
+                                ThemeMode.LIGHT -> stringResource(R.string.theme_light)
+                                ThemeMode.DARK -> stringResource(R.string.theme_dark)
+                                ThemeMode.AUTO -> stringResource(R.string.theme_auto)
+                            },
+                            onClick = { showThemeDialog = true }
+                        )
+                    }
+                }
+
+                // SECCIÓN: FUNCIONALIDADES
+                item {
+                    Text(
+                        text = stringResource(R.string.settings_features),
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.primary,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(vertical = 8.dp)
+                    )
+                    
+                    Text(
+                        text = stringResource(R.string.settings_features_description),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(bottom = 8.dp)
+                    )
+                }
+
+                // Lista de funcionalidades
+                items(AppFeature.entries) { feature ->
+                    FeatureToggleItem(
+                        feature = feature,
+                        isEnabled = enabledFeatures[feature] ?: true,
+                        onToggle = { enabled ->
+                            viewModel.setFeatureEnabled(feature, enabled)
+                        }
+                    )
+                }
+
+                // Botón para restablecer todas las funcionalidades
+                item {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    
+                    OutlinedButton(
+                        onClick = { viewModel.enableAllFeatures() },
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = ButtonDefaults.outlinedButtonColors(
+                            contentColor = MaterialTheme.colorScheme.primary
+                        )
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.RestartAlt,
+                            contentDescription = null,
+                            modifier = Modifier.size(20.dp)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(stringResource(R.string.settings_reset_features))
+                    }
+                }
+
+                // Espacio extra al final
+                item {
+                    Spacer(modifier = Modifier.height(32.dp))
+                }
+            }
+
+            // Loading indicator
+            if (isLoading) {
+                CircularProgressIndicator(
+                    modifier = Modifier.align(Alignment.Center)
+                )
+            }
+        }
+    }
+
+    // Diálogo de selección de tema
+    if (showThemeDialog) {
+        ThemeSelectionDialog(
+            currentTheme = themeMode,
+            onThemeSelected = { mode ->
+                viewModel.setThemeMode(mode)
+                showThemeDialog = false
+            },
+            onDismiss = { showThemeDialog = false }
+        )
+    }
+}
+
+@Composable
+private fun SettingsSection(
+    title: String,
+    content: @Composable ColumnScope.() -> Unit
+) {
+    Column(modifier = Modifier.padding(vertical = 8.dp)) {
+        Text(
+            text = title,
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.primary,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(bottom = 8.dp)
+        )
+        Surface(
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(12.dp),
+            color = MaterialTheme.colorScheme.surface,
+            tonalElevation = 1.dp
+        ) {
+            Column {
+                content()
+            }
+        }
+    }
+}
+
+@Composable
+private fun SettingsItem(
+    icon: ImageVector,
+    title: String,
+    subtitle: String,
+    onClick: () -> Unit
+) {
+    Surface(
+        onClick = onClick,
+        modifier = Modifier.fillMaxWidth(),
+        color = MaterialTheme.colorScheme.surface
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.size(24.dp)
+            )
+            Spacer(modifier = Modifier.width(16.dp))
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                Text(
+                    text = subtitle,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+            Icon(
+                imageVector = Icons.Default.ChevronRight,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+    }
+}
+
+@Composable
+private fun FeatureToggleItem(
+    feature: AppFeature,
+    isEnabled: Boolean,
+    onToggle: (Boolean) -> Unit
+) {
+    val backgroundColor by animateColorAsState(
+        targetValue = if (isEnabled) 
+            MaterialTheme.colorScheme.surface 
+        else 
+            MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+        label = "featureBackground"
+    )
+
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(12.dp)),
+        color = backgroundColor,
+        tonalElevation = if (isEnabled) 1.dp else 0.dp
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 12.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                imageVector = getFeatureIcon(feature),
+                contentDescription = null,
+                tint = if (isEnabled) 
+                    MaterialTheme.colorScheme.primary 
+                else 
+                    MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.size(24.dp)
+            )
+            Spacer(modifier = Modifier.width(16.dp))
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = stringResource(feature.displayNameRes),
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.Medium,
+                    color = if (isEnabled)
+                        MaterialTheme.colorScheme.onSurface
+                    else
+                        MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Text(
+                    text = stringResource(feature.descriptionRes),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+            Switch(
+                checked = isEnabled,
+                onCheckedChange = onToggle,
+                colors = SwitchDefaults.colors(
+                    checkedThumbColor = MaterialTheme.colorScheme.primary,
+                    checkedTrackColor = MaterialTheme.colorScheme.primaryContainer
+                )
+            )
+        }
+    }
+}
+
+@Composable
+private fun getFeatureIcon(feature: AppFeature): ImageVector {
+    return when (feature) {
+        AppFeature.CALENDARIO -> Icons.Default.CalendarMonth
+        AppFeature.TAREAS -> Icons.Default.Task
+        AppFeature.DOCUMENTOS -> Icons.Default.Description
+        AppFeature.RED_SOCIAL -> Icons.Default.Forum
+        AppFeature.INVITAR -> Icons.Default.PersonAdd
+        AppFeature.CONTACTOS -> Icons.Default.Contacts
+        AppFeature.FOTOS -> Icons.Default.PhotoLibrary
+    }
+}
+
+@Composable
+private fun ThemeSelectionDialog(
+    currentTheme: ThemeMode,
+    onThemeSelected: (ThemeMode) -> Unit,
+    onDismiss: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(
+                text = stringResource(R.string.settings_theme),
+                fontWeight = FontWeight.Bold
+            )
+        },
+        text = {
+            Column {
+                ThemeOption(
+                    title = stringResource(R.string.theme_light),
+                    subtitle = stringResource(R.string.theme_light_desc),
+                    icon = Icons.Default.LightMode,
+                    isSelected = currentTheme == ThemeMode.LIGHT,
+                    onClick = { onThemeSelected(ThemeMode.LIGHT) }
+                )
+                
+                Spacer(modifier = Modifier.height(8.dp))
+                
+                ThemeOption(
+                    title = stringResource(R.string.theme_dark),
+                    subtitle = stringResource(R.string.theme_dark_desc),
+                    icon = Icons.Default.DarkMode,
+                    isSelected = currentTheme == ThemeMode.DARK,
+                    onClick = { onThemeSelected(ThemeMode.DARK) }
+                )
+                
+                Spacer(modifier = Modifier.height(8.dp))
+                
+                ThemeOption(
+                    title = stringResource(R.string.theme_auto),
+                    subtitle = stringResource(R.string.theme_auto_desc),
+                    icon = Icons.Default.BrightnessAuto,
+                    isSelected = currentTheme == ThemeMode.AUTO,
+                    onClick = { onThemeSelected(ThemeMode.AUTO) }
+                )
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(R.string.btn_Cancelar))
+            }
+        }
+    )
+}
+
+@Composable
+private fun ThemeOption(
+    title: String,
+    subtitle: String,
+    icon: ImageVector,
+    isSelected: Boolean,
+    onClick: () -> Unit
+) {
+    Surface(
+        onClick = onClick,
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(12.dp),
+        color = if (isSelected) 
+            MaterialTheme.colorScheme.primaryContainer 
+        else 
+            MaterialTheme.colorScheme.surface,
+        tonalElevation = if (isSelected) 2.dp else 0.dp
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                tint = if (isSelected) 
+                    MaterialTheme.colorScheme.onPrimaryContainer 
+                else 
+                    MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.size(24.dp)
+            )
+            Spacer(modifier = Modifier.width(12.dp))
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
+                    color = if (isSelected)
+                        MaterialTheme.colorScheme.onPrimaryContainer
+                    else
+                        MaterialTheme.colorScheme.onSurface
+                )
+                Text(
+                    text = subtitle,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = if (isSelected)
+                        MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f)
+                    else
+                        MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+            if (isSelected) {
+                Icon(
+                    imageVector = Icons.Default.CheckCircle,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(24.dp)
+                )
             }
         }
     }

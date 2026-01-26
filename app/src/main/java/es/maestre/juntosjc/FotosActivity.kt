@@ -2,58 +2,51 @@ package es.maestre.juntosjc
 
 import android.Manifest
 import android.content.ContentValues
-import android.content.Intent
+import android.content.Context
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
+import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -61,344 +54,161 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import okio.IOException
-import es.maestre.juntosjc.model.FotoCamaraItem
-import es.maestre.juntosjc.supabase.SupabaseClient
-import io.github.jan.supabase.postgrest.postgrest
-import io.github.jan.supabase.storage.storage
-import io.github.jan.supabase.storage.upload
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import java.io.File
-import java.util.UUID
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 /**
  * Clase FotosActivity: en esta clase se muestran dos botones, uno que permite abrir la cámara y echar una foto,
  * y el otro que te permite abrir la galería y visualizar las imágenes que has añadido anteriormente
  */
 class FotosActivity : ComponentActivity() {
-    // Estados
-    private val imagenBitmap = mutableStateOf<Bitmap?>(null)
-    //private val nombreArchivo = mutableStateOf("")
-    //private val pantallaActual = mutableStateOf(PantallaActual.CAMARA)
+    // Estado de la imagen
+    private var imagenBitmap by mutableStateOf<Bitmap?>(null)
 
-    // Lista de fotos
-    private val fotosGuardadas = mutableStateListOf<Bitmap>()
-    // Launchers
-    private lateinit var abrirCamara: ActivityResultLauncher<Intent>
-    private lateinit var pedirPermiso: ActivityResultLauncher<String>
-    private lateinit var escoger: ActivityResultLauncher<PickVisualMediaRequest>
+    // Launcher para escoger la imagen Nombre del archivo escrito por el usuario
+    private lateinit var pickMediaLauncher: ActivityResultLauncher<PickVisualMediaRequest>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-/**
-        // Abrir camara
-        abrirCamara = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if(result.resultCode == RESULT_OK){
-                val data = result.data!!
-                val bitmap = data.extras!!.get("data") as Bitmap
-                imagenBitmap.value = bitmap
-                pantallaActual.value = PantallaActual.PREVIEW
-            }
-        }
 
-        // Pedir permiso
-        pedirPermiso = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
-            if(isGranted){
-                val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-                abrirCamara.launch(intent)
-            } else{
-                Log.e("SAR", "Permiso de camara no concedido")
+        // Abrir la galería
+        pickMediaLauncher =
+            registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+                if(uri != null) {
+                    imagenBitmap = MediaStore.Images.Media.getBitmap(contentResolver, uri)
+                }
             }
-        }
 
-        // Abrir galeria
-        escoger = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
-            if(uri != null){
-                imagenBitmap.value = MediaStore.Images.Media.getBitmap(contentResolver, uri)
-                pantallaActual.value = PantallaActual.PREVIEW
-            }
-        }
-**/
         setContent {
-            FullCameraScreen()
-            /**
-            when (pantallaActual.value){
-
-                PantallaActual.CAMARA -> PantallaCamara(
-                    onAbrirCamara = {
-                        pedirPermiso.launch(android.Manifest.permission.CAMERA)
-                    },
-                    onAbrirGaleria = {
-                        pantallaActual.value = PantallaActual.GALERIA
-                    }
-                )
-                PantallaActual.GALERIA -> PantallaGaleria(
-                    fotos = fotosGuardadas,
-                    onVolver = { pantallaActual.value = PantallaActual.CAMARA },
-                    onSeleccionar = { bitmap ->
-                        imagenBitmap.value = bitmap
-                        pantallaActual.value = PantallaActual.PREVIEW
-                    }
-                )
-                PantallaActual.PREVIEW -> PantallaPreview(
-                    imagenBitmap = imagenBitmap.value,
-                    nombreArchivo = nombreArchivo.value,
-                    onNombreChange = { nombreArchivo.value = it },
-                    onGuardar = {
-                        guardarImagen(imagenBitmap.value, nombreArchivo.value)
-                    },
-                    onVolver = {
-                        pantallaActual.value = PantallaActual.CAMARA
-                    }
-                )
-            }**/
+            FullCameraScreen(
+                onFotoTomada = { bitmap ->
+                    imagenBitmap = bitmap
+                    guardarEnGaleria(bitmap)
+                },
+                onAbrirGaleria = {
+                    pickMediaLauncher.launch(
+                        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                    )
+                }
+            )
         }
     }
 
-    // Guardar imagen
-    private fun guardarImagen(bitmap: Bitmap?, nombreArchivo: String) {
-        if(bitmap != null && nombreArchivo.isNotBlank()){
-            // Subir directamente a Supabase sin guardar en lista local
-            CoroutineScope(Dispatchers.IO).launch {
-                //subirASupabase(bitmap, nombreArchivo)
-            }
+    // Guardar imagen en galeria
+    private fun guardarEnGaleria(bitmap: Bitmap) {
+        val nombre = "foto_${SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(System.currentTimeMillis())}"
 
-            Toast.makeText(this, "Subiendo imagen al servidor...", Toast.LENGTH_LONG).show()
-        } else {
-            val mensaje = if (bitmap == null){
-                "No hay ninguna imagen para guardar"
-            } else {
-                "Introduce un nombre para la imagen"
-            }
-            Toast.makeText(this, mensaje, Toast.LENGTH_LONG).show()
-        }
-    }
-
-    private fun guardarEnGaleria(bitmap: Bitmap?, nombreArchivo: String) {
         val contentValues = ContentValues().apply {
-            put(MediaStore.Images.Media.DISPLAY_NAME, nombreArchivo)
+            put(MediaStore.Images.Media.DISPLAY_NAME, nombre)
             put(MediaStore.Images.Media.MIME_TYPE, "image/png")
             put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES)
         }
 
         val uri = contentResolver.insert(
-            MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues
+            MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+            contentValues
         )
 
-        try{
+        try {
             val outputStream = contentResolver.openOutputStream(uri!!)
             outputStream?.let {
-                bitmap?.compress(Bitmap.CompressFormat.PNG, 100, it)
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, it)
                 it.close()
                 Toast.makeText(this, "Imagen guardada en la galería", Toast.LENGTH_LONG).show()
             }
-        } catch(e: IOException){
+        } catch(e: IOException) {
             e.printStackTrace()
             Toast.makeText(this, "Error al guardar la imagen", Toast.LENGTH_LONG).show()
         }
     }
-/**
+
     @Composable
-    fun PantallaCamara(
-        onAbrirCamara: () -> Unit,
+    fun FullCameraScreen(
+        onFotoTomada: (Bitmap) -> Unit,
         onAbrirGaleria: () -> Unit
     ) {
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement =  Arrangement.Center
-        ) {
-            Button(onClick = onAbrirCamara){
-                Text("Tomar foto")
-            }
-
-            Spacer(modifier = Modifier.height(10.dp))
-
-            Button(onClick = onAbrirGaleria){
-                Text("Abrir galería")
-            }
-        }
-    }
-
-    @Composable
-    fun PantallaGaleria (
-        fotos: List<Bitmap>,
-        onVolver: () -> Unit,
-        onSeleccionar: (Bitmap) -> Unit
-    ) {
-        Column(
-            modifier = Modifier.fillMaxSize().padding(10.dp)
-        ) {
-            Button(onClick = onVolver) {
-                Text("Volver")
-            }
-
-            Spacer(modifier = Modifier.height(10.dp))
-
-            Text("Fotos")
-
-            Spacer(modifier = Modifier.height(10.dp))
-
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(3),
-                modifier = Modifier.fillMaxSize()
-            ) {
-                items(fotos) { img ->
-                    Image(
-                        bitmap = img.asImageBitmap(),
-                        contentDescription = null,
-                        modifier = Modifier.size(100.dp).padding(4.dp).clickable { onSeleccionar(img) }
-                    )
-                }
-            }
-        }
-    }
-
-    @Composable
-    fun PantallaPreview(
-        imagenBitmap: Bitmap?,
-        nombreArchivo: String,
-        onNombreChange: (String) -> Unit,
-        onGuardar: () -> Unit,
-        onVolver: () -> Unit
-    ) {
-        Column(
-            modifier = Modifier.fillMaxSize().padding(20.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Button(onClick = onVolver) {
-                Text("Volver")
-            }
-
-            Spacer(modifier = Modifier.height(10.dp))
-
-            imagenBitmap?.let {
-                Image(
-                    bitmap = it.asImageBitmap(),
-                    contentDescription = null,
-                    modifier = Modifier.size(300.dp)
-                )
-            }
-
-            Spacer(modifier = Modifier.height(10.dp))
-
-            OutlinedTextField(
-                value = nombreArchivo,
-                onValueChange = onNombreChange,
-                label = { Text("Nombre del archivo") }
-            )
-
-            Spacer(modifier = Modifier.height(10.dp))
-
-            Button(onClick = onGuardar) {
-                Text("Guardar")
-            }
-        }
-    }
- **/
-
-    @Composable
-    fun FullCameraScreen() {
         val context = LocalContext.current
         val cameraPermissionGranted = remember { mutableStateOf(false) }
 
-        // pedir permiso de camara
+        // Pedir permiso de camara
         val permissionLauncher = rememberLauncherForActivityResult(
-            contract = ActivityResultContracts.RequestPermission()
+            ActivityResultContracts.RequestPermission()
         ) { isGranted ->
             cameraPermissionGranted.value = isGranted
         }
+
         LaunchedEffect(Unit) {
-            val cameraPermission = Manifest.permission.CAMERA
-            if (ContextCompat.checkSelfPermission(context, cameraPermission) == android.content.pm.PackageManager.PERMISSION_GRANTED) {
+            val permiso = Manifest.permission.CAMERA
+            if (ContextCompat.checkSelfPermission(context, permiso)
+                == PackageManager.PERMISSION_GRANTED
+            ) {
                 cameraPermissionGranted.value = true
             } else {
-                permissionLauncher.launch(cameraPermission)
+                permissionLauncher.launch(permiso)
             }
         }
 
-        if (cameraPermissionGranted.value) {
-            // Configuración de captura de imagen
-            val imageCapture = remember { ImageCapture.Builder().build() }
-
-            Box(modifier = Modifier.fillMaxSize().background(Color.Black)) {
-
-                // feed de camara
-                CameraPreviewView(
-                    imageCapture = imageCapture,
-                    modifier = Modifier.fillMaxSize()
-                )
-
-                // botones inferiores
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(bottom = 80.dp),
-                    contentAlignment = Alignment.BottomCenter
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 40.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-
-                        // Botón de Galería
-                        IconButton(
-                            onClick = {
-                                // TODO: Navegar a la vista de galería (gabri) y quitar toast
-                                Toast.makeText(context, "abrir galeria", Toast.LENGTH_SHORT).show()
-                            },
-                            modifier = Modifier
-                                .size(56.dp)
-                                .background(Color.Black.copy(alpha = 0.4f), CircleShape)
-                        ) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.ic_galeria),
-                                contentDescription = "Ver Galería",
-                                tint = Color.White
-                            )
-                        }
-
-                        // Botón Obturador (Hacer Foto)
-                        Box(
-                            modifier = Modifier
-                                .size(80.dp)
-                                .border(5.dp, Color.White, CircleShape)
-                                .padding(5.dp)
-                        ) {
-                            Button(
-                                onClick = {
-                                    // TODO: Implementar lógica de captura de foto y quitar toast
-                                    Toast.makeText(context, "hecha foto", Toast.LENGTH_SHORT).show()
-                                },
-                                modifier = Modifier.fillMaxSize(),
-                                shape = CircleShape,
-                                colors = ButtonDefaults.buttonColors(
-                                    containerColor = Color.White.copy(alpha = 0.8f)
-                                )
-                            ) { }
-                        }
-
-                        // espacio a la derecha del boton de camara
-                        Spacer(modifier = Modifier.size(56.dp))
-                    }
-                }
-            }
-        } else {
-            // mensaje si no se ha dado permiso
+        if (!cameraPermissionGranted.value) {
             Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.Black),
+                modifier = Modifier.fillMaxSize().background(Color.Black),
                 contentAlignment = Alignment.Center
             ) {
-                Text(
-                    text = "Permiso de cámara denegado",
-                    color = Color.White
-                )
+                Text("Permiso de cámara denegado", color = Color.White)
+            }
+            return
+        }
+
+        val imageCapture = remember { ImageCapture.Builder().build() }
+
+        Box(
+            modifier = Modifier.fillMaxSize().background(Color.Black)
+        ) {
+            CameraPreviewView(
+                imageCapture = imageCapture,
+                modifier = Modifier.fillMaxSize()
+            )
+
+            Box(
+                modifier = Modifier.fillMaxSize().padding(bottom = 80.dp),
+                contentAlignment = Alignment.BottomCenter
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 40.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    // Botón de la galería
+                    IconButton(
+                        onClick = onAbrirGaleria,
+                        modifier = Modifier.size(56.dp).background(Color.Black.copy(alpha = 0.4f), CircleShape)
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_galeria),
+                            contentDescription = "Ver Galería",
+                            tint = Color.White
+                        )
+                    }
+
+                    // Botón de hacer foto
+                    Box(
+                        modifier = Modifier.size(80.dp).border(5.dp,
+                        Color.White, CircleShape) .padding(5.dp)
+                    ) {
+                        Button(
+                            onClick = {
+                                echarFoto(context, imageCapture, onFotoTomada)
+                            },
+                            modifier = Modifier.fillMaxSize(),
+                            shape = CircleShape,
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color.White.copy(alpha = 0.8f)
+                            )
+                        ) { }
+                    }
+
+                    Spacer(modifier = Modifier.size(56.dp))
+                }
             }
         }
     }
@@ -421,8 +231,8 @@ class FotosActivity : ComponentActivity() {
                 cameraProviderFuture.addListener({
                     val cameraProvider = cameraProviderFuture.get()
 
-                    val preview = Preview.Builder().build().also { previewBuilder ->
-                        previewBuilder.setSurfaceProvider(previewView.surfaceProvider)
+                    val preview = Preview.Builder().build().also {
+                        it.setSurfaceProvider(previewView.surfaceProvider)
                     }
 
                     val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
@@ -445,44 +255,31 @@ class FotosActivity : ComponentActivity() {
             modifier = modifier
         )
     }
+
+    fun echarFoto(
+        context: Context,
+        imageCapture: ImageCapture,
+        onFotoTomada: (Bitmap) -> Unit
+    ) {
+        val archivo = File(context.cacheDir, "foto_temp.png")
+        val outputOptions = ImageCapture.OutputFileOptions.Builder(archivo).build()
+
+        imageCapture.takePicture(
+            outputOptions,
+            ContextCompat.getMainExecutor(context),
+            object : ImageCapture.OnImageSavedCallback  {
+                override fun onError(exc: ImageCaptureException) {
+                    Toast.makeText(context, "Error al tomar foto", Toast.LENGTH_SHORT).show()
+                }
+
+                override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
+                    val bitmap = BitmapFactory.decodeFile(archivo.path)
+                    onFotoTomada(bitmap)
+                }
+            }
+        )
+    }
     /**
-    private suspend fun subirASupabase(bitmap: Bitmap, nombreArchivo: String) {
-        try {
-            // Convertir bitmap a archivo
-            val file = convertBitmapToFile(bitmap, nombreArchivo)
-
-            // Generar nombre único para el archivo
-            val nombreUnico = "${UUID.randomUUID()}_$nombreArchivo.png"
-
-            // Subir a Supabase Storage
-            val urlImagen = subirAlBucket(file, nombreUnico)
-
-            if (urlImagen != null) {
-                // Guardar la URL en la base de datos
-                guardarEnBaseDatos(urlImagen)
-                Log.d("FotosActivity", "Imagen subida exitosamente: $urlImagen")
-
-                // Ejecutar en Main para actualizar UI
-                CoroutineScope(Dispatchers.Main).launch {
-                    Toast.makeText(this@FotosActivity, "Imagen subida al servidor", Toast.LENGTH_LONG).show()
-                    // Resetear estados
-                    imagenBitmap.value = null
-                    pantallaActual.value = PantallaActual.CAMARA
-                }
-            } else {
-                Log.e("FotosActivity", "Error al subir la imagen")
-                CoroutineScope(Dispatchers.Main).launch {
-                    Toast.makeText(this@FotosActivity, "Error al subir la imagen", Toast.LENGTH_LONG).show()
-                }
-            }
-        } catch (e: Exception) {
-            Log.e("FotosActivity", "Exception al subir imagen: ${e.message}", e)
-            CoroutineScope(Dispatchers.Main).launch {
-                Toast.makeText(this@FotosActivity, "Error: ${e.message}", Toast.LENGTH_LONG).show()
-            }
-        }
-    }**/
-
     private fun convertBitmapToFile(bitmap: Bitmap, nombreArchivo: String): File {
         val file = File(cacheDir, "${nombreArchivo}_${System.currentTimeMillis()}.png")
         file.outputStream().use { outputStream ->
@@ -521,10 +318,6 @@ class FotosActivity : ComponentActivity() {
             throw e
         }
     }
-/**
-    // Enum para controlar las pantallas
-    enum class PantallaActual {
-        CAMARA, GALERIA, PREVIEW
-    }**/
+    */
 }
 
