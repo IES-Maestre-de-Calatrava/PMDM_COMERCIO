@@ -3,6 +3,7 @@ package es.maestre.juntosjc
 import android.Manifest
 import android.content.ContentValues
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -192,26 +193,38 @@ class FotosActivity : ComponentActivity() {
                 contentAlignment = Alignment.BottomCenter
             ) {
                 Row(
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 40.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp),
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
+                    horizontalArrangement = Arrangement.Center
                 ) {
-                    // Botón de la galería
+                    // Botón de galería
                     IconButton(
-                        onClick = onAbrirGaleria,
-                        modifier = Modifier.size(56.dp).background(Color.Black.copy(alpha = 0.4f), CircleShape)
+                        onClick = {
+                            val intent = Intent(context, GaleriaFotosSupabaseActivity::class.java)
+                            context.startActivity(intent)
+                        },
+                        modifier = Modifier
+                            .size(45.dp)
+                            .background(Color.Black.copy(alpha = 0.4f), CircleShape)
                     ) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_galeria),
-                            contentDescription = "Ver Galería",
+                            contentDescription = "Ver Galería Supabase",
                             tint = Color.White
                         )
                     }
 
-                    // Botón de hacer foto
+                    // Espacio flexible para centrar
+                    Box(modifier = Modifier.weight(1f))
+
+                    // Botón de hacer foto (centro)
                     Box(
-                        modifier = Modifier.size(80.dp).border(5.dp,
-                        Color.White, CircleShape) .padding(5.dp)
+                        modifier = Modifier
+                            .size(80.dp)
+                            .border(5.dp, Color.White, CircleShape)
+                            .padding(0.5.dp)
                     ) {
                         Button(
                             onClick = {
@@ -222,11 +235,13 @@ class FotosActivity : ComponentActivity() {
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = Color.White.copy(alpha = 0.8f)
                             )
-                        ) { }
+                        ) {}
                     }
 
-                    Spacer(modifier = Modifier.size(56.dp))
+                    // Espacio flexible para balancear
+                    Box(modifier = Modifier.weight(1f))
                 }
+
             }
         }
     }

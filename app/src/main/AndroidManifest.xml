@@ -30,6 +30,11 @@
             android:label="@string/title_activity_fotos"
             android:theme="@style/Theme.JUNTOSJC" />
         <activity
+            android:name=".GaleriaFotosSupabaseActivity"
+            android:exported="false"
+            android:label="Galería Supabase"
+            android:theme="@style/Theme.JUNTOSJC" />
+        <activity
             android:name=".AyudaActivity"
             android:exported="false"
             android:label="@string/title_activity_ayuda"
