@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -53,6 +54,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.lifecycleScope
+import es.maestre.juntosjc.model.FotoCamaraItem
+import es.maestre.juntosjc.supabase.SupabaseClient
+import io.github.jan.supabase.postgrest.postgrest
+import io.github.jan.supabase.storage.storage
+import kotlinx.coroutines.launch
 import okio.IOException
 import java.io.File
 import java.text.SimpleDateFormat
@@ -95,7 +102,7 @@ class FotosActivity : ComponentActivity() {
         }
     }
 
-    // Guardar imagen en galeria
+    // Guardar imagen en galeria y subir a Supabase
     private fun guardarEnGaleria(bitmap: Bitmap) {
         val nombre = "foto_${SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(System.currentTimeMillis())}"
 
@@ -116,6 +123,17 @@ class FotosActivity : ComponentActivity() {
                 bitmap.compress(Bitmap.CompressFormat.PNG, 100, it)
                 it.close()
                 Toast.makeText(this, "Imagen guardada en la galería", Toast.LENGTH_LONG).show()
+
+                // Convertir bitmap a archivo temporal y subir a Supabase
+                val archivoTemporal = convertBitmapToFile(bitmap, nombre)
+                lifecycleScope.launch {
+                    val urlImagen = subirAlBucket(archivoTemporal, "$nombre.png")
+                    if (urlImagen != null) {
+                        guardarEnBaseDatos(urlImagen)
+                    } else {
+                        Toast.makeText(this@FotosActivity, "Error al subir la imagen a Supabase", Toast.LENGTH_LONG).show()
+                    }
+                }
             }
         } catch(e: IOException) {
             e.printStackTrace()
@@ -279,7 +297,7 @@ class FotosActivity : ComponentActivity() {
             }
         )
     }
-    /**
+
     private fun convertBitmapToFile(bitmap: Bitmap, nombreArchivo: String): File {
         val file = File(cacheDir, "${nombreArchivo}_${System.currentTimeMillis()}.png")
         file.outputStream().use { outputStream ->
@@ -291,7 +309,8 @@ class FotosActivity : ComponentActivity() {
     private suspend fun subirAlBucket(file: File, nombreArchivo: String): String? {
         return try {
             val bucket = SupabaseClient.client.storage.from("CameraPhotos")
-            bucket.upload(nombreArchivo, file)
+            val fileBytes = file.readBytes()
+            bucket.upload(nombreArchivo, fileBytes)
 
             // Construir la URL pública del archivo
             val publicUrl = "https://lxmkwegowscwhgrfsqcw.supabase.co/storage/v1/object/public/CameraPhotos/$nombreArchivo"
@@ -313,11 +332,11 @@ class FotosActivity : ComponentActivity() {
                 .insert(fotoCamara)
 
             Log.d("FotosActivity", "Registro guardado en BD")
+            Toast.makeText(this, "Foto guardada en Supabase", Toast.LENGTH_LONG).show()
         } catch (e: Exception) {
             Log.e("FotosActivity", "Error guardando en BD: ${e.message}", e)
-            throw e
+            Toast.makeText(this, "Error al guardar en base de datos: ${e.message}", Toast.LENGTH_LONG).show()
         }
     }
-    */
 }
 
