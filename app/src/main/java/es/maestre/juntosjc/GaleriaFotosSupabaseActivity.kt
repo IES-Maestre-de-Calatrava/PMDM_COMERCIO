@@ -1,9 +1,18 @@
 package es.maestre.juntosjc
 
+import android.content.ContentValues
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
-import android.util.Log
+import android.os.Environment
+import android.provider.MediaStore
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -13,6 +22,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Save
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -20,14 +30,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
+import coil.ImageLoader
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import coil.request.SuccessResult
 import es.maestre.juntosjc.model.FotoCamaraItem
 import es.maestre.juntosjc.supabase.SupabaseClient
 import io.github.jan.supabase.postgrest.postgrest
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.io.OutputStream
 
 class GaleriaFotosSupabaseActivity : ComponentActivity() {
 
@@ -40,13 +59,16 @@ class GaleriaFotosSupabaseActivity : ComponentActivity() {
         }
     }
 
-    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun GaleriaFotosScreen(onVolverAtras: () -> Unit) {
 
         var fotos by remember { mutableStateOf<List<FotoCamaraItem>>(emptyList()) }
         var isLoading by remember { mutableStateOf(true) }
         var errorMessage by remember { mutableStateOf<String?>(null) }
+        var selectedFoto by remember { mutableStateOf<FotoCamaraItem?>(null) }
+
+        val scope = rememberCoroutineScope()
+        val context = LocalContext.current
 
         LaunchedEffect(Unit) {
             try {
@@ -54,13 +76,9 @@ class GaleriaFotosSupabaseActivity : ComponentActivity() {
                     .from("fotosCamara")
                     .select()
                     .decodeList<FotoCamaraItem>()
-
-                Log.d("GaleriaFotos", "Fotos cargadas: ${fotosCargadas.size}")
                 fotos = fotosCargadas
                 isLoading = false
-
             } catch (e: Exception) {
-                Log.e("GaleriaFotos", "Error cargando fotos", e)
                 errorMessage = e.message
                 isLoading = false
             }
@@ -68,28 +86,39 @@ class GaleriaFotosSupabaseActivity : ComponentActivity() {
 
         Scaffold(
             topBar = {
-                TopAppBar(
-                    title = {
-                        Text(
-                            text = "Galería de Fotos",
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 20.sp
-                        )
-                    },
-                    navigationIcon = {
-                        IconButton(onClick = onVolverAtras) {
+                Column(modifier = Modifier.fillMaxWidth().background(Color.White)) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(56.dp)
+                            .padding(horizontal = 4.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        IconButton(
+                            onClick = onVolverAtras,
+                            modifier = Modifier.align(Alignment.CenterStart)
+                        ) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                contentDescription = "Volver"
+                                contentDescription = null,
+                                tint = Color.Black,
+                                modifier = Modifier.size(28.dp)
                             )
                         }
-                    },
-                    colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = Color(0xFF6200EE),
-                        titleContentColor = Color.White,
-                        navigationIconContentColor = Color.White
+
+                        Text(
+                            text = "Fotos",
+                            fontWeight = FontWeight.ExtraBold,
+                            fontSize = 22.sp,
+                            color = Color.Black
+                        )
+                    }
+                    HorizontalDivider(
+                        modifier = Modifier.fillMaxWidth(),
+                        thickness = 3.dp,
+                        color = Color(0xFF222222)
                     )
-                )
+                }
             }
         ) { paddingValues ->
 
@@ -97,74 +126,51 @@ class GaleriaFotosSupabaseActivity : ComponentActivity() {
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(paddingValues)
-                    .background(Color(0xFFF5F5F5))
+                    .background(Color.White)
             ) {
-
                 when {
-                    isLoading -> {
-                        Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            CircularProgressIndicator()
-                        }
-                    }
-
-                    errorMessage != null -> {
-                        Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                text = "Error al cargar las fotos\n$errorMessage",
-                                color = Color.Red
-                            )
-                        }
-                    }
-
-                    fotos.isEmpty() -> {
-                        Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                text = "No hay fotos en la galería",
-                                color = Color.Gray
-                            )
-                        }
-                    }
-
+                    isLoading -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { CircularProgressIndicator(color = Color.Black) }
+                    errorMessage != null -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { Text(errorMessage ?: "Error", color = Color.Red) }
+                    fotos.isEmpty() -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { Text("No hay fotos", color = Color.Gray) }
                     else -> {
                         LazyVerticalGrid(
                             columns = GridCells.Fixed(3),
                             modifier = Modifier
                                 .fillMaxSize()
-                                .padding(8.dp),
-                            verticalArrangement = Arrangement.spacedBy(8.dp),
-                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                .padding(6.dp),
+                            verticalArrangement = Arrangement.spacedBy(6.dp),
+                            horizontalArrangement = Arrangement.spacedBy(6.dp)
                         ) {
                             items(fotos) { foto ->
-                                FotoGridItem(foto)
+                                FotoGridItem(foto) { selectedFoto = foto }
                             }
                         }
                     }
                 }
             }
+
+            if (selectedFoto != null) {
+                FotoDetalleDialog(
+                    foto = selectedFoto!!,
+                    onDismiss = { selectedFoto = null },
+                    onGuardar = {
+                        scope.launch {
+                            guardarImagenEnGaleria(context, selectedFoto!!.urlImagen)
+                        }
+                    }
+                )
+            }
         }
     }
 
     @Composable
-    fun FotoGridItem(foto: FotoCamaraItem) {
-        val context = androidx.compose.ui.platform.LocalContext.current
-
+    fun FotoGridItem(foto: FotoCamaraItem, onClick: () -> Unit) {
+        val context = LocalContext.current
         Box(
             modifier = Modifier
                 .aspectRatio(1f)
-                .clip(RoundedCornerShape(8.dp))
                 .background(Color.LightGray)
-                .clickable {
-                    Log.d("GaleriaFotos", "Click: ${foto.urlImagen}")
-                }
+                .clickable { onClick() }
         ) {
             AsyncImage(
                 model = ImageRequest.Builder(context)
@@ -173,14 +179,155 @@ class GaleriaFotosSupabaseActivity : ComponentActivity() {
                     .build(),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxSize(),
-                onSuccess = {
-                    Log.d("GaleriaFotos", "Imagen OK: ${foto.urlImagen}")
-                },
-                onError = {
-                    Log.e("GaleriaFotos", "Error imagen: ${foto.urlImagen}", it.result.throwable)
-                }
+                modifier = Modifier.fillMaxSize()
             )
+        }
+    }
+
+    @Composable
+    fun FotoDetalleDialog(
+        foto: FotoCamaraItem,
+        onDismiss: () -> Unit,
+        onGuardar: () -> Unit
+    ) {
+        Dialog(
+            onDismissRequest = onDismiss,
+            properties = DialogProperties(usePlatformDefaultWidth = false)
+        ) {
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth(0.85f)
+                    .fillMaxHeight(0.75f),
+                shape = RoundedCornerShape(20.dp),
+                border = BorderStroke(4.dp, Color.White),
+                colors = CardDefaults.cardColors(
+                    containerColor = Color.Transparent
+                ),
+                elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+            ) {
+                Column(
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxWidth()
+                            .background(Color.White)
+                            .padding(16.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        AsyncImage(
+                            model = ImageRequest.Builder(LocalContext.current)
+                                .data(foto.urlImagen)
+                                .crossfade(true)
+                                .build(),
+                            contentDescription = null,
+                            contentScale = ContentScale.Fit,
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .clip(RoundedCornerShape(8.dp))
+                        )
+                    }
+
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(90.dp)
+                            .background(Color(0xFFB0B0B0)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Button(
+                            onClick = onGuardar,
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color.Transparent,
+                                contentColor = Color.Black
+                            ),
+                            elevation = ButtonDefaults.buttonElevation(0.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Save,
+                                contentDescription = null,
+                                modifier = Modifier.size(26.dp)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = "Guardar",
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 20.sp
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    suspend fun guardarImagenEnGaleria(context: Context, imageUrl: String) {
+        withContext(Dispatchers.IO) {
+            try {
+                val loader = ImageLoader(context)
+                val request = ImageRequest.Builder(context)
+                    .data(imageUrl)
+                    .allowHardware(false)
+                    .build()
+
+                val result = (loader.execute(request) as? SuccessResult)?.drawable
+                val bitmap = (result as? BitmapDrawable)?.bitmap
+
+                if (bitmap != null) {
+                    saveBitmapToMediaStore(context, bitmap)
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(context, "Foto guardada en galería", Toast.LENGTH_SHORT).show()
+                    }
+                } else {
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(context, "Error al descargar imagen", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(context, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
+    private fun saveBitmapToMediaStore(context: Context, bitmap: Bitmap) {
+        val filename = "IMG_${System.currentTimeMillis()}.jpg"
+        var fos: OutputStream? = null
+        var imageUri: Uri? = null
+
+        val contentValues = ContentValues().apply {
+            put(MediaStore.MediaColumns.DISPLAY_NAME, filename)
+            put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + "/JuntosJC")
+                put(MediaStore.MediaColumns.IS_PENDING, 1)
+            }
+        }
+
+        val resolver = context.contentResolver
+
+        try {
+            imageUri = resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
+            imageUri?.let { uri ->
+                fos = resolver.openOutputStream(uri)
+                fos?.let {
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, it)
+                }
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    contentValues.clear()
+                    contentValues.put(MediaStore.MediaColumns.IS_PENDING, 0)
+                    resolver.update(uri, contentValues, null, null)
+                }
+            }
+        } catch (e: Exception) {
+            if (imageUri != null) {
+                resolver.delete(imageUri, null, null)
+            }
+            throw e
+        } finally {
+            fos?.close()
         }
     }
 }

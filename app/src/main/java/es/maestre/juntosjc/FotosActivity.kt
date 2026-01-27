@@ -7,6 +7,8 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Matrix
+import android.media.ExifInterface
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
@@ -26,10 +28,7 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -150,7 +149,6 @@ class FotosActivity : ComponentActivity() {
         val context = LocalContext.current
         val cameraPermissionGranted = remember { mutableStateOf(false) }
 
-        // Pedir permiso de camara
         val permissionLauncher = rememberLauncherForActivityResult(
             ActivityResultContracts.RequestPermission()
         ) { isGranted ->
@@ -159,9 +157,7 @@ class FotosActivity : ComponentActivity() {
 
         LaunchedEffect(Unit) {
             val permiso = Manifest.permission.CAMERA
-            if (ContextCompat.checkSelfPermission(context, permiso)
-                == PackageManager.PERMISSION_GRANTED
-            ) {
+            if (ContextCompat.checkSelfPermission(context, permiso) == PackageManager.PERMISSION_GRANTED) {
                 cameraPermissionGranted.value = true
             } else {
                 permissionLauncher.launch(permiso)
@@ -187,17 +183,17 @@ class FotosActivity : ComponentActivity() {
                 imageCapture = imageCapture,
                 modifier = Modifier.fillMaxSize()
             )
-
             Box(
-                modifier = Modifier.fillMaxSize().padding(bottom = 80.dp),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(bottom = 80.dp),
                 contentAlignment = Alignment.BottomCenter
             ) {
-                Row(
+                Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 20.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
+                        .padding(horizontal = 40.dp),
+                    contentAlignment = Alignment.Center
                 ) {
                     // Botón de galería
                     IconButton(
@@ -206,30 +202,25 @@ class FotosActivity : ComponentActivity() {
                             context.startActivity(intent)
                         },
                         modifier = Modifier
-                            .size(45.dp)
-                            .background(Color.Black.copy(alpha = 0.4f), CircleShape)
+                            .align(Alignment.CenterStart)
+                            .size(48.dp)
+                            .background(Color.Black.copy(alpha = 0.5f), CircleShape)
                     ) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_galeria),
-                            contentDescription = "Ver Galería Supabase",
+                            contentDescription = "Ver Galería",
                             tint = Color.White
                         )
                     }
-
-                    // Espacio flexible para centrar
-                    Box(modifier = Modifier.weight(1f))
-
-                    // Botón de hacer foto (centro)
+                    // Botón de hacer foto
                     Box(
                         modifier = Modifier
                             .size(80.dp)
                             .border(5.dp, Color.White, CircleShape)
-                            .padding(0.5.dp)
+                            .padding(2.dp)
                     ) {
                         Button(
-                            onClick = {
-                                echarFoto(context, imageCapture, onFotoTomada)
-                            },
+                            onClick = { echarFoto(context, imageCapture, onFotoTomada) },
                             modifier = Modifier.fillMaxSize(),
                             shape = CircleShape,
                             colors = ButtonDefaults.buttonColors(
@@ -237,11 +228,7 @@ class FotosActivity : ComponentActivity() {
                             )
                         ) {}
                     }
-
-                    // Espacio flexible para balancear
-                    Box(modifier = Modifier.weight(1f))
                 }
-
             }
         }
     }
@@ -306,7 +293,34 @@ class FotosActivity : ComponentActivity() {
                 }
 
                 override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
-                    val bitmap = BitmapFactory.decodeFile(archivo.path)
+                    var bitmap = BitmapFactory.decodeFile(archivo.path)
+
+                    // Corregir rotación usando EXIF
+                    try {
+                        val exif = ExifInterface(archivo.path)
+                        val orientation = exif.getAttributeInt(
+                            ExifInterface.TAG_ORIENTATION,
+                            ExifInterface.ORIENTATION_UNDEFINED
+                        )
+
+                        val matrix = Matrix()
+                        when (orientation) {
+                            ExifInterface.ORIENTATION_ROTATE_90 -> matrix.postRotate(90f)
+                            ExifInterface.ORIENTATION_ROTATE_180 -> matrix.postRotate(180f)
+                            ExifInterface.ORIENTATION_ROTATE_270 -> matrix.postRotate(270f)
+                        }
+
+                        // Solo crear nuevo bitmap si es necesario rotar
+                        if (orientation != ExifInterface.ORIENTATION_NORMAL && orientation != ExifInterface.ORIENTATION_UNDEFINED) {
+                            val rotatedBitmap = Bitmap.createBitmap(
+                                bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true
+                            )
+                            bitmap = rotatedBitmap
+                        }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+
                     onFotoTomada(bitmap)
                 }
             }
@@ -325,10 +339,13 @@ class FotosActivity : ComponentActivity() {
         return try {
             val bucket = SupabaseClient.client.storage.from("CameraPhotos")
             val fileBytes = file.readBytes()
-            bucket.upload(nombreArchivo, fileBytes)
 
-            // Construir la URL pública del archivo
-            val publicUrl = "https://lxmkwegowscwhgrfsqcw.supabase.co/storage/v1/object/public/CameraPhotos/$nombreArchivo"
+            bucket.upload(nombreArchivo, fileBytes) {
+                upsert = true
+            }
+
+            // Usar método de la SDK para evitar errores de URL
+            val publicUrl = SupabaseClient.client.storage.from("CameraPhotos").publicUrl(nombreArchivo)
             publicUrl
         } catch (e: Exception) {
             Log.e("FotosActivity", "Error subiendo al bucket: ${e.message}", e)
@@ -354,4 +371,3 @@ class FotosActivity : ComponentActivity() {
         }
     }
 }
-
