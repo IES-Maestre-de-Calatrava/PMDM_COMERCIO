@@ -39,6 +39,8 @@
     <string name="txt_Archivos">FILES</string>
     <string name="txt_documentos">DOCUMENTS</string>
     <string name="txt_descargar">DOWNLOAD</string>
+    <string name="txt_crear">Create</string>
+    <string name="txt_borrar">Delete</string>
     <string name="txt_redSocial">SOCIAL NETWORK</string>
     <string name="txt_detalle">DETAILS</string>
     <string name="txt_tareas">TASKS</string>
@@ -93,12 +95,15 @@
     <string name="lb_direccion">Address</string>
     <string name="txt_btn_calendario">Calendar</string>
     <string name="txt_eventos">Events</string>
+    <string name="txt_subir">Upload</string>
     <string name="txt_add">Add</string>
     <string name="txt_eliminar">Delete</string>
     <string name="txt_eventos_content">The events planned for the selected day are shown in the lower half</string>
     <string name="txt_add_evento_content">Press the button that is at the bottom right with a plus symbol, enter the details in the floating dialog and press Save to add a new event to the selected date</string>
     <string name="txt_eliminar_evento">Hold press on the event you want to delete and press Delete on the floating dialog</string>
     <string name="txt_btn_tareas">Tasks</string>
+    <string name="txt_btn_documentos">Documents</string>
+    <string name="txt_btn_red_social">Social networks</string>
     <string name="txt_add_tarea_content">To add a new task press the Create button, enter all the details and press Save</string>
     <string name="txt_eliminar_tarea_content">To delete a task press on the task you want to delete and press the Delete button</string>
     <string name="txt_editar_tarea_content">To edit a task press on the task you want to modify, change any detail you want and press Save</string>

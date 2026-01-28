@@ -85,9 +85,14 @@
     <string name="logout">Cerrar sesión</string>
     <string name="txt_eventos">Eventos</string>
     <string name="txt_add">Añadir</string>
+    <string name="txt_subir">Subir</string>
+    <string name="txt_crear">Crear</string>
     <string name="txt_eliminar">Eliminar</string>
+    <string name="txt_btn_documentos">Documentos</string>
+    <string name="txt_btn_red_social">Red social</string>
     <string name="txt_btn_tareas">Tareas</string>
     <string name="txt_editar">Editar</string>
+    <string name="txt_borrar">Borrar</string>
     <string name="txt_ocultar_detalles">Ocultar detalles</string>
     <string name="txt_ayuda">Ayuda</string>
     <string name="settings_appearance">Apariencia</string>

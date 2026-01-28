@@ -119,51 +119,123 @@ fun AyudaTareas(){
 }
 
 @Composable
-fun AyudaDocumentos(){
-
+fun AyudaDocumentos() {
+    BotonAyuda(onClick = {}, stringResource(R.string.txt_btn_documentos)) {
+        BotonTexto(
+            onClick = {},
+            stringResource(R.string.txt_subir),
+            stringResource(R.string.txt_ayuda)
+        )
+        BotonTexto(
+            onClick = {},
+            stringResource(R.string.txt_descargar),
+            stringResource(R.string.txt_subir)
+        )
+    }
 }
 
 @Composable
-fun AyudaRedSocial(){
-
+fun AyudaRedSocial() {
+    BotonAyuda(onClick = {}, stringResource(R.string.txt_btn_red_social)) {
+        BotonTexto(
+            onClick = {},
+            stringResource(R.string.txt_crear),
+            stringResource(R.string.asistentes)
+        )
+        BotonTexto(
+            onClick = {},
+            stringResource(R.string.txt_editar),
+            stringResource(R.string.txt_editar_tarea_content)
+        )
+        BotonTexto(
+            onClick = {},
+            stringResource(R.string.txt_borrar),
+            stringResource(R.string.btn_Crear)
+        )
+    }
 }
 
 @Composable
 fun BotonAyuda(onClick: () -> Unit, contenido: String, function: @Composable () -> Unit) {
     var expandido by remember { mutableStateOf(false) }
-    Column(modifier = Modifier.padding()) {
-        Button(onClick = { expandido = !expandido }) {
-            Text(if (expandido) stringResource(R.string.txt_ocultar_detalles) else contenido)
-        }
-    }
 
-    AnimatedVisibility(
-        visible = expandido,
-        enter = expandVertically() + fadeIn(),
-        exit = shrinkVertically() + fadeOut(),
-        content = {
-            Column {
-                function()
-            }
-        }
-    )
-}
-
-@Composable
-fun BotonTexto(onClick: () -> Unit, contenido: String, texto: String) {
-    var expandido by remember { mutableStateOf(false) }
-    Column(modifier = Modifier.padding()) {
-        Button(onClick = { expandido = !expandido }) {
-            Text(if (expandido) stringResource(R.string.txt_ocultar_detalles) else contenido)
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+        horizontalAlignment = androidx.compose.ui.Alignment.Start 
+    ) {
+        androidx.compose.material3.ElevatedButton(
+            onClick = { expandido = !expandido },
+            shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp),
+            colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
+                containerColor = colorResource(R.color.container),
+                contentColor = colorResource(R.color.content)
+            )
+        ) {
+            Text(
+                text = if (expandido) stringResource(R.string.txt_ocultar_detalles) else contenido,
+                style = androidx.compose.material3.MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold
+            )
         }
 
         AnimatedVisibility(
             visible = expandido,
             enter = expandVertically() + fadeIn(),
-            exit = shrinkVertically() + fadeOut(),
-            content = {
-                Text(texto)
+            exit = shrinkVertically() + fadeOut()
+        ) {
+            Column(
+                modifier = Modifier
+                    .padding(start = 16.dp, top = 4.dp)
+                    .fillMaxWidth(),
+                horizontalAlignment = androidx.compose.ui.Alignment.Start
+            ) {
+                function()
             }
-        )
+        }
+    }
+}
+
+@Composable
+fun BotonTexto(onClick: () -> Unit, contenido: String, texto: String) {
+    var expandido by remember { mutableStateOf(false) }
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp),
+        horizontalAlignment = androidx.compose.ui.Alignment.Start
+    ) {
+        androidx.compose.material3.OutlinedButton(
+            onClick = { expandido = !expandido },
+            border = androidx.compose.foundation.BorderStroke(1.dp, colorResource(R.color.container))
+        ) {
+            Text(
+                text = if (expandido) stringResource(R.string.txt_ocultar_detalles) else contenido,
+                style = androidx.compose.material3.MaterialTheme.typography.bodyLarge
+            )
+        }
+
+        AnimatedVisibility(
+            visible = expandido,
+            enter = expandVertically() + fadeIn(),
+            exit = shrinkVertically() + fadeOut()
+        ) {
+            androidx.compose.material3.Card(
+                modifier = Modifier
+                    .padding(vertical = 4.dp)
+                    .fillMaxWidth(0.9f),
+                colors = androidx.compose.material3.CardDefaults.cardColors(
+                    containerColor = colorResource(R.color.container).copy(alpha = 0.1f)
+                )
+            ) {
+                Text(
+                    text = texto,
+                    modifier = Modifier.padding(12.dp),
+                    style = androidx.compose.material3.MaterialTheme.typography.bodyMedium
+                )
+            }
+        }
     }
 }
