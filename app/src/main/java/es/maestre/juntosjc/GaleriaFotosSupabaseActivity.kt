@@ -22,6 +22,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -32,6 +33,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -66,6 +68,7 @@ class GaleriaFotosSupabaseActivity : ComponentActivity() {
         var isLoading by remember { mutableStateOf(true) }
         var errorMessage by remember { mutableStateOf<String?>(null) }
         var selectedFoto by remember { mutableStateOf<FotoCamaraItem?>(null) }
+        var showHelpDialog by remember { mutableStateOf(false) }
 
         val scope = rememberCoroutineScope()
         val context = LocalContext.current
@@ -94,24 +97,39 @@ class GaleriaFotosSupabaseActivity : ComponentActivity() {
                             .padding(horizontal = 4.dp),
                         contentAlignment = Alignment.Center
                     ) {
+                        // Botón Atras (Izquierda)
                         IconButton(
                             onClick = onVolverAtras,
                             modifier = Modifier.align(Alignment.CenterStart)
                         ) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                contentDescription = null,
+                                contentDescription = "Volver",
                                 tint = Color.Black,
                                 modifier = Modifier.size(28.dp)
                             )
                         }
 
+                        // Título (Centro)
                         Text(
                             text = "Fotos",
                             fontWeight = FontWeight.ExtraBold,
                             fontSize = 22.sp,
                             color = Color.Black
                         )
+
+                        // Botón Ayuda
+                        IconButton(
+                            onClick = { showHelpDialog = true },
+                            modifier = Modifier.align(Alignment.CenterEnd)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Info, // Icono de información "i"
+                                contentDescription = "Ayuda",
+                                tint = Color.Black, // Mismo estilo que el resto
+                                modifier = Modifier.size(28.dp)
+                            )
+                        }
                     }
                     HorizontalDivider(
                         modifier = Modifier.fillMaxWidth(),
@@ -149,6 +167,7 @@ class GaleriaFotosSupabaseActivity : ComponentActivity() {
                 }
             }
 
+            // Diálogo de detalle de foto
             if (selectedFoto != null) {
                 FotoDetalleDialog(
                     foto = selectedFoto!!,
@@ -158,6 +177,35 @@ class GaleriaFotosSupabaseActivity : ComponentActivity() {
                             guardarImagenEnGaleria(context, selectedFoto!!.urlImagen)
                         }
                     }
+                )
+            }
+
+            // Componente de diálogo de ayuda
+            if (showHelpDialog) {
+                AlertDialog(
+                    onDismissRequest = { showHelpDialog = false },
+                    icon = {
+                        Icon(Icons.Default.Info, contentDescription = null, tint = Color.Black)
+                    },
+                    title = {
+                        Text(text = "Información", fontWeight = FontWeight.Bold)
+                    },
+                    text = {
+                        Text(
+                            text = "En esta pantalla puedes ver todas las fotos que se han subido.\n\n" +
+                                    "Pulsa sobre cualquier foto para verla en grande y guardarla en tu galería personal.",
+                            textAlign = TextAlign.Center
+                        )
+                    },
+                    confirmButton = {
+                        TextButton(
+                            onClick = { showHelpDialog = false }
+                        ) {
+                            Text("Entendido", color = Color.Black, fontWeight = FontWeight.Bold)
+                        }
+                    },
+                    containerColor = Color.White,
+                    shape = RoundedCornerShape(16.dp)
                 )
             }
         }
