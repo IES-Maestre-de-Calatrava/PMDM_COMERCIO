@@ -137,6 +137,11 @@
 
     <!-- Buttons and navigation -->
     <string name="btn_volver">Back</string>
+    <string name="log_in">Log In</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="password">Password</string>
+    <string name="suggest_login">Already have an account? Log In</string>
+    <string name="suggest_signup">Without an account? Sign Up</string>
 
 
 </resources>

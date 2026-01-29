@@ -10,6 +10,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -30,7 +31,7 @@ class LoginActivity : ComponentActivity() {
                 LoginScreen(
                     viewModel = viewModel,
                     onLoginSuccess = {
-                        // Cuando el login sea correcto, se lanza MainActivity y se finaliza LoginActivity
+                        // Cuando el login sea correcto, se lanza MainActivity y se finaliza MainActivity
                         startActivity(Intent(this@LoginActivity, MainActivity::class.java))
                         finish()
                     }
@@ -72,7 +73,7 @@ fun LoginScreen(
         ) {
             // este titulo cambia segun si es registro o login
             Text(
-                text = if (isSignUp) "Registro" else "Iniciar Sesión",
+                text = if (isSignUp) stringResource(R.string.sign_up) else stringResource(R.string.log_in),
                 style = MaterialTheme.typography.headlineLarge
             )
 
@@ -81,22 +82,22 @@ fun LoginScreen(
             OutlinedTextField(
                 value = email,
                 onValueChange = { email = it },
-                label = { Text("Email") },
+                label = { Text(stringResource(R.string.lb_email)) },
                 modifier = Modifier.fillMaxWidth()
             )
 
             Spacer(modifier = Modifier.height(16.dp))
-// el campo de la contraseña y oculta los caracteres
+            // el campo de la contraseña y oculta los caracteres
             OutlinedTextField(
                 value = password,
                 onValueChange = { password = it },
-                label = { Text("Contraseña") },
+                label = { Text(stringResource(R.string.password)) },
                 visualTransformation = PasswordVisualTransformation(),
                 modifier = Modifier.fillMaxWidth()
             )
 
             Spacer(modifier = Modifier.height(24.dp))
-// Si el estado es Loading se muestra un Progress, si no se muestra el botón
+            // Si el estado es Loading se muestra un Progress, si no se muestra el botón
             if (loginState is LoginState.Loading) {
                 CircularProgressIndicator()
             } else {
@@ -110,7 +111,7 @@ fun LoginScreen(
                     },
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text(if (isSignUp) "Registrarse" else "Iniciar Sesión")
+                    Text(if (isSignUp) stringResource(R.string.sign_up) else stringResource(R.string.log_in))
                 }
             }
 
@@ -118,8 +119,8 @@ fun LoginScreen(
 
             TextButton(onClick = { isSignUp = !isSignUp }) {
                 Text(
-                    if (isSignUp) "¿Ya tienes cuenta?  Inicia sesión"
-                    else "¿No tienes cuenta? Regístrate"
+                    if (isSignUp) stringResource(R.string.suggest_login)
+                    else stringResource(R.string.suggest_signup)
                 )
             }
 

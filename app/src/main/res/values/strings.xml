@@ -120,5 +120,10 @@
     <string name="txt_add_tarea_content">Para añadir una nueva tarea pulsa el botón Crear, introduce los detalles y pulsa Guardar</string>
     <string name="txt_eliminar_tarea_content">Para eliminar una tarea pulsa la tarea que quieres eliminar y pulsa Eliminar</string>
     <string name="txt_editar_tarea_content">Para editar una tarea pulsa la tarea que quieres modificar, cambia los detalles que quieras y pulsa Guardar</string>
+    <string name="log_in">Iniciar Sesión</string>
+    <string name="sign_up">Registrarse</string>
+    <string name="password">Contraseña</string>
+    <string name="suggest_login">¿Ya tienes una cuenta? Inicia Sesión</string>
+    <string name="suggest_signup">¿No tienes cuenta? Registrate</string>
 
 </resources>
