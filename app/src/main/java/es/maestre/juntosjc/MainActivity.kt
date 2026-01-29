@@ -1,6 +1,7 @@
 package es.maestre.juntosjc
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -35,11 +36,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -185,7 +183,7 @@ fun GenerarComponentesMain(
                 titleRes = R.string.txt_invitar,
                 iconRes = R.drawable.invite_friends_svgrepo_com,
                 onClick = { ctx ->
-                    // TODO: Implementar invitar
+                    invitar(ctx)
                 }
             ),
             MenuItemData(
@@ -319,6 +317,17 @@ fun GenerarComponentesMain(
             }
         }
     }
+}
+
+private fun invitar(ctx: Context) {
+    val sendIntent: Intent = Intent().apply {
+        action = Intent.ACTION_SEND
+        putExtra(Intent.EXTRA_TEXT, "This is my text to send.")
+        type = "text/plain"
+    }
+
+    val shareIntent = Intent.createChooser(sendIntent, null)
+    ctx.startActivity(shareIntent)
 }
 
 /**
