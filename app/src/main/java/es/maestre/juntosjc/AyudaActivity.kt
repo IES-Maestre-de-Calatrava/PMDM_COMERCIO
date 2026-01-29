@@ -124,12 +124,12 @@ fun AyudaDocumentos() {
         BotonTexto(
             onClick = {},
             stringResource(R.string.txt_subir),
-            stringResource(R.string.txt_ayuda)
+            stringResource(R.string.txt_subir_documento)
         )
         BotonTexto(
             onClick = {},
             stringResource(R.string.txt_descargar),
-            stringResource(R.string.txt_subir)
+            stringResource(R.string.txt_descargar_documento)
         )
     }
 }
@@ -140,12 +140,12 @@ fun AyudaRedSocial() {
         BotonTexto(
             onClick = {},
             stringResource(R.string.txt_crear),
-            stringResource(R.string.asistentes)
+            stringResource(R.string.txt_crear_comentario)
         )
         BotonTexto(
             onClick = {},
             stringResource(R.string.txt_editar),
-            stringResource(R.string.txt_editar_tarea_content)
+            stringResource(R.string.txt_editar_comentario)
         )
         BotonTexto(
             onClick = {},

@@ -142,6 +142,10 @@
     <string name="password">Password</string>
     <string name="suggest_login">Already have an account? Log In</string>
     <string name="suggest_signup">Without an account? Sign Up</string>
+    <string name="txt_subir_documento">To upload a document, you have to press the upload file button and choose what you want to upload.</string>
+    <string name="txt_descargar_documento">To create a comment, you have to press the create button, enter the username, and the comment.</string>
+    <string name="txt_crear_comentario">To create a comment, you have to press the create button, enter the username, and the comment.</string>
+    <string name="txt_editar_comentario">To edit, you have to click on a post and you will be able to edit the name and the comment</string>
 
 
 </resources>

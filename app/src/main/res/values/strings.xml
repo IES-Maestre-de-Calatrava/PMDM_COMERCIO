@@ -125,5 +125,9 @@
     <string name="password">Contraseña</string>
     <string name="suggest_login">¿Ya tienes una cuenta? Inicia Sesión</string>
     <string name="suggest_signup">¿No tienes cuenta? Registrate</string>
+    <string name="txt_subir_documento">Para subir un documento tienes que apretar el boton subir archivo y elegir  lo que quieres subir</string>
+    <string name="txt_descargar_documento">Para descargar el documento tienes que apretar el botón descargar archivo</string>
+    <string name="txt_crear_comentario">Para crear el comentario tienes que apretar el boton crear poner el usuario  y el comentario</string>
+    <string name="txt_editar_comentario">Para editar tienes que pulsar sobre una publicación y podras editar el nombre y el comentario</string>
 
 </resources>
