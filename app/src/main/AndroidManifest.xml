@@ -40,6 +40,11 @@
             android:label="@string/title_activity_ayuda"
             android:theme="@style/Theme.JUNTOSJC" />
         <activity
+            android:name=".PerfilActivity"
+            android:exported="false"
+            android:label="Perfil"
+            android:theme="@style/Theme.JUNTOSJC" />/>
+        <activity
             android:name=".MainActivity"
             android:exported="true" />
         <activity

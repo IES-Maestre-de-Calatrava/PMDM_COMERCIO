@@ -257,8 +257,11 @@ fun GenerarComponentesMain(
                 )
 
                 Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                    // Icono Perfil (no implementado)
-                    IconButton(onClick = { /* TODO */ }) {
+                    // Icono Perfil
+                    IconButton(onClick = {
+                        val intent = Intent(context, PerfilActivity::class.java)
+                        context.startActivity(intent)
+                    }){
                         Icon(
                             painter = painterResource(id = R.drawable.perfil),
                             contentDescription = stringResource(R.string.descripcion_btnPerfil_main),
