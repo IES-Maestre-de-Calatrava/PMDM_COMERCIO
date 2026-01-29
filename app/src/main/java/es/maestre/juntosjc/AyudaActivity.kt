@@ -84,17 +84,14 @@ fun AyudaPrincipalPreview(){
 
 @Composable
 fun AyudaCalendario(){
-    BotonAyuda(onClick = {}, stringResource(R.string.txt_btn_calendario)){
+    BotonAyuda(stringResource(R.string.txt_btn_calendario)){
         BotonTexto(
-            onClick = {},
             stringResource(R.string.txt_eventos),
             stringResource(R.string.txt_eventos_content))
         BotonTexto(
-            onClick = {},
             stringResource(R.string.txt_add),
             stringResource(R.string.txt_add_evento_content))
         BotonTexto(
-            onClick = {},
             stringResource(R.string.txt_eliminar),
             stringResource(R.string.txt_eliminar_evento))
     }
@@ -102,17 +99,14 @@ fun AyudaCalendario(){
 
 @Composable
 fun AyudaTareas(){
-    BotonAyuda(onClick = {}, stringResource(R.string.txt_btn_tareas)){
+    BotonAyuda(stringResource(R.string.txt_btn_tareas)){
         BotonTexto(
-            onClick = {},
             stringResource(R.string.txt_add),
             stringResource(R.string.txt_add_tarea_content))
         BotonTexto(
-            onClick = {},
             stringResource(R.string.txt_editar),
             stringResource(R.string.txt_editar_tarea_content))
         BotonTexto(
-            onClick = {},
             stringResource(R.string.txt_eliminar),
             stringResource(R.string.txt_eliminar_tarea_content))
     }
@@ -120,14 +114,12 @@ fun AyudaTareas(){
 
 @Composable
 fun AyudaDocumentos() {
-    BotonAyuda(onClick = {}, stringResource(R.string.txt_btn_documentos)) {
+    BotonAyuda(stringResource(R.string.txt_btn_documentos)) {
         BotonTexto(
-            onClick = {},
             stringResource(R.string.txt_subir),
             stringResource(R.string.txt_subir_documento)
         )
         BotonTexto(
-            onClick = {},
             stringResource(R.string.txt_descargar),
             stringResource(R.string.txt_descargar_documento)
         )
@@ -136,27 +128,27 @@ fun AyudaDocumentos() {
 
 @Composable
 fun AyudaRedSocial() {
-    BotonAyuda(onClick = {}, stringResource(R.string.txt_btn_red_social)) {
+    BotonAyuda(stringResource(R.string.txt_btn_red_social)) {
         BotonTexto(
-            onClick = {},
             stringResource(R.string.txt_crear),
             stringResource(R.string.txt_crear_comentario)
         )
         BotonTexto(
-            onClick = {},
             stringResource(R.string.txt_editar),
             stringResource(R.string.txt_editar_comentario)
         )
         BotonTexto(
-            onClick = {},
             stringResource(R.string.txt_borrar),
             stringResource(R.string.btn_Crear)
         )
     }
 }
 
+/**
+ *
+ */
 @Composable
-fun BotonAyuda(onClick: () -> Unit, contenido: String, function: @Composable () -> Unit) {
+fun BotonAyuda(contenido: String, function: @Composable () -> Unit) {
     var expandido by remember { mutableStateOf(false) }
 
     Column(
@@ -198,7 +190,7 @@ fun BotonAyuda(onClick: () -> Unit, contenido: String, function: @Composable () 
 }
 
 @Composable
-fun BotonTexto(onClick: () -> Unit, contenido: String, texto: String) {
+fun BotonTexto(contenido: String, texto: String) {
     var expandido by remember { mutableStateOf(false) }
 
     Column(

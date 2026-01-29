@@ -182,8 +182,20 @@ fun GenerarComponentesMain(
                 feature = AppFeature.INVITAR,
                 titleRes = R.string.txt_invitar,
                 iconRes = R.drawable.invite_friends_svgrepo_com,
-                onClick = { ctx ->
-                    invitar(ctx)
+                onClick = { ctx ->val enlace = "https://drive.google.com/drive/folders/1mHv4Lvo75Lju5s66vvnjbjlrvfHk14w3?usp=sharing"
+
+                    val intent = Intent(Intent.ACTION_SEND).apply {
+                        type = "text/plain"
+                        putExtra(
+                            Intent.EXTRA_TEXT,
+                            "¡Te invito a unirte a JUNTOS! \n$enlace"
+                        )
+                    }
+
+                    ctx.startActivity(
+                        Intent.createChooser(intent, ctx.getString(R.string.txt_invitar))
+                    )
+
                 }
             ),
             MenuItemData(
