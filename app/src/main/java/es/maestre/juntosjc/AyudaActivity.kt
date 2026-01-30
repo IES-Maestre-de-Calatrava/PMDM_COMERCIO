@@ -145,7 +145,10 @@ fun AyudaRedSocial() {
 }
 
 /**
- *
+ * Botón con un título que muestra otros botones, aunque puede ser usado para mostrar cualquier
+ * componente o conjunto de componentes que sean una función Composable.
+ * @param contenido El texto que va a contener el botón
+ * @param function Componentes que mostrará el botón cuando sea pulsado
  */
 @Composable
 fun BotonAyuda(contenido: String, function: @Composable () -> Unit) {
@@ -189,6 +192,12 @@ fun BotonAyuda(contenido: String, function: @Composable () -> Unit) {
     }
 }
 
+/**
+ * Botón que muestra un texto al ser pulsado, esta función está pensada para ser pasada como
+ * parámetro a un BotonAyuda
+ * @param contenido El texto que se mostrará en el botón
+ * @param texto El texto que se mostrará después de pulsar el botón
+ */
 @Composable
 fun BotonTexto(contenido: String, texto: String) {
     var expandido by remember { mutableStateOf(false) }
