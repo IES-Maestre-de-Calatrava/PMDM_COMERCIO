@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
@@ -59,27 +61,32 @@ fun MyAppBienvenida(modifier: Modifier = Modifier,
  * Esta funcion dibuja el layout de mi ventana
  */
 @Composable
-fun GenerarComponentesBienvenida(){
-
+fun GenerarComponentesBienvenida() {
     val context = LocalContext.current
+    // Scroll para pantallas grandes
+    val scrollState = rememberScrollState()
 
-    Card(modifier = Modifier.padding(30.dp)){
+    Card(modifier = Modifier.padding(30.dp)) {
         Column(
-            modifier = Modifier.fillMaxSize(), // Ocupa toda la pantalla
-            horizontalAlignment = Alignment.CenterHorizontally // centra todos los componentes que esten dentro
+            modifier = Modifier
+                .fillMaxSize()
+                // Scroll vertical
+                .verticalScroll(scrollState),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
             // Imagen principal
             Image(
                 painter = painterResource(R.drawable.imagen_unidadtrabajo),
                 contentDescription = stringResource(R.string.descripcion_imagenWorkUnit),
-                modifier = Modifier.fillMaxWidth().height(300.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(300.dp),
                 contentScale = ContentScale.Crop
             )
 
-            // Esto pone un espacio entre los componentes
+            // Espaciado
             Spacer(modifier = Modifier.height(100.dp))
-
 
             // Imagen con el logo
             Image(
@@ -89,6 +96,7 @@ fun GenerarComponentesBienvenida(){
                 contentScale = ContentScale.Crop
             )
 
+            // Espaciado
             Spacer(modifier = Modifier.height(100.dp))
 
             Text(
@@ -97,12 +105,12 @@ fun GenerarComponentesBienvenida(){
                 style = MaterialTheme.typography.titleLarge
             )
 
-
             Button(
                 onClick = {
-                    // intent a la MainActivity
+                    // intent a la LoginActivity
                     val intent = Intent(context, LoginActivity::class.java)
-                    context.startActivity(intent) },
+                    context.startActivity(intent)
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(30.dp)
@@ -110,9 +118,10 @@ fun GenerarComponentesBienvenida(){
             ) {
                 Text(text = stringResource(R.string.txt_btn_pantallaBienvenida), fontSize = 18.sp)
             }
+
+            // Esto es un pequeño espacio al final para que al hacer scroll
+            // el botón no justo borde del card
+            Spacer(modifier = Modifier.height(20.dp))
         }
-
-
     }
-
 }

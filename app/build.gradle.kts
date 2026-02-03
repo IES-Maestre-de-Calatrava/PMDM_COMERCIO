@@ -68,6 +68,7 @@ dependencies {
     implementation(libs.androidx.datastore.core)
     implementation(libs.androidx.camera.core)
     implementation(libs.androidx.foundation.layout)
+    implementation(libs.androidx.foundation)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
