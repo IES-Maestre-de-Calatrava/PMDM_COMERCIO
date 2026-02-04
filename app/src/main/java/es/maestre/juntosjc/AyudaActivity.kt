@@ -37,9 +37,13 @@ class AyudaActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        // para filtrar, usaremos una variables seccion, recuperamos la seccion desde intent, por defecto es la general
+        val seccion = intent.getStringExtra("SECCION") ?: "GENERAL"
+
         setContent {
             JUNTOSJCTheme {
-                AyudaPrincipal()
+                AyudaPrincipal(seccion)
             }
         }
     }
@@ -47,7 +51,7 @@ class AyudaActivity : ComponentActivity() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AyudaPrincipal(){
+fun AyudaPrincipal(seccion: String){
     Scaffold(
         topBar = {
             TopAppBar(
@@ -67,10 +71,20 @@ fun AyudaPrincipal(){
         Column(
             modifier = Modifier.padding(it)
         ) {
-            AyudaCalendario()
-            AyudaTareas()
-            AyudaDocumentos()
-            AyudaRedSocial()
+            // Usamos un when para llamar a las funciones dependiendo de la seccion
+            when (seccion){
+                "CALENDARIO" -> AyudaCalendario()
+                "TAREAS" -> AyudaTareas()
+                "DOCUMENTOS" -> AyudaDocumentos()
+                "RED SOCIAL" -> AyudaRedSocial()
+                // si llamamos desde la main, se muestran todos
+            else -> {
+                AyudaCalendario()
+                AyudaTareas()
+                AyudaDocumentos()
+                AyudaRedSocial()
+            }
+            }
         }
 
     }
@@ -79,7 +93,7 @@ fun AyudaPrincipal(){
 @Preview
 @Composable
 fun AyudaPrincipalPreview(){
-    AyudaPrincipal()
+    AyudaPrincipal("GENERAL")
 }
 
 @Composable

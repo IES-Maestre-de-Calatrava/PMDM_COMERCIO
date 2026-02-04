@@ -28,6 +28,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -105,7 +106,20 @@ fun MyAppTareas(viewModel: TareaViewModel) {
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = colorResource(R.color.container),
                     titleContentColor = colorResource(R.color.content)
-                )
+                ),
+                actions = {
+                    IconButton(onClick = {
+                        val intent = Intent(context, AyudaActivity::class.java)
+                        intent.putExtra("SECCION", "TAREAS") // Filtro para Tareas
+                        context.startActivity(intent)
+                    }) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.help_question_svgrepo_com),
+                            contentDescription = "Ayuda",
+                            tint = Color.Unspecified
+                        )
+                    }
+                }
             )
         }
     ) { paddingSobrante ->

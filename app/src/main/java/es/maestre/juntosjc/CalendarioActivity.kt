@@ -1,5 +1,6 @@
 package es.maestre.juntosjc
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -47,8 +48,10 @@ import es.maestre.juntosjc.ui.theme.JUNTOSJCTheme
 import es.maestre.juntosjc.viewModel.EventoViewModel
 import kotlin.getValue
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.IconButton
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import es.maestre.juntosjc.model.EventoItem
 
@@ -82,6 +85,7 @@ class CalendarioActivity: ComponentActivity()  {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyAppCalendario(viewModel: EventoViewModel) {
+    val context = LocalContext.current
     // Estado del DatePicker
     val datePickerState = rememberDatePickerState()
     val eventos = viewModel.listaEventosFiltrados
@@ -111,7 +115,21 @@ fun MyAppCalendario(viewModel: EventoViewModel) {
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = colorResource(R.color.container),
                     titleContentColor = colorResource(R.color.content)
-                )
+                ),
+
+                actions = {
+                    IconButton(onClick = {
+                        val intent = Intent(context, AyudaActivity::class.java)
+                        intent.putExtra("SECCION", "CALENDARIO")
+                        context.startActivity(intent)
+                    }) {
+                        Icon(
+                            painter = painterResource(R.drawable.help_question_svgrepo_com),
+                            contentDescription = "Ayuda",
+                            tint = Color.Unspecified
+                        )
+                    }
+                }
 
             )
         },

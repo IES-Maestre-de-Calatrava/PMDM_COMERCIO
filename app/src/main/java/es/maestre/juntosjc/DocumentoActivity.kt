@@ -21,6 +21,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -122,6 +123,7 @@ class DocumentoActivity: ComponentActivity(){
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable fun MyAppDocumentos(onPickDocument: () -> Unit) {
+    val context = LocalContext.current;
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
@@ -137,7 +139,20 @@ class DocumentoActivity: ComponentActivity(){
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = colorResource(R.color.container),
                     titleContentColor = colorResource(R.color.content)
-                )
+                ),
+                actions = {
+                    IconButton(onClick = {
+                        val intent = Intent(context, AyudaActivity::class.java)
+                        intent.putExtra("SECCION", "DOCUMENTOS") // Filtro para Documentos
+                        context.startActivity(intent)
+                    }) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.help_question_svgrepo_com),
+                            contentDescription = "Ayuda",
+                            tint = Color.Unspecified
+                        )
+                    }
+                }
             )
         }
     ) { innerPadding ->
