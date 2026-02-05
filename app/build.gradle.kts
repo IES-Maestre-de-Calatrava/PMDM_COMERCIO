@@ -66,6 +66,7 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.navigation.runtime.ktx)
     implementation(libs.androidx.datastore.core)
+    implementation("androidx.datastore:datastore-preferences:1.2.0")
     implementation(libs.androidx.camera.core)
     implementation(libs.androidx.foundation.layout)
     implementation(libs.androidx.foundation)

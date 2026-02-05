@@ -3,12 +3,9 @@ package es.maestre.juntosjc.viewModel
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import es.maestre.juntosjc.supabase.SupabaseClient
-import es.maestre.juntosjc.supabase.auth.AuthenticationRepository
+import es.maestre.juntosjc.DataStoreManager
 import es.maestre.juntosjc.supabase.auth.AuthenticationRepositoryImpl
-import io.github.jan.supabase.auth.auth
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -20,6 +17,7 @@ class AuthenticationViewModel (application: Application): AndroidViewModel(appli
 
     // Repositorio de autenticación
     private val authRepo = AuthenticationRepositoryImpl
+    private val dataStoreManager = DataStoreManager(application.applicationContext)
 
     private val _loginState = MutableStateFlow<LoginState>(LoginState.Idle)
     val loginState: StateFlow<LoginState> = _loginState
@@ -30,6 +28,14 @@ class AuthenticationViewModel (application: Application): AndroidViewModel(appli
         viewModelScope.launch {
             _loginState.value = LoginState.Loading
             val success = authRepo.signIn(email, password)
+            if (success) {
+                // guardar email en DataStore
+                try {
+                    dataStoreManager.saveEmail(email)
+                } catch (e: Exception) {
+                    Log.e("AuthViewModel", "Error guardando email en DataStore: ${e.message}")
+                }
+            }
             _loginState.value = if (success) LoginState.Success else LoginState.Error("Error al iniciar sesión")
         }
     }
@@ -38,6 +44,14 @@ class AuthenticationViewModel (application: Application): AndroidViewModel(appli
         viewModelScope.launch {
             _loginState.value = LoginState.Loading
             val success = authRepo.signUp(email, password)
+            if (success) {
+                // guardar email en DataStore
+                try {
+                    dataStoreManager.saveEmail(email)
+                } catch (e: Exception) {
+                    Log.e("AuthViewModel", "Error guardando email en DataStore: ${e.message}")
+                }
+            }
             _loginState.value = if (success) LoginState.Success else LoginState.Error("Error al registrarse")
         }
     }
@@ -46,6 +60,13 @@ class AuthenticationViewModel (application: Application): AndroidViewModel(appli
         viewModelScope.launch {
             _loginState.value = LoginState.Loading
             val success = authRepo.signOut()
+            if (success) {
+                try {
+                    dataStoreManager.clearEmail()
+                } catch (e: Exception) {
+                    Log.e("AuthViewModel", "Error limpiando email en DataStore: ${e.message}")
+                }
+            }
             _loginState.value = if (success) LoginState.Idle else LoginState.Error("Error al cerrar sesión")
         }
     }
