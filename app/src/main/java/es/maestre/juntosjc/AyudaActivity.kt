@@ -176,15 +176,26 @@ fun AyudaRedSocial() {
 //TODO Establecer textos correctamente
 @Composable
 fun AyudaInvitar(){
-    BotonAyuda("Invitar") {
-        BotonTexto("Invitar", "Invitar")
+    BotonAyuda(stringResource(R.string.txt_btn_invitar)) {
+        Text( stringResource(R.string.txt_contenido_invitar))
     }
 }
 
 @Composable
 fun AyudaContactos(){
-    BotonAyuda("Contactos") {
-        BotonTexto("Contactos", "Contactos")
+    BotonAyuda(stringResource(R.string.txt_btn_contactos)) {
+        BotonTexto(
+            stringResource(R.string.txt_crear),
+            stringResource(R.string.txt_crear_contacto)
+        )
+        BotonTexto(
+            stringResource(R.string.txt_editar),
+            stringResource(R.string.txt_editar_contacto)
+        )
+        BotonTexto(
+            stringResource(R.string.txt_borrar),
+            stringResource(R.string.txt_eliminar_comentario)
+        )
     }
 }
 

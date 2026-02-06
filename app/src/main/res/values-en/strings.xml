@@ -147,6 +147,11 @@
     <string name="txt_crear_comentario">To create a comment, you have to press the create button, enter the username, and the comment.</string>
     <string name="txt_editar_comentario">To edit, you have to click on a post and you will be able to edit the name and the comment</string>
     <string name="txt_eliminar_comentario">" To delete, you have to click on a post and you will see a button to delete it."</string>
+    <string name="txt_btn_invitar">Invite</string>
+    <string name="txt_contenido_invitar">Pressing the invite button on the home screen will display a menu with several applications through which to share the application link.</string>
+    <string name="txt_btn_contactos">Contacts</string>
+    <string name="txt_crear_contacto">To create a contact, you have to press the create button and enter the requested information.</string>
+    <string name="txt_editar_contacto">To edit, you have to tap on the contact, modify the data you want, and tap save.</string>
 
 
 </resources>
