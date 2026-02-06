@@ -130,5 +130,10 @@
     <string name="txt_crear_comentario">Para crear el comentario tienes que apretar el boton crear poner el usuario  y el comentario</string>
     <string name="txt_editar_comentario">Para editar tienes que pulsar sobre una publicación y podras editar el nombre y el comentario</string>
     <string name="txt_eliminar_comentario">Para borrar tienes que pulsar sobre una publicación y tendras un botón que es para eliminar</string>
+    <string name="txt_btn_invitar">Invitar</string>
+    <string name="txt_contenido_invitar">Al pulsar el botón invitar que esta en el inicio mostrará un menú con varias aplicaciones por las que compartir el enlace a la aplicación</string>
+    <string name="txt_btn_contactos">Contactos</string>
+    <string name="txt_crear_contacto">Para crear un contacto tienes que apretar el botón crear y escribir los datos que te pide</string>
+    <string name="txt_editar_contacto">Para editar tienes que pulsar sobre el contacto, modificar los datos que quieres y pulsar guardar</string>
 
 </resources>
