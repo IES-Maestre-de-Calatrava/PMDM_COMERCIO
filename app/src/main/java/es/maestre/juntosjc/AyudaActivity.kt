@@ -85,6 +85,10 @@ fun AyudaPrincipal(seccion: String){
                         AyudaTareas()
                         AyudaDocumentos()
                         AyudaRedSocial()
+                        AyudaInvitar()
+                        AyudaContactos()
+                        AyudaFotos()
+                        AyudaConfigurar()
                     }
                 }
             }
@@ -157,6 +161,35 @@ fun AyudaRedSocial() {
             stringResource(R.string.txt_borrar),
             stringResource(R.string.txt_eliminar_comentario)
         )
+    }
+}
+
+//TODO Establecer textos correctamente
+@Composable
+fun AyudaInvitar(){
+    BotonAyuda("Invitar") {
+        BotonTexto("Invitar", "Invitar")
+    }
+}
+
+@Composable
+fun AyudaContactos(){
+    BotonAyuda("Contactos") {
+        BotonTexto("Contactos", "Contactos")
+    }
+}
+
+@Composable
+fun AyudaFotos(){
+    BotonAyuda("Fotos") {
+        BotonTexto("Fotos", "Fotos")
+    }
+}
+
+@Composable
+fun AyudaConfigurar(){
+    BotonAyuda("Configuración") {
+        BotonTexto("Configuración", "Configuración")
     }
 }
 
