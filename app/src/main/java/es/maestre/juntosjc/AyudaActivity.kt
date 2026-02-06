@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -194,29 +193,37 @@ fun AyudaContactos(){
         )
         BotonTexto(
             stringResource(R.string.txt_borrar),
-            stringResource(R.string.txt_eliminar_comentario)
+            stringResource(R.string.txt_eliminar_contacto)
         )
     }
 }
 
 @Composable
 fun AyudaFotos(){
-    BotonAyuda("Fotos") {
-        BotonTexto("Fotos", "Fotos")
+    BotonAyuda(stringResource(R.string.txt_btn_fotos)) {
+        BotonTexto(stringResource(R.string.txt_foto),stringResource(R.string.txt_hacer_fotos) )
+        BotonTexto(stringResource(R.string.txt_galeria),stringResource(R.string.txt_entrar_galeria) )
     }
 }
 
 @Composable
 fun AyudaConfigurar(){
-    BotonAyuda("Configuración") {
-        BotonTexto("Configuración", "Configuración")
+    BotonAyuda(stringResource(R.string.txt_btn_configurar)) {
+        BotonTexto(
+            stringResource(R.string.txt_apariencia),
+            stringResource(R.string.txt_configurar_tema)
+        )
+        BotonTexto(
+            stringResource(R.string.txt_caracteristicas),
+            stringResource(R.string.txt_actydesact_carecteristicas)
+        )
     }
 }
 
 @Composable
 fun AyudaPerfil(){
-    BotonAyuda("Perfil"){
-        BotonTexto("Perfil", "Perfil")
+    BotonAyuda(stringResource(R.string.txt_btn_perfil)){
+        BotonTexto(stringResource(R.string.txt_añadir_informacion), stringResource(R.string.txt_añadir_informacion_perfil))
     }
 }
 
@@ -231,18 +238,15 @@ fun BotonAyuda(contenido: String, function: @Composable () -> Unit) {
     var expandido by remember { mutableStateOf(false) }
 
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp),
-        horizontalAlignment = androidx.compose.ui.Alignment.Start 
+        modifier = ColumnaPrincipalModifier,
+        horizontalAlignment = androidx.compose.ui.Alignment.Start
     ) {
         androidx.compose.material3.ElevatedButton(
             onClick = { expandido = !expandido },
-            shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp),
-            colors = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
-                containerColor = colorResource(R.color.container),
-                contentColor = colorResource(R.color.content)
-            )
+
+            modifier = Modifier.fillMaxWidth(),
+            shape = BotonRedondearAyuda,
+            colors = botonPrincipalColores()
         ) {
             Text(
                 text = if (expandido) stringResource(R.string.txt_ocultar_detalles) else contenido,
@@ -257,9 +261,7 @@ fun BotonAyuda(contenido: String, function: @Composable () -> Unit) {
             exit = shrinkVertically() + fadeOut()
         ) {
             Column(
-                modifier = Modifier
-                    .padding(start = 16.dp, top = 4.dp)
-                    .fillMaxWidth(),
+                modifier = ColumnaDetalleModifier,
                 horizontalAlignment = androidx.compose.ui.Alignment.Start
             ) {
                 function()
@@ -279,21 +281,19 @@ fun BotonTexto(contenido: String, texto: String) {
     var expandido by remember { mutableStateOf(false) }
 
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 4.dp),
+        modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
         horizontalAlignment = androidx.compose.ui.Alignment.Start
     ) {
         androidx.compose.material3.OutlinedButton(
             onClick = { expandido = !expandido },
-            border = androidx.compose.foundation.BorderStroke(1.dp, colorResource(R.color.container))
+            modifier = Modifier.fillMaxWidth(),
+            border = botonSecundarioColores()
         ) {
             Text(
                 text = if (expandido) stringResource(R.string.txt_ocultar_detalles) else contenido,
                 style = androidx.compose.material3.MaterialTheme.typography.bodyLarge
             )
         }
-
         AnimatedVisibility(
             visible = expandido,
             enter = expandVertically() + fadeIn(),
@@ -302,10 +302,9 @@ fun BotonTexto(contenido: String, texto: String) {
             androidx.compose.material3.Card(
                 modifier = Modifier
                     .padding(vertical = 4.dp)
-                    .fillMaxWidth(0.9f),
-                colors = androidx.compose.material3.CardDefaults.cardColors(
-                    containerColor = colorResource(R.color.container).copy(alpha = 0.1f)
-                )
+                    .fillMaxWidth(),
+                colors = cardTextoAyudaColores()
+
             ) {
                 Text(
                     text = texto,
@@ -316,3 +315,30 @@ fun BotonTexto(contenido: String, texto: String) {
         }
     }
 }
+
+
+val ColumnaPrincipalModifier = Modifier
+    .fillMaxWidth()
+    .padding(horizontal = 16.dp, vertical = 8.dp)
+
+val ColumnaDetalleModifier = Modifier
+    .padding(start = 16.dp, top = 4.dp)
+    .fillMaxWidth()
+
+
+val BotonRedondearAyuda = androidx.compose.foundation.shape.RoundedCornerShape(8.dp)
+
+@Composable
+fun botonPrincipalColores() = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
+    containerColor = colorResource(R.color.container),
+    contentColor = colorResource(R.color.content)
+)
+@Composable
+fun botonSecundarioColores() = androidx.compose.foundation.BorderStroke(
+    width = 1.dp,
+    color = colorResource(R.color.container)
+)
+@Composable
+fun cardTextoAyudaColores() = androidx.compose.material3.CardDefaults.cardColors(
+    containerColor = colorResource(R.color.container).copy(alpha = 0.1f)
+)

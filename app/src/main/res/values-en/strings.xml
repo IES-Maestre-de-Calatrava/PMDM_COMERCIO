@@ -152,6 +152,20 @@
     <string name="txt_btn_contactos">Contacts</string>
     <string name="txt_crear_contacto">To create a contact, you have to press the create button and enter the requested information.</string>
     <string name="txt_editar_contacto">To edit, you have to tap on the contact, modify the data you want, and tap save.</string>
+    <string name="txt_eliminar_contacto">To delete, you have to tap on the contact, modify the data you want, and tap delete.</string>
+    <string name="txt_btn_configurar">Configuration</string>
+    <string name="txt_apariencia">Theme</string>
+    <string name="txt_caracteristicas">Enable or disable</string>
+    <string name="txt_configurar_tema">To configure the theme, you have to tap on Theme and choose your preferred mode: dark mode, light mode, or automatic.</string>
+    <string name="txt_actydesact_carecteristicas">To enable or disable a feature, press the corresponding switch. Doing so will show or hide it in the main menu.</string>
+    <string name="txt_btn_perfil">"Profile "</string>
+    <string name="txt_añadir_informacion_perfil">To add information to your profile, tap the button in the upper right corner, enter the requested information, and select Save.</string>
+    <string name="txt_añadir_informacion">" Add information"</string>
+    <string name="txt_btn_fotos">Photos</string>
+    <string name="txt_foto">" Take photo"</string>
+    <string name="txt_hacer_fotos">To take photos, you must first grant the necessary camera permissions. Once activated, press the circular button in the center of the screen to capture the image.</string>
+    <string name="txt_galeria">Gallery</string>
+    <string name="txt_entrar_galeria">To access your gallery, tap the circular preview image. This will display all the photos stored on your device.</string>
 
 
 </resources>

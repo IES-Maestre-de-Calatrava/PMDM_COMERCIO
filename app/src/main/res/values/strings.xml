@@ -135,5 +135,19 @@
     <string name="txt_btn_contactos">Contactos</string>
     <string name="txt_crear_contacto">Para crear un contacto tienes que apretar el botón crear y escribir los datos que te pide</string>
     <string name="txt_editar_contacto">Para editar tienes que pulsar sobre el contacto, modificar los datos que quieres y pulsar guardar</string>
+    <string name="txt_eliminar_contacto">Para borrar tienes que pulsar sobre el contacto, modificar los datos que quieres y pulsar borrar</string>
+    <string name="txt_btn_configurar">Configuración</string>
+    <string name="txt_apariencia">Tema</string>
+    <string name="txt_caracteristicas">Habilitar o deshabilitar</string>
+    <string name="txt_configurar_tema">Para configurar el tema, tienes que pulsar en Tema y elegir el modo que prefieras: modo oscuro, modo claro o automático.</string>
+    <string name="txt_actydesact_carecteristicas">Para habilitar o deshabilitar una característica, pulsa el interruptor correspondiente. Al hacerlo, esta se mostrará u ocultará en el menú principal.</string>
+    <string name="txt_btn_perfil">Perfil</string>
+    <string name="txt_añadir_informacion_perfil">Para añadir información a tu perfil, pulsa el botón situado en la esquina superior derecha, introduce los datos solicitados y selecciona Guardar</string>
+    <string name="txt_añadir_informacion">Añadir información</string>
+    <string name="txt_btn_fotos">Fotos</string>
+    <string name="txt_foto">Hacer foto</string>
+    <string name="txt_hacer_fotos">Para realizar fotografías, primero debes conceder los permisos de cámara necesarios. Una vez activados, pulsa el botón circular situado en el centro de la pantalla para capturar la imagen.</string>
+    <string name="txt_galeria">Galeria</string>
+    <string name="txt_entrar_galeria">Para acceder a tu galería, pulsa sobre la imagen circular de la previsualización. Al hacerlo, se mostrarán todas las fotos almacenadas en tu dispositivo.</string>
 
 </resources>
