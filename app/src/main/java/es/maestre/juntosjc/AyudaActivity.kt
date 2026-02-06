@@ -84,6 +84,7 @@ fun AyudaPrincipal(seccion: Ayuda){
                     Ayuda.DOCUMENTOS -> AyudaDocumentos()
                     Ayuda.FOTOS -> AyudaFotos()
                     Ayuda.INVITAR -> AyudaInvitar()
+                    Ayuda.PERFIL -> AyudaPerfil()
                     Ayuda.SOCIAL -> AyudaRedSocial()
                     Ayuda.TAREAS -> AyudaTareas()
                     // si llamamos desde la main, se muestran todos
@@ -94,6 +95,7 @@ fun AyudaPrincipal(seccion: Ayuda){
                         AyudaDocumentos()
                         AyudaFotos()
                         AyudaInvitar()
+                        AyudaPerfil()
                         AyudaRedSocial()
                         AyudaTareas()
                     }
@@ -197,6 +199,13 @@ fun AyudaFotos(){
 fun AyudaConfigurar(){
     BotonAyuda("Configuración") {
         BotonTexto("Configuración", "Configuración")
+    }
+}
+
+@Composable
+fun AyudaPerfil(){
+    BotonAyuda("Perfil"){
+        BotonTexto("Perfil", "Perfil")
     }
 }
 
