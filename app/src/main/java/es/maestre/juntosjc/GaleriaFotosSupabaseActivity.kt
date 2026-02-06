@@ -2,6 +2,7 @@ package es.maestre.juntosjc
 
 import android.content.ContentValues
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
@@ -12,6 +13,8 @@ import android.provider.MediaStore
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -21,9 +24,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.Save
+import androidx.compose.material.icons.filled.Download
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -32,18 +33,23 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.ImageLoader
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import coil.request.SuccessResult
+import es.maestre.juntosjc.model.Ayuda
 import es.maestre.juntosjc.model.FotoCamaraItem
 import es.maestre.juntosjc.supabase.SupabaseClient
+import es.maestre.juntosjc.ui.theme.JUNTOSJCTheme
+import es.maestre.juntosjc.ui.theme.JuntosTheme
+import es.maestre.juntosjc.viewModel.UserPreferencesViewModel
 import io.github.jan.supabase.postgrest.postgrest
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -52,23 +58,34 @@ import java.io.OutputStream
 
 class GaleriaFotosSupabaseActivity : ComponentActivity() {
 
+    private val preferencesViewModel: UserPreferencesViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         setContent {
-            GaleriaFotosScreen(
-                onVolverAtras = { finish() }
-            )
+            val isDarkTheme by preferencesViewModel.isDarkTheme.collectAsStateWithLifecycle()
+
+            JUNTOSJCTheme(darkTheme = isDarkTheme) {
+                GaleriaFotosScreen()
+            }
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        preferencesViewModel.loadPreferences()
+        preferencesViewModel.recalculateTheme()
+    }
+
+    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
-    fun GaleriaFotosScreen(onVolverAtras: () -> Unit) {
+    fun GaleriaFotosScreen() {
 
         var fotos by remember { mutableStateOf<List<FotoCamaraItem>>(emptyList()) }
         var isLoading by remember { mutableStateOf(true) }
         var errorMessage by remember { mutableStateOf<String?>(null) }
         var selectedFoto by remember { mutableStateOf<FotoCamaraItem?>(null) }
-        var showHelpDialog by remember { mutableStateOf(false) }
 
         val scope = rememberCoroutineScope()
         val context = LocalContext.current
@@ -88,55 +105,34 @@ class GaleriaFotosSupabaseActivity : ComponentActivity() {
         }
 
         Scaffold(
+            modifier = Modifier.fillMaxSize(),
             topBar = {
-                Column(modifier = Modifier.fillMaxWidth().background(Color.White)) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(56.dp)
-                            .padding(horizontal = 4.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        // Botón Atras (Izquierda)
-                        IconButton(
-                            onClick = onVolverAtras,
-                            modifier = Modifier.align(Alignment.CenterStart)
-                        ) {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                contentDescription = "Volver",
-                                tint = Color.Black,
-                                modifier = Modifier.size(28.dp)
-                            )
-                        }
-
-                        // Título (Centro)
+                TopAppBar(
+                    title = {
                         Text(
-                            text = "Fotos",
-                            fontWeight = FontWeight.ExtraBold,
-                            fontSize = 22.sp,
-                            color = Color.Black
+                            text = stringResource(R.string.txt_fotos),
+                            fontWeight = FontWeight.Bold,
+                            style = MaterialTheme.typography.headlineMedium
                         )
-
-                        // Botón Ayuda
-                        IconButton(
-                            onClick = { showHelpDialog = true },
-                            modifier = Modifier.align(Alignment.CenterEnd)
-                        ) {
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                        titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                    ),
+                    actions = {
+                        IconButton(onClick = {
+                            val intent = Intent(context, AyudaActivity::class.java)
+                            intent.putExtra("SECCION", Ayuda.FOTOS)
+                            context.startActivity(intent)
+                        }) {
                             Icon(
-                                imageVector = Icons.Default.Info, // Icono de información "i"
+                                painter = painterResource(R.drawable.help_question_svgrepo_com),
                                 contentDescription = "Ayuda",
-                                tint = Color.Black, // Mismo estilo que el resto
-                                modifier = Modifier.size(28.dp)
+                                tint = Color.Unspecified
                             )
                         }
                     }
-                    HorizontalDivider(
-                        modifier = Modifier.fillMaxWidth(),
-                        thickness = 3.dp,
-                        color = Color(0xFF222222)
-                    )
-                }
+                )
             }
         ) { paddingValues ->
 
@@ -144,12 +140,12 @@ class GaleriaFotosSupabaseActivity : ComponentActivity() {
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(paddingValues)
-                    .background(Color.White)
+                    .background(MaterialTheme.colorScheme.background)
             ) {
                 when {
-                    isLoading -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { CircularProgressIndicator(color = Color.Black) }
-                    errorMessage != null -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { Text(errorMessage ?: "Error", color = Color.Red) }
-                    fotos.isEmpty() -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { Text("No hay fotos", color = Color.Gray) }
+                    isLoading -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { CircularProgressIndicator(color = MaterialTheme.colorScheme.primary) }
+                    errorMessage != null -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { Text(errorMessage ?: "Error", color = MaterialTheme.colorScheme.error) }
+                    fotos.isEmpty() -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { Text("No hay fotos", color = MaterialTheme.colorScheme.onSurfaceVariant) }
                     else -> {
                         LazyVerticalGrid(
                             columns = GridCells.Fixed(3),
@@ -179,35 +175,6 @@ class GaleriaFotosSupabaseActivity : ComponentActivity() {
                     }
                 )
             }
-
-            // Componente de diálogo de ayuda
-            if (showHelpDialog) {
-                AlertDialog(
-                    onDismissRequest = { showHelpDialog = false },
-                    icon = {
-                        Icon(Icons.Default.Info, contentDescription = null, tint = Color.Black)
-                    },
-                    title = {
-                        Text(text = "Información", fontWeight = FontWeight.Bold)
-                    },
-                    text = {
-                        Text(
-                            text = "En esta pantalla puedes ver todas las fotos que se han subido.\n\n" +
-                                    "Pulsa sobre cualquier foto para verla en grande y guardarla en tu galería personal.",
-                            textAlign = TextAlign.Center
-                        )
-                    },
-                    confirmButton = {
-                        TextButton(
-                            onClick = { showHelpDialog = false }
-                        ) {
-                            Text("Entendido", color = Color.Black, fontWeight = FontWeight.Bold)
-                        }
-                    },
-                    containerColor = Color.White,
-                    shape = RoundedCornerShape(16.dp)
-                )
-            }
         }
     }
 
@@ -217,7 +184,7 @@ class GaleriaFotosSupabaseActivity : ComponentActivity() {
         Box(
             modifier = Modifier
                 .aspectRatio(1f)
-                .background(Color.LightGray)
+                .background(MaterialTheme.colorScheme.surfaceVariant)
                 .clickable { onClick() }
         ) {
             AsyncImage(
@@ -245,11 +212,11 @@ class GaleriaFotosSupabaseActivity : ComponentActivity() {
             Card(
                 modifier = Modifier
                     .fillMaxWidth(0.85f)
-                    .fillMaxHeight(0.75f),
+                    .fillMaxHeight(0.60f),
                 shape = RoundedCornerShape(20.dp),
                 border = BorderStroke(4.dp, Color.White),
                 colors = CardDefaults.cardColors(
-                    containerColor = Color.Transparent
+                    containerColor = JuntosTheme.colors.cardBackground
                 ),
                 elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
             ) {
@@ -260,7 +227,7 @@ class GaleriaFotosSupabaseActivity : ComponentActivity() {
                         modifier = Modifier
                             .weight(1f)
                             .fillMaxWidth()
-                            .background(Color.White)
+                            .background(JuntosTheme.colors.cardBackground)
                             .padding(16.dp),
                         contentAlignment = Alignment.Center
                     ) {
@@ -280,28 +247,28 @@ class GaleriaFotosSupabaseActivity : ComponentActivity() {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(90.dp)
-                            .background(Color(0xFFB0B0B0)),
+                            .height(70.dp)
+                            .background(JuntosTheme.colors.azulOscuroLogo),
                         contentAlignment = Alignment.Center
                     ) {
                         Button(
                             onClick = onGuardar,
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = Color.Transparent,
-                                contentColor = Color.Black
+                                contentColor = Color.White
                             ),
                             elevation = ButtonDefaults.buttonElevation(0.dp)
                         ) {
                             Icon(
-                                imageVector = Icons.Default.Save,
+                                imageVector = Icons.Default.Download,
                                 contentDescription = null,
-                                modifier = Modifier.size(26.dp)
+                                modifier = Modifier.size(22.dp)
                             )
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(
-                                text = "Guardar",
+                                text = stringResource(R.string.txt_descargar),
                                 fontWeight = FontWeight.Bold,
-                                fontSize = 20.sp
+                                style = MaterialTheme.typography.titleMedium
                             )
                         }
                     }
