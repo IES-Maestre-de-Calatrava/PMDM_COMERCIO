@@ -33,7 +33,7 @@
     <string name="txt_Juntos">JUNTOS</string>
     <string name="txt_Archivos">ARCHIVOS</string>
     <string name="txt_documentos">DOCUMENTOS</string>
-    <string name="txt_descargar">DESCARGAR</string>
+    <string name="txt_descargar">Descargar</string>
     <string name="txt_redSocial">RED SOCIAL</string>
     <string name="txt_detalle">DETALLES</string>
     <string name="txt_tareas">TAREAS</string>
@@ -129,5 +129,6 @@
     <string name="txt_descargar_documento">Para descargar el documento tienes que apretar el botón descargar archivo</string>
     <string name="txt_crear_comentario">Para crear el comentario tienes que apretar el boton crear poner el usuario  y el comentario</string>
     <string name="txt_editar_comentario">Para editar tienes que pulsar sobre una publicación y podras editar el nombre y el comentario</string>
+    <string name="txt_eliminar_comentario">Para borrar tienes que pulsar sobre una publicación y tendras un botón que es para eliminar</string>
 
 </resources>

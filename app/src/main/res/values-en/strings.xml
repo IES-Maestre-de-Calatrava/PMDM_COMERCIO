@@ -38,7 +38,7 @@
     <string name="txt_Juntos">TOGETHER</string>
     <string name="txt_Archivos">FILES</string>
     <string name="txt_documentos">DOCUMENTS</string>
-    <string name="txt_descargar">DOWNLOAD</string>
+    <string name="txt_descargar">Download</string>
     <string name="txt_crear">Create</string>
     <string name="txt_borrar">Delete</string>
     <string name="txt_redSocial">SOCIAL NETWORK</string>
@@ -146,6 +146,7 @@
     <string name="txt_descargar_documento">To create a comment, you have to press the create button, enter the username, and the comment.</string>
     <string name="txt_crear_comentario">To create a comment, you have to press the create button, enter the username, and the comment.</string>
     <string name="txt_editar_comentario">To edit, you have to click on a post and you will be able to edit the name and the comment</string>
+    <string name="txt_eliminar_comentario">" To delete, you have to click on a post and you will see a button to delete it."</string>
 
 
 </resources>

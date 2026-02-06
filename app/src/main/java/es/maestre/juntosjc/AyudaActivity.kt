@@ -12,6 +12,7 @@ import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -68,25 +69,26 @@ fun AyudaPrincipal(seccion: String){
             )
         }
     ){
-        Column(
+        LazyColumn(
             modifier = Modifier.padding(it)
         ) {
-            // Usamos un when para llamar a las funciones dependiendo de la seccion
-            when (seccion){
-                "CALENDARIO" -> AyudaCalendario()
-                "TAREAS" -> AyudaTareas()
-                "DOCUMENTOS" -> AyudaDocumentos()
-                "RED SOCIAL" -> AyudaRedSocial()
-                // si llamamos desde la main, se muestran todos
-            else -> {
-                AyudaCalendario()
-                AyudaTareas()
-                AyudaDocumentos()
-                AyudaRedSocial()
-            }
+            item {
+                // Usamos un when para llamar a las funciones dependiendo de la seccion
+                when (seccion) {
+                    "CALENDARIO" -> AyudaCalendario()
+                    "TAREAS" -> AyudaTareas()
+                    "DOCUMENTOS" -> AyudaDocumentos()
+                    "RED SOCIAL" -> AyudaRedSocial()
+                    // si llamamos desde la main, se muestran todos
+                    else -> {
+                        AyudaCalendario()
+                        AyudaTareas()
+                        AyudaDocumentos()
+                        AyudaRedSocial()
+                    }
+                }
             }
         }
-
     }
 }
 
@@ -153,7 +155,7 @@ fun AyudaRedSocial() {
         )
         BotonTexto(
             stringResource(R.string.txt_borrar),
-            stringResource(R.string.btn_Crear)
+            stringResource(R.string.txt_eliminar_comentario)
         )
     }
 }
