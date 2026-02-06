@@ -44,6 +44,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import es.maestre.juntosjc.model.Ayuda
 import es.maestre.juntosjc.model.TareaItem
 import es.maestre.juntosjc.ui.theme.JUNTOSJCTheme
 import es.maestre.juntosjc.viewModel.TareaViewModel
@@ -110,7 +111,7 @@ fun MyAppTareas(viewModel: TareaViewModel) {
                 actions = {
                     IconButton(onClick = {
                         val intent = Intent(context, AyudaActivity::class.java)
-                        intent.putExtra("SECCION", "TAREAS") // Filtro para Tareas
+                        intent.putExtra("SECCION", Ayuda.TAREAS) // Filtro para Tareas
                         context.startActivity(intent)
                     }) {
                         Icon(

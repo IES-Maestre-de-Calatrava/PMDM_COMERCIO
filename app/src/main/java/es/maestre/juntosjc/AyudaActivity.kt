@@ -30,6 +30,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import es.maestre.juntosjc.model.Ayuda
 import es.maestre.juntosjc.ui.theme.JUNTOSJCTheme
 
 class AyudaActivity : ComponentActivity() {
@@ -39,12 +40,14 @@ class AyudaActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        // para filtrar, usaremos una variables seccion, recuperamos la seccion desde intent, por defecto es la general
-        val seccion = intent.getStringExtra("SECCION") ?: "GENERAL"
+        //para filtrar, usaremos una variables seccion, recuperamos la seccion desde intent, por defecto es la general
+        //Esta implementación de getSerializableExtra está deprecada a partir de API 33,
+        //el proyecto apunta a una versión anterior, así que se usa la implementación anterior
+        val seccion = intent.getSerializableExtra("SECCION") ?: Ayuda.GENERAL
 
         setContent {
             JUNTOSJCTheme {
-                AyudaPrincipal(seccion)
+                AyudaPrincipal(seccion as Ayuda)
             }
         }
     }
@@ -52,7 +55,7 @@ class AyudaActivity : ComponentActivity() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AyudaPrincipal(seccion: String){
+fun AyudaPrincipal(seccion: Ayuda){
     Scaffold(
         topBar = {
             TopAppBar(
@@ -75,20 +78,24 @@ fun AyudaPrincipal(seccion: String){
             item {
                 // Usamos un when para llamar a las funciones dependiendo de la seccion
                 when (seccion) {
-                    "CALENDARIO" -> AyudaCalendario()
-                    "TAREAS" -> AyudaTareas()
-                    "DOCUMENTOS" -> AyudaDocumentos()
-                    "RED SOCIAL" -> AyudaRedSocial()
+                    Ayuda.CALENDARIO -> AyudaCalendario()
+                    Ayuda.CONFIGURACION -> AyudaConfigurar()
+                    Ayuda.CONTACTOS -> AyudaContactos()
+                    Ayuda.DOCUMENTOS -> AyudaDocumentos()
+                    Ayuda.FOTOS -> AyudaFotos()
+                    Ayuda.INVITAR -> AyudaInvitar()
+                    Ayuda.SOCIAL -> AyudaRedSocial()
+                    Ayuda.TAREAS -> AyudaTareas()
                     // si llamamos desde la main, se muestran todos
                     else -> {
                         AyudaCalendario()
-                        AyudaTareas()
-                        AyudaDocumentos()
-                        AyudaRedSocial()
-                        AyudaInvitar()
-                        AyudaContactos()
-                        AyudaFotos()
                         AyudaConfigurar()
+                        AyudaContactos()
+                        AyudaDocumentos()
+                        AyudaFotos()
+                        AyudaInvitar()
+                        AyudaRedSocial()
+                        AyudaTareas()
                     }
                 }
             }
@@ -99,7 +106,7 @@ fun AyudaPrincipal(seccion: String){
 @Preview
 @Composable
 fun AyudaPrincipalPreview(){
-    AyudaPrincipal("GENERAL")
+    AyudaPrincipal(Ayuda.GENERAL)
 }
 
 @Composable

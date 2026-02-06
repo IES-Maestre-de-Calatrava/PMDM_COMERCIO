@@ -36,6 +36,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import es.maestre.juntosjc.model.Ayuda
 import es.maestre.juntosjc.viewModel.DocumentoViewModel
 import es.maestre.juntosjc.ui.theme.JUNTOSJCTheme
 
@@ -143,7 +144,7 @@ class DocumentoActivity: ComponentActivity(){
                 actions = {
                     IconButton(onClick = {
                         val intent = Intent(context, AyudaActivity::class.java)
-                        intent.putExtra("SECCION", "DOCUMENTOS") // Filtro para Documentos
+                        intent.putExtra("SECCION", Ayuda.DOCUMENTOS) // Filtro para Documentos
                         context.startActivity(intent)
                     }) {
                         Icon(

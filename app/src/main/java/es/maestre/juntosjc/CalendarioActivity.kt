@@ -53,6 +53,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import es.maestre.juntosjc.model.Ayuda
 import es.maestre.juntosjc.model.EventoItem
 
 /**
@@ -120,7 +121,7 @@ fun MyAppCalendario(viewModel: EventoViewModel) {
                 actions = {
                     IconButton(onClick = {
                         val intent = Intent(context, AyudaActivity::class.java)
-                        intent.putExtra("SECCION", "CALENDARIO")
+                        intent.putExtra("SECCION", Ayuda.CALENDARIO)
                         context.startActivity(intent)
                     }) {
                         Icon(

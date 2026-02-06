@@ -21,12 +21,16 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import es.maestre.juntosjc.model.AppFeature
+import es.maestre.juntosjc.model.Ayuda
 import es.maestre.juntosjc.model.ThemeMode
 import es.maestre.juntosjc.ui.theme.JUNTOSJCTheme
 import es.maestre.juntosjc.ui.theme.JuntosTheme
@@ -73,6 +77,8 @@ fun ConfiguracionScreen(
     val enabledFeatures by viewModel.enabledFeatures.collectAsStateWithLifecycle()
     val isLoading by viewModel.isLoading.collectAsStateWithLifecycle()
     val error by viewModel.error.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+
 
     var showThemeDialog by remember { mutableStateOf(false) }
 
@@ -109,7 +115,20 @@ fun ConfiguracionScreen(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
                     navigationIconContentColor = MaterialTheme.colorScheme.onPrimaryContainer
-                )
+                ),
+                actions = {
+                    IconButton(onClick = {
+                        val intent = Intent(context, AyudaActivity::class.java)
+                        intent.putExtra("SECCION", Ayuda.CONFIGURACION)
+                        context.startActivity(intent)
+                    }) {
+                        Icon(
+                            painter = painterResource(R.drawable.help_question_svgrepo_com),
+                            contentDescription = "Ayuda",
+                            tint = Color.Unspecified
+                        )
+                    }
+                }
             )
         }
     ) { paddingValues ->

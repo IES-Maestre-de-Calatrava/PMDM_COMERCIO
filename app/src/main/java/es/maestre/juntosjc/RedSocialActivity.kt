@@ -44,6 +44,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import es.maestre.juntosjc.model.Ayuda
 import es.maestre.juntosjc.viewModel.ComentarioViewModel
 import es.maestre.juntosjc.model.ComentarioItem
 import es.maestre.juntosjc.ui.theme.JUNTOSJCTheme
@@ -78,7 +79,6 @@ class RedSocialActivity : ComponentActivity() {
     }
 }
 
-
 /**
  * Funcion que me genera la cabecera de la Activity con su nombre correspondiente
  * y me llama a la funcion que me lista los datos
@@ -110,7 +110,7 @@ fun MyAppRedSocial(viewModel: ComentarioViewModel) {
                 actions = {
                     IconButton(onClick = {
                         val intent = Intent(context, AyudaActivity::class.java)
-                        intent.putExtra("SECCION", "RED SOCIAL") // Pasamos el filtro
+                        intent.putExtra("SECCION", Ayuda.SOCIAL) // Pasamos el filtro
                         context.startActivity(intent)
                     }) {
                         Icon(
