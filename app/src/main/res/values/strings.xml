@@ -32,7 +32,7 @@
 
     <string name="txt_Juntos">JUNTOS</string>
     <string name="txt_Archivos">ARCHIVOS</string>
-    <string name="txt_documentos">DOCUMENTOS</string>
+    <string name="txt_documentos">Documentos</string>
     <string name="txt_descargar">Descargar</string>
     <string name="txt_redSocial">RED SOCIAL</string>
     <string name="txt_detalle">DETALLES</string>
@@ -44,7 +44,7 @@
     <string name="txt_configuracion">CONFIGURAR</string>
 
 
-    <string name="txt_btnDocs">Documentos</string>
+    <string name="txt_btnDocs">DOCUMENTOS</string>
 
     <string name="texto_ver_descargar_DESCARGAR">Toca para ver o descargar</string>
     <string name="texto_ver_COMENTARIO">Toca para ver</string>

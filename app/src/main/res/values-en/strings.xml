@@ -37,7 +37,7 @@
 
     <string name="txt_Juntos">TOGETHER</string>
     <string name="txt_Archivos">FILES</string>
-    <string name="txt_documentos">DOCUMENTS</string>
+    <string name="txt_documentos">Files</string>
     <string name="txt_descargar">Download</string>
     <string name="txt_crear">Create</string>
     <string name="txt_borrar">Delete</string>
@@ -47,12 +47,12 @@
     <string name="txt_calendario">CALENDAR</string>
     <string name="txt_contactos">CONTACTS</string>
     <string name="txt_invitar">INVITE</string>
-    <string name="txt_fotos">FOTOS</string>
-    <string name="txt_configuracion">CONFIGURATE</string>
+    <string name="txt_fotos">PHOTOS</string>
+    <string name="txt_configuracion">SETTINGS</string>
 
 
 
-    <string name="txt_btnDocs">Files</string>
+    <string name="txt_btnDocs">FILES</string>
 
     <string name="texto_ver_descargar_DESCARGAR">Touch to see or download</string>
     <string name="texto_ver_COMENTARIO">Touch to see</string>
