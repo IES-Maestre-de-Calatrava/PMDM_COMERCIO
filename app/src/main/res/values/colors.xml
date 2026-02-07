@@ -8,8 +8,8 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="verde_esmeralda">#2E7D32</color>
-    <color name="azul_corporativo">#1976D2</color>
-    <color name="rojo_material">#D32F2F</color>
+    <color name="azul_pastel">#A7C7E7</color>
+    <color name="rojo_pastel">#FF6961</color>
     <color name="container">#DAE2FF</color>
     <color name="content">#314578</color>
     <color name="gris">#D3D3D3</color>
@@ -19,6 +19,8 @@
     <color name="rosita">#FFFF6699</color>
     <color name="naranjita">#FF9800</color>
     <color name="txt_debajo_icnon_main">#FF4A4A68</color>
+    <color name="azul_cielo">#FFB3E5FC</color>
+    <color name="azul_contraste">#FF01579B</color>
 
 
 </resources>

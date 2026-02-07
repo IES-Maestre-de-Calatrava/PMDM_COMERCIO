@@ -72,6 +72,8 @@
     <string name="titulo">Titulo:</string>
     <string name="descripcion">Descripcion:</string>
     <string name="asistentes">Asistentes:</string>
+    <string name="hora">Hora: (hh:mm:ss)</string>
+
     <string name="preguntaEliminar">¿Eliminar Evento?</string>
     <string name="confirmacionEliminar">¿Estás seguro/a?</string>
     <string name="title_activity_ayuda">AyudaActivity</string>

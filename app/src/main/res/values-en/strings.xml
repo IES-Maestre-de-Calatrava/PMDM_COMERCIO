@@ -84,6 +84,7 @@
     <string name="titulo">Tittle:</string>
     <string name="descripcion">Description:</string>
     <string name="asistentes">Assistants:</string>
+    <string name="hora">Time: (hh:mm:ss)</string>
     <string name="preguntaEliminar">Delete Event?</string>
     <string name="confirmacionEliminar">Are you sure?</string>
     <string name="title_activity_ayuda">HelpActivity</string>

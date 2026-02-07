@@ -48,8 +48,10 @@ import es.maestre.juntosjc.ui.theme.JUNTOSJCTheme
 import es.maestre.juntosjc.viewModel.EventoViewModel
 import kotlin.getValue
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -95,6 +97,7 @@ fun MyAppCalendario(viewModel: EventoViewModel) {
     var nuevoTitulo by remember { mutableStateOf("") }
     var nuevaDesc by remember { mutableStateOf("") }
     var nuevosAsistentes by remember{mutableStateOf("")}
+    var nuevaHora by remember{mutableStateOf("") }
 
     // Efecto para cargar eventos cuando cambie la fecha seleccionada
     LaunchedEffect(datePickerState.selectedDateMillis) {
@@ -139,10 +142,11 @@ fun MyAppCalendario(viewModel: EventoViewModel) {
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { showDialog = true },
-                containerColor = colorResource(R.color.verde_esmeralda),
-                contentColor = Color.Unspecified // esto hace que el contenido no coja ningun color
+                containerColor = colorResource(R.color.white),
+                        contentColor = Color.Unspecified
             ) {
-                Icon(painter = painterResource(R.drawable.add_to_svgrepo_com), contentDescription = stringResource(R.string.addevento))
+                Icon(painter = painterResource(R.drawable.add_to_svgrepo_com),
+                    contentDescription = stringResource(R.string.addevento))
             }
         }
 
@@ -159,7 +163,14 @@ fun MyAppCalendario(viewModel: EventoViewModel) {
                 showModeToggle = false, // Para que no cambie a modo escribir
                 title = null,
                 headline = null,
-                modifier = Modifier.weight(1.2f) // Ocupa la parte de arriba
+                modifier = Modifier.weight(1.2f), // Ocupa la parte de arriba
+                colors = DatePickerDefaults.colors(
+                    containerColor = colorResource(R.color.white),
+                    selectedDayContainerColor = colorResource(R.color.azul_cielo),
+                    selectedDayContentColor = colorResource(R.color.azul_contraste),
+                    todayContentColor = colorResource(R.color.container),
+                    todayDateBorderColor = colorResource(R.color.container)
+                )
             )
 
             HorizontalDivider()
@@ -220,6 +231,12 @@ fun MyAppCalendario(viewModel: EventoViewModel) {
                         onValueChange = { nuevosAsistentes = it },
                         label = { Text(stringResource(R.string.asistentes)) }
                     )
+                    OutlinedTextField(
+                        value = nuevaHora,
+                        onValueChange = { nuevaHora = it },
+                        label = { Text(stringResource(R.string.hora)) }
+                    )
+
                 }
             },
             confirmButton = {
@@ -233,7 +250,8 @@ fun MyAppCalendario(viewModel: EventoViewModel) {
                                 titulo_evento = nuevoTitulo,
                                 descripcion_evento = nuevaDesc,
                                 fecha_evento = fechaParaEvento,
-                                asistentes = nuevosAsistentes
+                                asistentes = nuevosAsistentes,
+                                Hora = nuevaHora
                             )
 
                             viewModel.insertarEventoSupabase(nuevoEvento){
@@ -241,6 +259,7 @@ fun MyAppCalendario(viewModel: EventoViewModel) {
                                 nuevoTitulo = ""
                                 nuevaDesc = ""
                                 nuevosAsistentes = ""
+                                nuevaHora = ""
                                 showDialog = false
                             }
                         }
@@ -266,6 +285,7 @@ fun MyAppCalendario(viewModel: EventoViewModel) {
 @Composable
 fun EventoItemRow(evento: EventoItem, onDeleteConfirmed: () -> Unit) {
     var showDeleteDialog by remember { mutableStateOf(false) }
+    val context = LocalContext.current
 
     // Diálogo de confirmación de borrado, solo aparece si mantenemos pulsado el evento
     if (showDeleteDialog) {
@@ -280,7 +300,7 @@ fun EventoItemRow(evento: EventoItem, onDeleteConfirmed: () -> Unit) {
                         showDeleteDialog = false
                     }
                 ) {
-                    Text(stringResource(R.string.btn_Eliminar), color = colorResource(R.color.rojo_material))
+                    Text(stringResource(R.string.btn_Eliminar), color = colorResource(R.color.rojo_pastel))
                 }
             },
             dismissButton = {
@@ -294,19 +314,30 @@ fun EventoItemRow(evento: EventoItem, onDeleteConfirmed: () -> Unit) {
     Card(
         modifier = Modifier.fillMaxWidth()
             .combinedClickable(
-                onClick = {},
+                onClick = {
+                    // Acción al hacer clic: Ir a Detalle
+                    val intent = Intent(context, DetalleEventoActivity::class.java).apply {
+                        putExtra("ID_EVENTO", evento.id_evento ?: -1)
+                        putExtra("TITULO_EVENTO", evento.titulo_evento)
+                        putExtra("DESCRIPCION_EVENTO", evento.descripcion_evento)
+                        putExtra("FECHA_EVENTO", evento.fecha_evento)
+                        putExtra("ASISTENTES", evento.asistentes)
+                        putExtra("HORA", evento.Hora)
+                    }
+                    context.startActivity(intent)
+                },
                 onLongClick = { showDeleteDialog = true }
             ),
         colors = CardDefaults.cardColors(containerColor = colorResource(R.color.container))
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text(text = evento.titulo_evento, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleLarge)
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(text = stringResource(R.string.descripcion), style = MaterialTheme.typography.titleMedium)
-            Text(text = evento.descripcion_evento, style = MaterialTheme.typography.bodyMedium)
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(text = stringResource(R.string.asistentes), style = MaterialTheme.typography.titleMedium)
-            Text(text = evento.asistentes, style = MaterialTheme.typography.bodyMedium)
+        Column(modifier = Modifier.fillMaxWidth().padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally) {
+            Text(text = evento.titulo_evento,
+                fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.titleLarge,
+                color = colorResource(R.color.azul_contraste))
         }
     }
 }
+
+

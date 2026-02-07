@@ -77,6 +77,8 @@
         <activity
             android:name=".LoginActivity"
             android:exported="true" />
+        <activity android:name=".DetalleEventoActivity"
+            android:exported="true"/>
         <activity
             android:name=".BienvenidoActivity"
             android:exported="true"

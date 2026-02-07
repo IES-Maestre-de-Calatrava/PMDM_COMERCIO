@@ -170,7 +170,7 @@ fun CamposDetalle(
         },
         modifier = Modifier.fillMaxWidth().height(50.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = colorResource(R.color.azul_corporativo),
+            containerColor = colorResource(R.color.azul_pastel),
             contentColor = colorResource(R.color.white)
         )
     ) {
@@ -204,7 +204,7 @@ fun CamposDetalle(
             },
             modifier = Modifier.fillMaxWidth().height(50.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = colorResource(R.color.rojo_material),
+                containerColor = colorResource(R.color.rojo_pastel),
                 contentColor = colorResource(R.color.white)
             )
         ) {

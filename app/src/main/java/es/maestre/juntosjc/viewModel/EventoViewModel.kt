@@ -68,4 +68,21 @@ class EventoViewModel(application: Application) : AndroidViewModel(application) 
         }
     }
 
+
+    // 4. Actualizar un evento existente
+    fun actualizarEventoSupabase(evento: EventoItem, onDone: () -> Unit) {
+        viewModelScope.launch {
+            try {
+                SupabaseClient.client.from("evento").update(evento) {
+                    filter { eq("id_evento", evento.id_evento ?: 0) }
+                }
+                // Refrescamos la lista para la fecha del evento actualizado
+                obtenerEventosPorFechaSupabase(evento.fecha_evento)
+                onDone()
+            } catch (e: Exception) {
+                Log.e("Supabase", "Error al actualizar: ${e.message}")
+            }
+        }
+    }
+
 }

@@ -236,7 +236,7 @@ fun PantallaPerfil() {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .background(colorResource(R.color.azul_corporativo))
+                            .background(colorResource(R.color.azul_pastel))
                             .padding(vertical = 32.dp),
                         contentAlignment = Alignment.Center
                     ) {
@@ -491,7 +491,7 @@ fun ModalEditarPerfil(
                                 .size(80.dp)
                                 .clip(CircleShape)
                                 .clickable { imagePickerLauncher.launch("image/*") }
-                                .border(2.dp, colorResource(R.color.azul_corporativo), CircleShape),
+                                .border(2.dp, colorResource(R.color.azul_pastel), CircleShape),
                             color = Color.Gray.copy(alpha = 0.2f)
                         ) {
                             if (imageUri != null || fotoPerfil != null) {
@@ -510,7 +510,7 @@ fun ModalEditarPerfil(
                                         imageVector = Icons.Default.PhotoCamera,
                                         contentDescription = "Cambiar foto",
                                         modifier = Modifier.size(30.dp),
-                                        tint = colorResource(R.color.azul_corporativo)
+                                        tint = colorResource(R.color.azul_pastel)
                                     )
                                 }
                             }
@@ -579,7 +579,7 @@ fun ModalEditarPerfil(
                 onClick = { onGuardar(nombre, apellido, edad, curso, fotoPerfil) },
                 enabled = !isUploadingImage,
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = colorResource(R.color.azul_corporativo)
+                    containerColor = colorResource(R.color.azul_pastel)
                 )
             ) {
                 Text("Guardar")

@@ -14,5 +14,9 @@ data class EventoItem(
     @SerialName("fecha_evento")
     val fecha_evento: Long,
     @SerialName("asistentes")
-    val asistentes: String)
+    val asistentes: String,
+    @SerialName("Hora")
+    val Hora: String)
+
+
 
