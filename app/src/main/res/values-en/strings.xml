@@ -71,8 +71,10 @@
 
 
 
-    <string name="lb_nombreUsuario">Username:</string>
+    <string name="lb_nombreUsuario">Name:</string>
     <string name="lbNombre">Name:</string>
+    <string name="lbTitulo">Tittle:</string>
+
 
     <string name="lb_comentario">Commentary:</string>
     <string name="lbComentario">Comment</string>

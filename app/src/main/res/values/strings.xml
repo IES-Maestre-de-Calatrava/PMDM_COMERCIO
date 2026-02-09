@@ -59,8 +59,9 @@
     <string name="btn_descargarDoc">Descargar Archivo</string>
 
 
-    <string name="lb_nombreUsuario">Nombre del Usuario:</string>
+    <string name="lb_nombreUsuario">Nombre:</string>
     <string name="lbNombre">Nombre:</string>
+    <string name="lbTitulo">Titulo:</string>
 
     <string name="lb_comentario">Comentario:</string>
     <string name="lbComentario">Comentario</string>

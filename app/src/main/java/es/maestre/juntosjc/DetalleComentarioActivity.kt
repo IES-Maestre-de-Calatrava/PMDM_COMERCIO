@@ -26,6 +26,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -43,6 +44,7 @@ import es.maestre.juntosjc.viewModel.ComentarioViewModel
 import es.maestre.juntosjc.ui.theme.JUNTOSJCTheme
 import kotlin.getValue
 import es.maestre.juntosjc.model.ComentarioItem
+import io.github.jan.supabase.SupabaseClient
 
 /**
  * Clase DetalleComentarioActivity: esta clase es la que muestra la informacion
@@ -60,6 +62,7 @@ class DetalleComentarioActivity: ComponentActivity() {
         val idComentario = intent.getIntExtra("ID_COMENTARIO", -1)
         val nombreBackup = intent.getStringExtra("NOMBRE_USUARIO") ?: ""
         val textoBackup = intent.getStringExtra("TEXTO") ?: ""
+        val tituloBackup = intent.getStringExtra("TITULO") ?: ""
 
 
         enableEdgeToEdge()
@@ -69,9 +72,9 @@ class DetalleComentarioActivity: ComponentActivity() {
                     if (idComentario > 0) {
                         // Buscamos en la lista descargada de Supabase
                         viewModel.listaComentariosSupabase.find { it.id_comentario == idComentario }
-                            ?: ComentarioItem(idComentario, nombreBackup, textoBackup) // Si no lo encuentra, usa el backup
+                            ?: ComentarioItem(idComentario, nombreBackup, textoBackup, tituloBackup) // Si no lo encuentra, usa el backup
                     } else {
-                        ComentarioItem(null, "", "") // Nuevo comentario
+                        ComentarioItem(null, "", "", "") // Nuevo comentario
                     }
                 }
 
@@ -134,10 +137,25 @@ fun CamposDetalle(
 ) {
     // Usamos estados para que los campos sean editables
     // Nota: Para editar realmente, luego usaremos estos valores en el botón Guardar
+    var titulo by remember { mutableStateOf(comentario.titulo) }
     var nombre by remember { mutableStateOf(comentario.nombre_usuario) }
     var texto by remember { mutableStateOf(comentario.texto) }
 
+    val iconoUsuarioActual = remember { mutableStateOf<String?>(null) }
+
+    LaunchedEffect(Unit) {
+        iconoUsuarioActual.value = viewModel.obtenerIconoDesdePerfiles()
+    }
+
     // Campos editables segun los atributos del comentario
+    Text(text = stringResource(R.string.lbTitulo), fontWeight = FontWeight.Bold)
+    OutlinedTextField(
+        value = titulo,
+        onValueChange = { titulo = it },
+        modifier = Modifier.fillMaxWidth(),
+        label = { Text(stringResource(R.string.lbTitulo)) }
+    )
+
     Text(text = stringResource(R.string.lb_nombreUsuario), fontWeight = FontWeight.Bold)
     OutlinedTextField(
         value = nombre,
@@ -160,7 +178,9 @@ fun CamposDetalle(
             val nuevoItem = ComentarioItem(
                 id_comentario = if (esNuevo) null else comentario.id_comentario,
                 nombre_usuario = nombre,
-                texto = texto
+                texto = texto,
+                titulo = titulo,
+                icono_usuario = iconoUsuarioActual.value ?: comentario.icono_usuario
             )
             if (esNuevo) {
                 viewModel.insertarComentarioSupabase(nuevoItem) { onActionDone() }
@@ -228,3 +248,7 @@ fun CamposDetalle(
     }
 
 }
+
+
+
+

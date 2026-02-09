@@ -10,4 +10,8 @@ data class ComentarioItem(
     @SerialName("nombre_usuario")
     val nombre_usuario: String,
     @SerialName("texto")
-    val texto: String)
+    val texto: String,
+    @SerialName("titulo")
+    val titulo: String,
+    @SerialName("icono_usuario")
+    val icono_usuario: String? = null)

@@ -5,10 +5,13 @@ import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import es.maestre.juntosjc.PerfilRow
 import es.maestre.juntosjc.model.ComentarioItem
 import es.maestre.juntosjc.supabase.SupabaseClient
 import io.github.jan.supabase.postgrest.from
+import io.github.jan.supabase.postgrest.postgrest
 import kotlinx.coroutines.launch
+
 
 /**
  * ViewModel de los comentarios
@@ -77,5 +80,32 @@ class ComentarioViewModel(application: Application) : AndroidViewModel(applicati
             }
         }
     }
+
+    private fun getEmailUsuario(): String? {
+        val prefs = getApplication<Application>().getSharedPreferences("APP", 0)
+        return prefs.getString("email_usuario", null)
+    }
+
+
+    suspend fun obtenerIconoDesdePerfiles(): String? {
+        val email = getEmailUsuario() ?: return null
+
+        return try {
+            // Asegúrate de usar la sintaxis estándar de la librería para evitar líos
+            val perfiles = SupabaseClient.client.from("perfiles")
+                .select {
+                    filter {
+                        eq("email", email)
+                    }
+                }
+                .decodeList<PerfilRow>()
+
+            perfiles.firstOrNull()?.icono
+        } catch (e: Exception) {
+            Log.e("Supabase.Perfiles", "Error obteniendo icono: ${e.message}")
+            null
+        }
+    }
+
 
 }

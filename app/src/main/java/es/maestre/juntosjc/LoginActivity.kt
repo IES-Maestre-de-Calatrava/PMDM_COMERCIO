@@ -1,5 +1,6 @@
 package es.maestre.juntosjc
 
+import android.content.Context.MODE_PRIVATE
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -10,6 +11,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
@@ -50,11 +52,17 @@ fun LoginScreen(
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var isSignUp by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+
 
     val loginState by viewModel. loginState.collectAsStateWithLifecycle()
 
     LaunchedEffect(loginState) {
         if (loginState is LoginState.Success) {
+
+            val prefs = context.getSharedPreferences("APP", MODE_PRIVATE)
+            prefs.edit().putString("email_usuario",email).apply()
+
             onLoginSuccess()
             viewModel.resetState()
         }

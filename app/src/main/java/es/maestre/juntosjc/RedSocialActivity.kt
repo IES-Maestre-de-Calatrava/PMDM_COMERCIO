@@ -14,19 +14,16 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Description
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -44,11 +41,19 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import es.maestre.juntosjc.model.Ayuda
 import es.maestre.juntosjc.viewModel.ComentarioViewModel
 import es.maestre.juntosjc.model.ComentarioItem
 import es.maestre.juntosjc.ui.theme.JUNTOSJCTheme
 import kotlin.getValue
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.foundation.lazy.items
+import coil.compose.AsyncImage
+import androidx.compose.material.icons.filled.Person
+
 
 /**
  * Clase RedSocialActivity: en esta clase se muestra una LazyColumn con
@@ -91,10 +96,10 @@ fun MyAppRedSocial(viewModel: ComentarioViewModel) {
     androidx.compose.runtime.LaunchedEffect(Unit) {
         viewModel.obtenerComentariosSupabase()
     }
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
-            // Cabecera con TopAppBar
             TopAppBar(
                 title = {
                     Text(
@@ -110,7 +115,7 @@ fun MyAppRedSocial(viewModel: ComentarioViewModel) {
                 actions = {
                     IconButton(onClick = {
                         val intent = Intent(context, AyudaActivity::class.java)
-                        intent.putExtra("SECCION", Ayuda.SOCIAL) // Pasamos el filtro
+                        intent.putExtra("SECCION", Ayuda.SOCIAL)
                         context.startActivity(intent)
                     }) {
                         Icon(
@@ -121,45 +126,31 @@ fun MyAppRedSocial(viewModel: ComentarioViewModel) {
                     }
                 }
             )
-        }
-    ) { paddingSobrante ->
-        // El contenido de la LazyColumn se ajusta debajo de la cabecera gracias a paddingSobrante
-        Column(
-            modifier = Modifier.padding(paddingSobrante),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Button(
+        },
+        floatingActionButton = {
+            FloatingActionButton(
                 onClick = {
-                    // Creamos el Intent para ir a DetalleComentarioActivity
                     val intent = Intent(context, DetalleComentarioActivity::class.java).apply {
-                        // Pasamos el ID como 0, ya q al no haber, para que mi clase comentario al tener el autoGenerate = true, me genere el id que vale
                         putExtra("ID_COMENTARIO", 0)
                     }
                     context.startActivity(intent)
                 },
-                modifier = Modifier.height(50.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = colorResource(R.color.verde_esmeralda),
-                    contentColor = Color.Unspecified
-                )
+                containerColor = colorResource(R.color.white),
+                contentColor = Color.Unspecified
             ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.add_to_svgrepo_com),
-                        contentDescription = stringResource(R.string.descripcion_btnCrear_detalle),
-                        modifier = Modifier.size(24.dp),
-                        tint = Color.Unspecified
-                    )
-                    Spacer(modifier = Modifier.width(10.dp))
-                    Text(
-                        text = stringResource(R.string.btn_Crear),
-                        style = MaterialTheme.typography.titleMedium
-                    )
-                }
+                Icon(
+                    painter = painterResource(id = R.drawable.add_to_svgrepo_com),
+                    contentDescription = stringResource(R.string.btn_Crear)
+                )
             }
+        }
+    ) { paddingSobrante ->
+        Column(
+            modifier = Modifier
+                .padding(paddingSobrante)
+                .fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             ListaComentarios(viewModel = viewModel)
         }
     }
@@ -170,8 +161,6 @@ fun MyAppRedSocial(viewModel: ComentarioViewModel) {
  */
 @Composable
 fun ListaComentarios(viewModel: ComentarioViewModel) {
-
-    // Observamos los datos del LiveData definido en el ViewModel
     val listaComentarios = viewModel.listaComentariosSupabase
     val context = LocalContext.current
 
@@ -180,17 +169,15 @@ fun ListaComentarios(viewModel: ComentarioViewModel) {
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-
         items(listaComentarios) { comentario ->
             ComentarioItem(
                 comentario = comentario,
                 onClick = {
-                    // Creamos el Intent para ir a DetalleComentarioActivity
                     val intent = Intent(context, DetalleComentarioActivity::class.java).apply {
-                        // Pasamos el ID del comentario como "extra"
                         putExtra("ID_COMENTARIO", comentario.id_comentario ?: -1)
                         putExtra("NOMBRE_USUARIO", comentario.nombre_usuario)
                         putExtra("TEXTO", comentario.texto)
+                        putExtra("TITULO", comentario.titulo)
                     }
                     context.startActivity(intent)
                 }
@@ -198,6 +185,7 @@ fun ListaComentarios(viewModel: ComentarioViewModel) {
         }
     }
 }
+
 
 /**
  * Funcion que establece la estructura de cada uno de los items que
@@ -209,7 +197,8 @@ fun ComentarioItem(comentario: ComentarioItem, onClick: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onClick() },
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        colors = CardDefaults.cardColors(containerColor = colorResource(R.color.container))
     ) {
         Row(
             modifier = Modifier
@@ -217,20 +206,37 @@ fun ComentarioItem(comentario: ComentarioItem, onClick: () -> Unit) {
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(
-                imageVector = Icons.Default.Description,
-                contentDescription = "Icon",
-                tint = MaterialTheme.colorScheme.primary
-            )
+            // Imagen de perfil circular
+            androidx.compose.material3.Surface(
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(CircleShape),
+                color = Color.Gray.copy(alpha = 0.2f)
+            ) {
+                // Comprobamos si el modelo tiene icono, si no, ponemos el de Person
+                if (!comentario.icono_usuario.isNullOrEmpty()) {
+                    AsyncImage(
+                        model = comentario.icono_usuario,
+                        contentDescription = "Foto de perfil",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.fillMaxSize()
+                    )
+                } else {
+                    Icon(
+                        imageVector = Icons.Default.Person,
+                        contentDescription = "Sin foto",
+                        modifier = Modifier.padding(8.dp),
+                        tint = Color.Gray
+                    )
+                }
+            }
+
             Spacer(modifier = Modifier.width(16.dp))
+
             Column {
                 Text(
-                    text = comentario.nombre_usuario, // nombre del comentario
+                    text = comentario.titulo,
                     style = MaterialTheme.typography.titleMedium
-                )
-                Text(
-                    text = stringResource(R.string.texto_ver_COMENTARIO),
-                    style = MaterialTheme.typography.bodySmall,
                 )
             }
         }
