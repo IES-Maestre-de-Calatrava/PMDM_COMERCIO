@@ -45,6 +45,8 @@ import es.maestre.juntosjc.ui.theme.JUNTOSJCTheme
 import kotlin.getValue
 import es.maestre.juntosjc.model.ComentarioItem
 import io.github.jan.supabase.SupabaseClient
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 
 /**
  * Clase DetalleComentarioActivity: esta clase es la que muestra la informacion
@@ -63,6 +65,7 @@ class DetalleComentarioActivity: ComponentActivity() {
         val nombreBackup = intent.getStringExtra("NOMBRE_USUARIO") ?: ""
         val textoBackup = intent.getStringExtra("TEXTO") ?: ""
         val tituloBackup = intent.getStringExtra("TITULO") ?: ""
+        val horaBackUp = intent.getStringExtra("HORA") ?: ""
 
 
         enableEdgeToEdge()
@@ -72,9 +75,9 @@ class DetalleComentarioActivity: ComponentActivity() {
                     if (idComentario > 0) {
                         // Buscamos en la lista descargada de Supabase
                         viewModel.listaComentariosSupabase.find { it.id_comentario == idComentario }
-                            ?: ComentarioItem(idComentario, nombreBackup, textoBackup, tituloBackup) // Si no lo encuentra, usa el backup
+                            ?: ComentarioItem(idComentario, nombreBackup, textoBackup, tituloBackup, hora=horaBackUp) // Si no lo encuentra, usa el backup
                     } else {
-                        ComentarioItem(null, "", "", "") // Nuevo comentario
+                        ComentarioItem(null, "", "", "", hora=horaBackUp) // Nuevo comentario
                     }
                 }
 
@@ -140,6 +143,7 @@ fun CamposDetalle(
     var titulo by remember { mutableStateOf(comentario.titulo) }
     var nombre by remember { mutableStateOf(comentario.nombre_usuario) }
     var texto by remember { mutableStateOf(comentario.texto) }
+    var hora by remember { mutableStateOf(comentario.hora) }
 
     val iconoUsuarioActual = remember { mutableStateOf<String?>(null) }
 
@@ -175,12 +179,15 @@ fun CamposDetalle(
 
     Button(
         onClick = {
+            val horaNueva = horaActualComentario()
+
             val nuevoItem = ComentarioItem(
                 id_comentario = if (esNuevo) null else comentario.id_comentario,
                 nombre_usuario = nombre,
                 texto = texto,
                 titulo = titulo,
-                icono_usuario = iconoUsuarioActual.value ?: comentario.icono_usuario
+                icono_usuario = iconoUsuarioActual.value ?: comentario.icono_usuario,
+                hora = horaNueva
             )
             if (esNuevo) {
                 viewModel.insertarComentarioSupabase(nuevoItem) { onActionDone() }
@@ -249,6 +256,12 @@ fun CamposDetalle(
 
 }
 
+
+fun horaActualComentario(): String {
+    val ahora = LocalTime.now()
+    val formatter = DateTimeFormatter.ofPattern("HH:mm")
+    return ahora.format(formatter)
+}
 
 
 

@@ -103,7 +103,7 @@
     <string name="txt_eliminar">Delete</string>
     <string name="txt_eventos_content">The events planned for the selected day are shown in the lower half</string>
     <string name="txt_add_evento_content">Press the button that is at the bottom right with a plus symbol, enter the details in the floating dialog and press Save to add a new event to the selected date</string>
-    <string name="txt_eliminar_evento">Hold press on the event you want to delete and press Delete on the floating dialog</string>
+    <string name="txt_eliminar_evento">When you tap an event, the Save or Delete button will appear in the event editor. Tap Delete to remove the event. Alternatively, tap and hold the event you want to delete and then tap "Delete" in the pop-up window.</string>
     <string name="txt_btn_tareas">Tasks</string>
     <string name="txt_btn_documentos">Documents</string>
     <string name="txt_btn_red_social">Social networks</string>
@@ -145,10 +145,10 @@
     <string name="password">Password</string>
     <string name="suggest_login">Already have an account? Log In</string>
     <string name="suggest_signup">Without an account? Sign Up</string>
-    <string name="txt_subir_documento">To upload a document, you have to press the upload file button and choose what you want to upload.</string>
-    <string name="txt_descargar_documento">To create a comment, you have to press the create button, enter the username, and the comment.</string>
-    <string name="txt_crear_comentario">To create a comment, you have to press the create button, enter the username, and the comment.</string>
-    <string name="txt_editar_comentario">To edit, you have to click on a post and you will be able to edit the name and the comment</string>
+    <string name="txt_subir_documento">To upload a document, click the "Create" button in the bottom right corner. Once you have selected the document, a dialog box will appear where you can name it.</string>
+    <string name="txt_descargar_documento">To download the document, click on the document you want to download. This will open a window where you can view and download the file.</string>
+    <string name="txt_crear_comentario">To create a comment, you have to press the create button, enter the tittle, the username, and the comment.</string>
+    <string name="txt_editar_comentario">To edit, you have to click on a post and you will be able to edit the tittle, the name and the comment</string>
     <string name="txt_eliminar_comentario">" To delete, you have to click on a post and you will see a button to delete it."</string>
     <string name="txt_btn_invitar">Invite</string>
     <string name="txt_contenido_invitar">Pressing the invite button on the home screen will display a menu with several applications through which to share the application link.</string>
@@ -169,6 +169,7 @@
     <string name="txt_hacer_fotos">To take photos, you must first grant the necessary camera permissions. Once activated, press the circular button in the center of the screen to capture the image.</string>
     <string name="txt_galeria">Gallery</string>
     <string name="txt_entrar_galeria">To access your gallery, tap the circular preview image. This will display all the photos stored on your device.</string>
+    <string name="icono_estado">representation icon of the tasks status</string>
 
 
 </resources>

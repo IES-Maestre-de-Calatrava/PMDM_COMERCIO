@@ -27,6 +27,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -122,45 +123,34 @@ fun MyAppTareas(viewModel: TareaViewModel) {
                     }
                 }
             )
-        }
-    ) { paddingSobrante ->
-        // El contenido de la LazyColumn se ajusta debajo de la cabecera gracias a paddingSobrante
-        Column(
-            modifier = Modifier.padding(paddingSobrante),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Button(
+        },
+
+        floatingActionButton = {
+            FloatingActionButton(
                 onClick = {
-                    // Creamos el Intent para ir a DetalleTareaActivity
                     val intent = Intent(context, DetalleTareaActivity::class.java).apply {
-                        // Pasamos el ID como 0, ya q al no haber, para que mi clase tarea al tener el autoGenerate = true, me genere el id que vale
                         putExtra("ID_TAREA", 0)
                     }
                     context.startActivity(intent)
                 },
-                modifier = Modifier.height(50.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = colorResource(R.color.verde_esmeralda),
-                    contentColor = Color.Unspecified
-                )
+                containerColor = colorResource(R.color.white),
+                contentColor = Color.Unspecified
             ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.add_to_svgrepo_com),
-                        contentDescription = stringResource(R.string.descripcion_btnCrear_tarea),
-                        modifier = Modifier.size(30.dp),
-                        tint = Color.Unspecified
-                    )
-                    Spacer(modifier = Modifier.width(10.dp))
-                    Text(
-                        text = stringResource(R.string.btn_Crear),
-                        style = MaterialTheme.typography.titleMedium
-                    )
-                }
+                Icon(
+                    painter = painterResource(id = R.drawable.add_to_svgrepo_com),
+                    contentDescription = stringResource(R.string.btn_Crear)
+                )
             }
+        }
+
+
+    ) { paddingSobrante ->
+        // El contenido de la LazyColumn se ajusta debajo de la cabecera gracias a paddingSobrante
+        Column(
+            modifier = Modifier.padding(paddingSobrante)
+                .fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             ListaTareas(viewModel = viewModel)
         }
     }
@@ -193,8 +183,9 @@ fun ListaTareas(viewModel: TareaViewModel) {
                         putExtra("TITULO_TAREA", tarea.titulo_tarea)
                         putExtra("DESCRIPCION_TAREA", tarea.descripcion_tarea)
                         putExtra("FECHA_ENTREGA", tarea.fecha_entrega)
-                        putExtra("COMPLETA", tarea.completa)
+                        putExtra("ESTADO", tarea.estado)
                         putExtra("PERSONA_ENCARGADA", tarea.persona_encargada)
+                        putExtra("HORA", tarea.hora)
                     }
                     context.startActivity(intent)
                 }
@@ -209,11 +200,13 @@ fun ListaTareas(viewModel: TareaViewModel) {
  */
 @Composable
 fun TareaItem(tarea: TareaItem, onClick: () -> Unit) {
+    val iconoEstado = elegirEstado(tarea.estado)
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onClick() },
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        colors = CardDefaults.cardColors(containerColor = colorResource(R.color.white))
     ) {
         Row(
             modifier = Modifier
@@ -222,21 +215,35 @@ fun TareaItem(tarea: TareaItem, onClick: () -> Unit) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
-                imageVector = Icons.Default.Description,
-                contentDescription = "Icono Tarea",
-                tint = MaterialTheme.colorScheme.primary
+                painter = painterResource(id = iconoEstado),
+                contentDescription = stringResource(R.string.icono_estado),
+                modifier = Modifier.size(28.dp),
+                tint = Color.Unspecified
             )
             Spacer(modifier = Modifier.width(16.dp))
             Column {
                 Text(
                     text = tarea.titulo_tarea, // titulo de la tarea
-                    style = MaterialTheme.typography.titleMedium
+                    style = MaterialTheme.typography.titleMedium,
+                    color=colorResource(R.color.black)
                 )
                 Text(
-                    text = stringResource(R.string.texto_ver_COMENTARIO),
-                    style = MaterialTheme.typography.bodySmall,
+                    text = tarea.hora,
+                    style = MaterialTheme.typography.titleSmall,
+                    color = colorResource(R.color.grisOscuro)
                 )
             }
         }
     }
 }
+
+fun elegirEstado(estado: Int): Int {
+
+    return when (estado){
+        1 -> R.drawable.done
+        2 -> R.drawable.in_proggres
+        3 -> R.drawable.to_do
+        else -> R.drawable.to_do
+    }
+}
+

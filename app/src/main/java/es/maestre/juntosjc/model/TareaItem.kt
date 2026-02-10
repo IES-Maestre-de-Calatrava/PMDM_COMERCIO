@@ -13,8 +13,10 @@ data class TareaItem(
     val descripcion_tarea: String,
     @SerialName("fecha_entrega")
     val fecha_entrega: String,
-    @SerialName("completa")
-    val completa: Boolean,
+    @SerialName("estado")
+    val estado: Int,
     @SerialName("persona_encargada")
-    val persona_encargada: String)
+    val persona_encargada: String,
+    @SerialName("hora")
+    val hora: String)
 

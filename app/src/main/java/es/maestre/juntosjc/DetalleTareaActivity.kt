@@ -19,12 +19,14 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -46,6 +48,8 @@ import es.maestre.juntosjc.model.TareaItem
 import es.maestre.juntosjc.ui.theme.JUNTOSJCTheme
 import es.maestre.juntosjc.viewModel.TareaViewModel
 import kotlin.getValue
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 
 /**
  * Clase DetalleActivity: esta clase es la que muestra la informacion
@@ -64,8 +68,9 @@ class DetalleTareaActivity: ComponentActivity() {
         val tituloTarea = intent.getStringExtra("TITULO_TAREA") ?: ""
         val descripcionTarea = intent.getStringExtra("DESCRIPCION_TAREA") ?: ""
         val fechaEntrega = intent.getStringExtra("FECHA_ENTREGA") ?: ""
-        val completa = intent.getBooleanExtra("COMPLETA", false)
+        val estado = intent.getIntExtra("ESTADO", -1)
         val personaEncargada = intent.getStringExtra("PERSONA_ENCARGADA") ?: ""
+        val hora = intent.getStringExtra("HORA") ?: ""
 
 
         enableEdgeToEdge()
@@ -76,9 +81,9 @@ class DetalleTareaActivity: ComponentActivity() {
                     if (idTarea > 0) {
                         // Buscamos en la lista descargada de Supabase
                         viewModel.listaTareasSupabase.find { it.id_tarea == idTarea }
-                            ?: TareaItem(idTarea, tituloTarea, descripcionTarea, fechaEntrega, completa, personaEncargada) // Si no la encuentra, usa el backup
+                            ?: TareaItem(idTarea, tituloTarea, descripcionTarea, fechaEntrega, estado, personaEncargada, hora) // Si no la encuentra, usa el backup
                     } else {
-                        TareaItem(null, "", "", "", false, "") // Nueva tarea
+                        TareaItem(null, "", "", "", 3, "", "") // Nueva tarea
                     }
                 }
 
@@ -136,6 +141,7 @@ fun MyAppDetalleTarea(viewModel: TareaViewModel, idTarea: Int, tareaRecibida: Ta
 /**
  * Funcion que arma la pantalla con los campos editables y los botones de guardado y eliminado
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CamposDetalleTarea(
     tarea: TareaItem,
@@ -148,8 +154,17 @@ fun CamposDetalleTarea(
     var titulo by remember { mutableStateOf(tarea.titulo_tarea) }
     var descripcion by remember { mutableStateOf(tarea.descripcion_tarea) }
     var fecha by remember { mutableStateOf(tarea.fecha_entrega) }
-    var completada by remember { mutableStateOf(tarea.completa) }
+    var estado by remember { mutableStateOf(tarea.estado) }
     var persona by remember { mutableStateOf(tarea.persona_encargada) }
+    var hora by remember { mutableStateOf(tarea.hora) }
+
+    val opcionesEstado = listOf(
+        "Hecha" to 1,
+        "En proceso" to 2,
+        "Por hacer" to 3
+    )
+    var expanded by remember { mutableStateOf(false) }
+    val textoEstadoSeleccionado = opcionesEstado.find { it.second == estado }?.first ?: "Seleccionar"
 
     // Campos editables segun los atributos de la tarea
     Text(text = "Titulo de la tarea:", fontWeight = FontWeight.Bold)
@@ -178,18 +193,36 @@ fun CamposDetalleTarea(
         minLines = 1
     )
 
-    /* Para el dato booleano, voy a usar un switch */
+    /* ESTADO DE LA TAREA */
     Text(text = "Estado de la tarea:", fontWeight = FontWeight.Bold)
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
+    ExposedDropdownMenuBox(
+        expanded = expanded,
+        onExpandedChange = { expanded = !expanded },
+        modifier = Modifier.fillMaxWidth()
     ) {
-        Text(text = if (completada) "Tarea completada" else "Tarea en curso")
-        Switch(
-            checked = completada,
-            onCheckedChange = { completada = it }
+        OutlinedTextField(
+            value = textoEstadoSeleccionado,
+            onValueChange = {},
+            readOnly = true,
+            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+            modifier = Modifier.menuAnchor().fillMaxWidth(),
+            colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors()
         )
+
+        ExposedDropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false }
+        ) {
+            opcionesEstado.forEach { (nombre, id) ->
+                DropdownMenuItem(
+                    text = { Text(text = nombre) },
+                    onClick = {
+                        estado = id // Actualizamos el estado con el Int (1, 2 o 3)
+                        expanded = false
+                    }
+                )
+            }
+        }
     }
 
     Text(text = "Persona encargada de la tarea:", fontWeight = FontWeight.Bold)
@@ -205,13 +238,16 @@ fun CamposDetalleTarea(
     Button(
         onClick = {
 
+            val horaNueva = horaActual()
+
             val nuevoItem = TareaItem(
                 id_tarea = if (esNuevo) null else tarea.id_tarea,
                 titulo_tarea = titulo,
                 descripcion_tarea = descripcion,
                 fecha_entrega = fecha,
-                completa = completada,
-                persona_encargada = persona
+                estado = estado,
+                persona_encargada = persona,
+                hora = horaNueva
             )
 
 
@@ -282,4 +318,10 @@ fun CamposDetalleTarea(
         }
     }
 
+}
+
+fun horaActual(): String {
+    val ahora = LocalTime.now()
+    val formatter = DateTimeFormatter.ofPattern("HH:mm")
+    return ahora.format(formatter)
 }

@@ -57,9 +57,6 @@
             android:name=".DocumentoActivity"
             android:exported="true" />
         <activity
-            android:name=".ArchivoActivity"
-            android:exported="true" />
-        <activity
             android:name=".RedSocialActivity"
             android:exported="true" />
         <activity

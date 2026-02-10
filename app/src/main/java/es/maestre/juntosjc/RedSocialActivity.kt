@@ -178,6 +178,7 @@ fun ListaComentarios(viewModel: ComentarioViewModel) {
                         putExtra("NOMBRE_USUARIO", comentario.nombre_usuario)
                         putExtra("TEXTO", comentario.texto)
                         putExtra("TITULO", comentario.titulo)
+                        putExtra("HORA", comentario.hora)
                     }
                     context.startActivity(intent)
                 }
@@ -198,7 +199,7 @@ fun ComentarioItem(comentario: ComentarioItem, onClick: () -> Unit) {
             .fillMaxWidth()
             .clickable { onClick() },
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-        colors = CardDefaults.cardColors(containerColor = colorResource(R.color.container))
+        colors = CardDefaults.cardColors(containerColor = colorResource(R.color.white))
     ) {
         Row(
             modifier = Modifier
@@ -236,7 +237,13 @@ fun ComentarioItem(comentario: ComentarioItem, onClick: () -> Unit) {
             Column {
                 Text(
                     text = comentario.titulo,
-                    style = MaterialTheme.typography.titleMedium
+                    style = MaterialTheme.typography.titleMedium,
+                    color = colorResource(R.color.black)
+                )
+                Text(
+                    text = comentario.hora,
+                    style = MaterialTheme.typography.titleSmall,
+                    color = colorResource(R.color.grisOscuro)
                 )
             }
         }

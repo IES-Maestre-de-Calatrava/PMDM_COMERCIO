@@ -119,7 +119,7 @@
     <string name="btn_volver">Volver</string>
     <string name="txt_eventos_content">En la mitad inferior se muestran los eventos planeados para el día seleccionado</string>
     <string name="txt_add_evento_content">Pulsa el botón en la parte inferior derecha con el símbolo más, introduce los detalles en el diálogo flotante y pulsa Guardar para añadir un nuevo evento al día seleccionado</string>
-    <string name="txt_eliminar_evento">Mantén pulsado el evento que quieras eliminar y pulsa Eliminar</string>
+    <string name="txt_eliminar_evento">Pulsando un evento, en el editor de evento aparecerá el botón de guardado o para eliminar, pulsa eliminar para borrar el evento. Otra opción es, mantener pulsado el evento que quieras eliminar y pulsando "Eliminar" en el cuadro flotante</string>
     <string name="txt_add_tarea_content">Para añadir una nueva tarea pulsa el botón Crear, introduce los detalles y pulsa Guardar</string>
     <string name="txt_eliminar_tarea_content">Para eliminar una tarea pulsa la tarea que quieres eliminar y pulsa Eliminar</string>
     <string name="txt_editar_tarea_content">Para editar una tarea pulsa la tarea que quieres modificar, cambia los detalles que quieras y pulsa Guardar</string>
@@ -128,10 +128,10 @@
     <string name="password">Contraseña</string>
     <string name="suggest_login">¿Ya tienes una cuenta? Inicia Sesión</string>
     <string name="suggest_signup">¿No tienes cuenta? Registrate</string>
-    <string name="txt_subir_documento">Para subir un documento tienes que apretar el boton subir archivo y elegir  lo que quieres subir</string>
-    <string name="txt_descargar_documento">Para descargar el documento tienes que apretar el botón descargar archivo</string>
-    <string name="txt_crear_comentario">Para crear el comentario tienes que apretar el boton crear poner el usuario  y el comentario</string>
-    <string name="txt_editar_comentario">Para editar tienes que pulsar sobre una publicación y podras editar el nombre y el comentario</string>
+    <string name="txt_subir_documento">Para subir un documento tienes que apretar el boton "Crear" en la esquina inferior derecha. Una vez seleccionado el documento, aparecerá un cuadro de diálogo para nombrar el documento</string>
+    <string name="txt_descargar_documento">Para descargar el documento, haz clic en el documento que quieras descargar. Este abrirá una ventana donde podrás visualizar el archivo y descargarlo</string>
+    <string name="txt_crear_comentario">Para crear el comentario tienes que apretar el boton crear poner el titulo, el usuario  y el comentario</string>
+    <string name="txt_editar_comentario">Para editar tienes que pulsar sobre una publicación y podras editar el titulo, el nombre y el comentario</string>
     <string name="txt_eliminar_comentario">Para borrar tienes que pulsar sobre una publicación y tendras un botón que es para eliminar</string>
     <string name="txt_btn_invitar">Invitar</string>
     <string name="txt_contenido_invitar">Al pulsar el botón invitar que esta en el inicio mostrará un menú con varias aplicaciones por las que compartir el enlace a la aplicación</string>
@@ -152,5 +152,6 @@
     <string name="txt_hacer_fotos">Para realizar fotografías, primero debes conceder los permisos de cámara necesarios. Una vez activados, pulsa el botón circular situado en el centro de la pantalla para capturar la imagen.</string>
     <string name="txt_galeria">Galeria</string>
     <string name="txt_entrar_galeria">Para acceder a tu galería, pulsa sobre la imagen circular de la previsualización. Al hacerlo, se mostrarán todas las fotos almacenadas en tu dispositivo.</string>
+    <string name="icono_estado">icono que representa el estado de la tarea</string>
 
 </resources>

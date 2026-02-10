@@ -13,26 +13,30 @@ import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.storage.storage
 import kotlinx.coroutines.Dispatchers
 import java.util.UUID
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.mutableStateOf
 
 /**
  * ViewModel de los documentos
  */
-class DocumentoViewModel (application: Application) : AndroidViewModel(application){
+class DocumentoViewModel(application: Application) : AndroidViewModel(application) {
 
-    // Creamos una lista observable para Compose
     val listaArchivosSupabase = mutableStateListOf<ArchivoItem>()
+
+    // 1. ESTADO PARA EL DIÁLOGO
+    // Usamos mutableStateOf para que Compose reaccione automáticamente
+    var mostrarDialogoNombre by mutableStateOf(false)
 
     fun obtenerArchivosSupabase() {
         viewModelScope.launch {
             try {
-                // Hacemos el SELECT a la tabla "documento"
                 val resultado = SupabaseClient.client.from("documento")
                     .select().decodeList<ArchivoItem>()
 
                 listaArchivosSupabase.clear()
                 listaArchivosSupabase.addAll(resultado)
-
-                Log.d("Supabase.Fetch", "Datos traídos: ${resultado.size}")
             } catch (e: Exception) {
                 Log.e("Supabase.Fetch", "Error: ${e.message}")
             }
@@ -40,48 +44,41 @@ class DocumentoViewModel (application: Application) : AndroidViewModel(applicati
     }
 
     /**
-     * Funcion de subida de imagenes a supabase
+     * Función modificada para aceptar el nombre personalizado
      */
-    fun subirImagen(byteArray: ByteArray, extension: String, onSuccess: (String) -> Unit, onError: (Exception) -> Unit) {
-
-        viewModelScope.launch {
+    fun subirImagen(
+        byteArray: ByteArray,
+        extension: String,
+        nombrePersonalizado: String, // <--- Nuevo parámetro
+        onSuccess: (String) -> Unit,
+        onError: (Exception) -> Unit
+    ) {
+        // Usamos Dispatchers.IO porque subir archivos es una tarea pesada de entrada/salida
+        viewModelScope.launch(Dispatchers.IO) {
             try {
-                // Generar nombre único
-                val fileName = "${UUID.randomUUID()}.$extension"
-                val bucketName = "AppJUNTOS" // El nombre de Supabase
+                // 2. USAR EL NOMBRE PERSONALIZADO
+                // El nombrePersonalizado ya trae la extensión desde la Activity
+                val fileName = nombrePersonalizado
+                val bucketName = "AppJUNTOS"
 
-                // Subir el archivo
                 val bucket = SupabaseClient.client.storage.from(bucketName)
                 bucket.upload(fileName, byteArray)
 
-                // Obtener la URL pública (si el bucket es público), para guardarla en bbdd
                 val publicUrl = bucket.publicUrl(fileName)
-
-                // INSERTAR EN LA TABLA DE SUPABASE
 
                 val nuevoArchivo = ArchivoItem(
                     id_documento = null,
-                    nombre_archivo = fileName,
+                    nombre_archivo = fileName, // Se guarda el nombre "bonito"
                     ruta_archivo = publicUrl
                 )
 
-                // USAMOS 'await' o simplemente la llamada directa sin abrir otro launch
                 SupabaseClient.client.from("documento").insert(nuevoArchivo)
 
-                // Devolver la URL para guardarla en tu base de datos
                 onSuccess(publicUrl)
 
             } catch (e: Exception) {
                 onError(e)
             }
-
         }
-
-
     }
-
-    companion object
-
-
 }
-

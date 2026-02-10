@@ -328,14 +328,14 @@ fun EventoItemRow(evento: EventoItem, onDeleteConfirmed: () -> Unit) {
                 },
                 onLongClick = { showDeleteDialog = true }
             ),
-        colors = CardDefaults.cardColors(containerColor = colorResource(R.color.container))
+        colors = CardDefaults.cardColors(containerColor = colorResource(R.color.white))
     ) {
         Column(modifier = Modifier.fillMaxWidth().padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally) {
             Text(text = evento.titulo_evento,
                 fontWeight = FontWeight.Bold,
                 style = MaterialTheme.typography.titleLarge,
-                color = colorResource(R.color.azul_contraste))
+                color = colorResource(R.color.black))
         }
     }
 }

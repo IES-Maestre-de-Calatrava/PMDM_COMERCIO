@@ -14,4 +14,6 @@ data class ComentarioItem(
     @SerialName("titulo")
     val titulo: String,
     @SerialName("icono_usuario")
-    val icono_usuario: String? = null)
+    val icono_usuario: String? = null,
+    @SerialName("hora")
+    val hora: String)
