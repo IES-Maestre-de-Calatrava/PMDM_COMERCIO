@@ -36,6 +36,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -50,6 +52,10 @@ import es.maestre.juntosjc.model.TareaItem
 import es.maestre.juntosjc.ui.theme.JUNTOSJCTheme
 import es.maestre.juntosjc.viewModel.TareaViewModel
 import kotlin.getValue
+
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.mutableIntStateOf
 
 /**
  * Clase TareasActivity: en esta clase se muestra una LazyColumn con
@@ -88,6 +94,8 @@ class TareasActivity: ComponentActivity()  {
 @Composable
 fun MyAppTareas(viewModel: TareaViewModel) {
     val context = LocalContext.current
+
+    var filtroEstado by remember { mutableIntStateOf(0) }
 
     androidx.compose.runtime.LaunchedEffect(Unit) {
         viewModel.obtenerTareasSupabase()
@@ -151,7 +159,22 @@ fun MyAppTareas(viewModel: TareaViewModel) {
                 .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            ListaTareas(viewModel = viewModel)
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                // Botón para "Todos"
+                FiltroButton("Todos", 0, filtroEstado) { filtroEstado = it }
+                // Botones por estado (usando tus IDs 1, 2, 3)
+                FiltroButton("Hecho", 1, filtroEstado) { filtroEstado = it }
+                FiltroButton("Proceso", 2, filtroEstado) { filtroEstado = it }
+                FiltroButton("Pendiente", 3, filtroEstado) { filtroEstado = it }
+            }
+
+
+            ListaTareas(viewModel = viewModel, estadofiltro = filtroEstado)
         }
     }
 }
@@ -160,25 +183,28 @@ fun MyAppTareas(viewModel: TareaViewModel) {
  * Funcion que carga los items de la BBDD en el LazyColumn
  */
 @Composable
-fun ListaTareas(viewModel: TareaViewModel) {
-
-    // Observamos los datos del LiveData definido en el ViewModel
+fun ListaTareas(viewModel: TareaViewModel, estadofiltro: Int) {
     val listaTareas = viewModel.listaTareasSupabase
     val context = LocalContext.current
+
+    // 1. Calculamos la lista filtrada
+    val listaFiltrada = if (estadofiltro == 0) {
+        listaTareas
+    } else {
+        listaTareas.filter { it.estado == estadofiltro }
+    }
 
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-
-        items(listaTareas) { tarea ->
+        // 2. IMPORTANTE: Usar listaFiltrada aquí, no listaTareas
+        items(listaFiltrada) { tarea ->
             TareaItem(
                 tarea = tarea,
                 onClick = {
-                    // Creamos el Intent para ir a DetalleTareaActivity
                     val intent = Intent(context, DetalleTareaActivity::class.java).apply {
-                        // Pasamos el ID de la tarea como "extra"
                         putExtra("ID_TAREA", tarea.id_tarea ?: -1)
                         putExtra("TITULO_TAREA", tarea.titulo_tarea)
                         putExtra("DESCRIPCION_TAREA", tarea.descripcion_tarea)
@@ -244,6 +270,23 @@ fun elegirEstado(estado: Int): Int {
         2 -> R.drawable.in_proggres
         3 -> R.drawable.to_do
         else -> R.drawable.to_do
+    }
+}
+
+
+@Composable
+fun FiltroButton(texto: String, estadoId: Int, estadoActual: Int, onClick: (Int) -> Unit) {
+    val isSelected = estadoId == estadoActual
+    Button(
+        onClick = { onClick(estadoId) },
+        colors = ButtonDefaults.buttonColors(
+            containerColor = if (isSelected) colorResource(R.color.container) else Color.LightGray,
+            contentColor = if (isSelected) Color.White else Color.Black
+        ),
+        modifier = Modifier.padding(horizontal = 4.dp),
+        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp)
+    ) {
+        Text(text = texto, style = MaterialTheme.typography.bodySmall)
     }
 }
 
