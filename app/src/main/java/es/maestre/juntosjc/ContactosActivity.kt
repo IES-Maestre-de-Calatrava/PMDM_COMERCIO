@@ -21,12 +21,14 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Contacts
 import androidx.compose.material.icons.filled.Description
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -110,43 +112,31 @@ fun MyAppContactos(viewModel: ContactoViewModel) {
                     }
                 }
             )
-        }
-    ) { paddingSobrante ->
-        Column(
-            modifier = Modifier.padding(paddingSobrante),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Button(
+        },
+
+        floatingActionButton = {
+            FloatingActionButton(
                 onClick = {
                     val intent = Intent(context, DetalleContactoActivity::class.java).apply {
                         putExtra("ID_CONTACTO", 0)
                     }
                     context.startActivity(intent)
                 },
-                modifier = Modifier.height(50.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = colorResource(R.color.verde_esmeralda),
-                    contentColor = Color.Unspecified
-                )
+                containerColor = colorResource(R.color.white),
+                contentColor = Color.Unspecified
             ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.add_to_svgrepo_com),
-                        contentDescription = stringResource(R.string.descripcion_btnCrear_detalle),
-                        modifier = Modifier.size(24.dp),
-                        tint = Color.Unspecified
-                    )
-                    Spacer(modifier = Modifier.width(10.dp))
-                    Text(
-                        text = stringResource(R.string.btn_Crear),
-                        style = MaterialTheme.typography.titleMedium
-                    )
-                }
+                Icon(
+                    painter = painterResource(id = R.drawable.add_to_svgrepo_com),
+                    contentDescription = stringResource(R.string.btn_Crear)
+                )
             }
+        }
 
+    ) { paddingSobrante ->
+        Column(
+            modifier = Modifier.padding(paddingSobrante),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             ListaContactos(viewModel = viewModel)
         }
     }
@@ -188,7 +178,8 @@ fun ContactoItemRow(contacto: ContactoItem, onClick: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onClick() },
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        colors = CardDefaults.cardColors(containerColor = colorResource(R.color.white))
     ) {
         Row(
             modifier = Modifier
@@ -197,7 +188,7 @@ fun ContactoItemRow(contacto: ContactoItem, onClick: () -> Unit) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
-                imageVector = Icons.Default.Description,
+                imageVector = Icons.Default.Contacts,
                 contentDescription = "Icono Contacto",
                 tint = MaterialTheme.colorScheme.primary
             )

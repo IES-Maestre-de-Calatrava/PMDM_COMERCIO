@@ -31,6 +31,7 @@ import es.maestre.juntosjc.viewModel.DocumentoViewModel
 import es.maestre.juntosjc.ui.theme.JUNTOSJCTheme
 import androidx.compose.runtime.*
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.filled.Search
 
 class DocumentoActivity : ComponentActivity() {
 
@@ -106,6 +107,9 @@ class DocumentoActivity : ComponentActivity() {
 @Composable
 fun MyAppDocumentos(viewModel: DocumentoViewModel, onPickDocument: () -> Unit) {
     val context = LocalContext.current
+
+    var textoBusqueda by remember { mutableStateOf("")}
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
@@ -150,38 +154,62 @@ fun MyAppDocumentos(viewModel: DocumentoViewModel, onPickDocument: () -> Unit) {
         }
     ) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {
+
+            OutlinedTextField(
+                value = textoBusqueda,
+                onValueChange = { textoBusqueda = it },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                placeholder = { Text("Buscar por nombre...") },
+                leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
+                singleLine = true,
+                shape = MaterialTheme.shapes.medium
+            )
+
             // Aquí llamamos a la generación de componentes pasando el ViewModel
-            GenerarComponentesDocumento(viewModel)
+            GenerarComponentesDocumento(viewModel, textoBusqueda)
         }
     }
 }
 
 @Composable
-fun GenerarComponentesDocumento(viewModel: DocumentoViewModel) {
+fun GenerarComponentesDocumento(viewModel: DocumentoViewModel, consulta: String) {
     val listaDocumentos = viewModel.listaArchivosSupabase
     val context = LocalContext.current
 
-        // El LazyColumn directamente aquí para que ocupe el espacio
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            items(listaDocumentos) { documento ->
-                FileArchivoItem(
-                    archivo = documento,
-                    onClick = {
-                        try {
-                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(documento.ruta_archivo))
-                            context.startActivity(intent)
-                        } catch (e: Exception) {
-                            Toast.makeText(context, "No se pudo abrir el enlace", Toast.LENGTH_SHORT).show()
-                        }
-                    }
-                )
+    val listaFiltrada = remember(listaDocumentos, consulta) {
+        if (consulta.isEmpty()) {
+            listaDocumentos
+        } else {
+            listaDocumentos.filter { documento ->
+                documento.nombre_archivo.contains(consulta, ignoreCase = true)
             }
         }
     }
+
+
+    // El LazyColumn directamente aquí para que ocupe el espacio
+    LazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        contentPadding = PaddingValues(16.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        items(listaFiltrada) { documento ->
+            FileArchivoItem(
+                archivo = documento,
+                onClick = {
+                    try {
+                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(documento.ruta_archivo))
+                        context.startActivity(intent)
+                    } catch (e: Exception) {
+                        Toast.makeText(context, "No se pudo abrir el enlace", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            )
+        }
+    }
+}
 }
 
 @Composable

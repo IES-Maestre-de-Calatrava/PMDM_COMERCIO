@@ -33,6 +33,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -214,7 +215,7 @@ class GaleriaFotosSupabaseActivity : ComponentActivity() {
                     .fillMaxWidth(0.85f)
                     .fillMaxHeight(0.60f),
                 shape = RoundedCornerShape(20.dp),
-                border = BorderStroke(4.dp, Color.White),
+                border = BorderStroke(4.dp, colorResource(R.color.azul_pastel)),
                 colors = CardDefaults.cardColors(
                     containerColor = JuntosTheme.colors.cardBackground
                 ),
@@ -248,16 +249,16 @@ class GaleriaFotosSupabaseActivity : ComponentActivity() {
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(70.dp)
-                            .background(JuntosTheme.colors.azulOscuroLogo),
+                            .background(colorResource(R.color.azul_pastel)),
                         contentAlignment = Alignment.Center
                     ) {
                         Button(
                             onClick = onGuardar,
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = Color.Transparent,
-                                contentColor = Color.White
+                                containerColor = colorResource(R.color.azul_pastel),
+                                contentColor = colorResource(R.color.black)
                             ),
-                            elevation = ButtonDefaults.buttonElevation(0.dp)
+                            elevation = ButtonDefaults.buttonElevation(0.dp),
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Download,
@@ -268,7 +269,7 @@ class GaleriaFotosSupabaseActivity : ComponentActivity() {
                             Text(
                                 text = stringResource(R.string.txt_descargar),
                                 fontWeight = FontWeight.Bold,
-                                style = MaterialTheme.typography.titleMedium
+                                style = MaterialTheme.typography.titleMedium,
                             )
                         }
                     }
