@@ -379,22 +379,22 @@ fun PantallaPerfil() {
 
 @Composable
 fun InfoRow(label: String, value: String) {
-    Column(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 24.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = label,
-            fontSize = 12.sp,
-            color = Color.Gray,
-            textAlign = TextAlign.Center
+            text = "$label ",
+            fontSize = 22.sp,
+            fontWeight = FontWeight.Bold,
+            color = Color.Gray
         )
-        Spacer(modifier = Modifier.height(4.dp))
         Text(
             text = value,
-            fontSize = 16.sp,
-            fontWeight = FontWeight.Medium,
-            textAlign = TextAlign.Center
+            fontSize = 22.sp,
+            fontWeight = FontWeight.Medium
         )
     }
 }
