@@ -212,7 +212,7 @@ fun ComentarioItem(comentario: ComentarioItem, onClick: () -> Unit) {
                 modifier = Modifier
                     .size(40.dp)
                     .clip(CircleShape),
-                color = Color.Gray.copy(alpha = 0.2f)
+                color = colorResource(R.color.grisOscuro)
             ) {
                 // Comprobamos si el modelo tiene icono, si no, ponemos el de Person
                 if (!comentario.icono_usuario.isNullOrEmpty()) {
