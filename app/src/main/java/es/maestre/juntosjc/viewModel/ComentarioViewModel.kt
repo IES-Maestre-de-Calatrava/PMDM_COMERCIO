@@ -91,7 +91,6 @@ class ComentarioViewModel(application: Application) : AndroidViewModel(applicati
         val email = getEmailUsuario() ?: return null
 
         return try {
-            // Asegúrate de usar la sintaxis estándar de la librería para evitar líos
             val perfiles = SupabaseClient.client.from("perfiles")
                 .select {
                     filter {
