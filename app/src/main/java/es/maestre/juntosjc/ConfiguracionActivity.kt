@@ -73,7 +73,6 @@ fun ConfiguracionScreen(
     viewModel: UserPreferencesViewModel,
     onBack: () -> Unit
 ) {
-    val context = LocalContext.current
     val themeMode by viewModel.themeMode.collectAsStateWithLifecycle()
     val enabledFeatures by viewModel.enabledFeatures.collectAsStateWithLifecycle()
     val isLoading by viewModel.isLoading.collectAsStateWithLifecycle()
@@ -131,19 +130,6 @@ fun ConfiguracionScreen(
                     titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
                     navigationIconContentColor = MaterialTheme.colorScheme.onPrimaryContainer
                 ),
-                actions = {
-                    IconButton(onClick = {
-                        val intent = Intent(context, AyudaActivity::class.java)
-                        intent.putExtra("SECCION", Ayuda.CONFIGURACION)
-                        context.startActivity(intent)
-                    }) {
-                        Icon(
-                            painter = painterResource(R.drawable.help_question_svgrepo_com),
-                            contentDescription = "Ayuda",
-                            tint = Color.Unspecified
-                        )
-                    }
-                }
             )
         }
     ) { paddingValues ->
