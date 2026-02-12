@@ -1,5 +1,6 @@
 package es.maestre.juntosjc
 
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -55,11 +56,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import es.maestre.juntosjc.model.Ayuda
 import es.maestre.juntosjc.ui.theme.JUNTOSJCTheme
 import es.maestre.juntosjc.supabase.SupabaseClient
 import io.github.jan.supabase.auth.auth
@@ -184,6 +188,18 @@ fun PantallaPerfil() {
                             imageVector = Icons.Default.Edit,
                             contentDescription = "Editar perfil",
                             tint = colorResource(R.color.content)
+                        )
+                    }
+                    IconButton(onClick = {
+                        val intent = Intent(context, AyudaActivity::class.java)
+                        intent.putExtra("SECCION", Ayuda.PERFIL)
+                        context.startActivity(intent)
+                    }) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.help_question_svgrepo_com),
+                            contentDescription = "Ayuda",
+                            modifier = Modifier.size(28.dp),
+                            tint = Color.Unspecified
                         )
                     }
                 }

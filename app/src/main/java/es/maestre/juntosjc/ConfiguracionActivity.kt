@@ -111,11 +111,6 @@ fun ConfiguracionScreen(
                         )
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                    navigationIconContentColor = MaterialTheme.colorScheme.onPrimaryContainer
-                ),
                 actions = {
                     IconButton(onClick = {
                         val intent = Intent(context, AyudaActivity::class.java)
@@ -123,12 +118,18 @@ fun ConfiguracionScreen(
                         context.startActivity(intent)
                     }) {
                         Icon(
-                            painter = painterResource(R.drawable.help_question_svgrepo_com),
+                            painter = painterResource(id = R.drawable.help_question_svgrepo_com),
                             contentDescription = "Ayuda",
+                            modifier = Modifier.size(28.dp),
                             tint = Color.Unspecified
                         )
                     }
-                }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                    navigationIconContentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                ),
             )
         }
     ) { paddingValues ->
