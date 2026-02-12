@@ -21,8 +21,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Contacts
-import androidx.compose.material.icons.filled.Description
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -32,6 +33,7 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -137,9 +139,42 @@ fun MyAppContactos(viewModel: ContactoViewModel) {
             modifier = Modifier.padding(paddingSobrante),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            // === BARRA DE BÚSQUEDA ===
+            BarraBusquedaContactos(viewModel = viewModel)
+
+            // === LISTA DE CONTACTOS (ya ordenada y filtrada) ===
             ListaContactos(viewModel = viewModel)
         }
     }
+}
+
+@Composable
+fun BarraBusquedaContactos(viewModel: ContactoViewModel) {
+    OutlinedTextField(
+        value = viewModel.filtro,
+        onValueChange = { viewModel.actualizarFiltro(it) },
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+        placeholder = { Text("Buscar contacto...") },
+        leadingIcon = {
+            Icon(
+                imageVector = Icons.Default.Search,
+                contentDescription = "Buscar"
+            )
+        },
+        trailingIcon = {
+            if (viewModel.filtro.isNotEmpty()) {
+                IconButton(onClick = { viewModel.actualizarFiltro("") }) {
+                    Icon(
+                        imageVector = Icons.Default.Clear,
+                        contentDescription = "Limpiar búsqueda"
+                    )
+                }
+            }
+        },
+        singleLine = true
+    )
 }
 
 @Composable
@@ -147,6 +182,15 @@ fun ListaContactos(viewModel: ContactoViewModel) {
 
     val listaContactos = viewModel.listaContactosSupabase
     val context = LocalContext.current
+
+    if (listaContactos.isEmpty() && viewModel.filtro.isNotEmpty()) {
+        Text(
+            text = "No se encontraron contactos",
+            modifier = Modifier.padding(32.dp),
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+    }
 
     LazyColumn(
         modifier = Modifier.fillMaxSize(),

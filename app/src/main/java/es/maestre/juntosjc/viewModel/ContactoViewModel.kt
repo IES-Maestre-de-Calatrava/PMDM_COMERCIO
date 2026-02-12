@@ -3,6 +3,9 @@ package es.maestre.juntosjc.viewModel
 import android.app.Application
 import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import es.maestre.juntosjc.model.ContactoItem
@@ -17,23 +20,50 @@ import kotlinx.coroutines.withContext
  */
 class ContactoViewModel(application: Application) : AndroidViewModel(application) {
 
+    private val _listaContactosCompleta = mutableStateListOf<ContactoItem>()
     val listaContactosSupabase = mutableStateListOf<ContactoItem>()
+
+    var filtro by mutableStateOf("")
+        private set
+
+    fun actualizarFiltro(nuevoFiltro: String) {
+        filtro = nuevoFiltro
+        aplicarFiltroYOrden()
+    }
+
+    /** Aplica el filtro de texto y la ordenación alfabética, filtra tanto por nombre, telefono, email y direccion de contacto */
+    private fun aplicarFiltroYOrden() {
+        val filtrados = if (filtro.isBlank()) {
+            _listaContactosCompleta.toList()
+        } else {
+            _listaContactosCompleta.filter { contacto ->
+                contacto.nombre_contacto.contains(filtro, ignoreCase = true) ||
+                        contacto.telefono_contacto.contains(filtro, ignoreCase = true) ||
+                        contacto.email_contacto.contains(filtro, ignoreCase = true) ||
+                        contacto.direccion_contacto.contains(filtro, ignoreCase = true)
+            }
+        }
+
+        val ordenados = filtrados.sortedBy { it.nombre_contacto.lowercase() }
+
+        listaContactosSupabase.clear()
+        listaContactosSupabase.addAll(ordenados)
+    }
 
     fun obtenerContactosSupabase() {
         viewModelScope.launch {
             try {
-                // Ejecutar en IO por seguridad
                 val resultado = withContext(Dispatchers.IO) {
                     SupabaseClient.client.from("contacto")
                         .select().decodeList<ContactoItem>()
                 }
 
-                listaContactosSupabase.clear()
-                listaContactosSupabase.addAll(resultado)
+                _listaContactosCompleta.clear()
+                _listaContactosCompleta.addAll(resultado)
+                aplicarFiltroYOrden()
 
                 Log.d("Supabase.Fetch", "Contactos traídos: ${resultado.size}")
             } catch (e: Exception) {
-                // Mostrar stacktrace completo para depurar
                 Log.e("Supabase.Fetch", "Error al obtener contactos", e)
             }
         }
@@ -46,7 +76,6 @@ class ContactoViewModel(application: Application) : AndroidViewModel(application
                     SupabaseClient.client.from("contacto").insert(item)
                 }
 
-                // Refrescar la lista y avisar
                 obtenerContactosSupabase()
                 onDone()
                 Log.d("Supabase.Insert", "Insert pedido enviado para: ${item.nombre_contacto}")
