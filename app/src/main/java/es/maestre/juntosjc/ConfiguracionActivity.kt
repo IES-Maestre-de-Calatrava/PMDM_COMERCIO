@@ -328,9 +328,9 @@ private fun FeatureToggleItem(
     onToggle: (Boolean) -> Unit
 ) {
     val backgroundColor by animateColorAsState(
-        targetValue = if (isEnabled) 
-            MaterialTheme.colorScheme.surface 
-        else 
+        targetValue = if (isEnabled)
+            MaterialTheme.colorScheme.surface
+        else
             MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
         label = "featureBackground"
     )
@@ -349,12 +349,9 @@ private fun FeatureToggleItem(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
-                imageVector = getFeatureIcon(feature),
+                painter = painterResource(id = getFeatureIcon(feature)),
                 contentDescription = null,
-                tint = if (isEnabled) 
-                    MaterialTheme.colorScheme.primary 
-                else 
-                    MaterialTheme.colorScheme.onSurfaceVariant,
+                tint = Color.Unspecified,
                 modifier = Modifier.size(24.dp)
             )
             Spacer(modifier = Modifier.width(16.dp))
@@ -386,16 +383,17 @@ private fun FeatureToggleItem(
     }
 }
 
+
 @Composable
-private fun getFeatureIcon(feature: AppFeature): ImageVector {
+private fun getFeatureIcon(feature: AppFeature): Int {
     return when (feature) {
-        AppFeature.CALENDARIO -> Icons.Default.CalendarMonth
-        AppFeature.TAREAS -> Icons.Default.Task
-        AppFeature.DOCUMENTOS -> Icons.Default.Description
-        AppFeature.RED_SOCIAL -> Icons.Default.Forum
-        AppFeature.INVITAR -> Icons.Default.PersonAdd
-        AppFeature.CONTACTOS -> Icons.Default.Contacts
-        AppFeature.FOTOS -> Icons.Default.PhotoLibrary
+        AppFeature.CALENDARIO -> R.drawable.calendar_svgrepo_com
+        AppFeature.TAREAS -> R.drawable.information_svgrepo_com
+        AppFeature.DOCUMENTOS -> R.drawable.favorite_file_svgrepo_com
+        AppFeature.RED_SOCIAL -> R.drawable.community_comments_svgrepo_com
+        AppFeature.INVITAR -> R.drawable.invite_friends_svgrepo_com
+        AppFeature.CONTACTOS -> R.drawable.recruitment_svgrepo_com
+        AppFeature.FOTOS -> R.drawable.photo_album_svgrepo_com
     }
 }
 
