@@ -107,11 +107,20 @@ fun MyAppTareas(viewModel: TareaViewModel) {
             // Cabecera con TopAppBar
             TopAppBar(
                 title = {
-                    Text(
-                        text = stringResource(R.string.txt_tareas),
-                        fontWeight = FontWeight.Bold,
-                        style = MaterialTheme.typography.headlineMedium
-                    )
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            painter = painterResource(R.drawable.information_svgrepo_com),
+                            contentDescription = null,
+                            modifier = Modifier.size(30.dp),
+                            tint = Color.Unspecified
+
+                        )
+                        Spacer(modifier = Modifier.width(8.dp)) // Espacio entre texto e icono
+                        Text(
+                            stringResource(R.string.txt_tareas),
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = colorResource(R.color.container),
@@ -168,8 +177,8 @@ fun MyAppTareas(viewModel: TareaViewModel) {
                 // Botón para "Todos"
                 FiltroButton("Todos", 0, filtroEstado) { filtroEstado = it }
                 // Botones por estado (usando tus IDs 1, 2, 3)
-                FiltroButton("Hecho", 1, filtroEstado) { filtroEstado = it }
-                FiltroButton("Proceso", 2, filtroEstado) { filtroEstado = it }
+                FiltroButton("Hecha", 1, filtroEstado) { filtroEstado = it }
+                FiltroButton("En Proceso", 2, filtroEstado) { filtroEstado = it }
                 FiltroButton("Pendiente", 3, filtroEstado) { filtroEstado = it }
             }
 
@@ -277,16 +286,42 @@ fun elegirEstado(estado: Int): Int {
 @Composable
 fun FiltroButton(texto: String, estadoId: Int, estadoActual: Int, onClick: (Int) -> Unit) {
     val isSelected = estadoId == estadoActual
+
+    val backgroundColor = if (isSelected) {
+        // Colores después de pulsar
+        when (estadoId) {
+            1 -> colorResource(R.color.verde_esmeralda)
+            2 -> colorResource(R.color.amarillo_electrico)
+            3 -> colorResource(R.color.rojo)
+            else -> colorResource(R.color.azul_contraste) // Caso 0: Todos
+        }
+    } else {
+        // Colores pasteles
+        when (estadoId) {
+            1 -> colorResource(R.color.verde_pastel)
+            2 -> colorResource(R.color.amarillo_pastel)
+            3 -> colorResource(R.color.rojo_pastel)
+            else -> colorResource(R.color.azul_pastel) // Caso 0: Todos
+        }
+    }
+
     Button(
         onClick = { onClick(estadoId) },
         colors = ButtonDefaults.buttonColors(
-            containerColor = if (isSelected) colorResource(R.color.container) else Color.LightGray,
-            contentColor = if (isSelected) Color.White else Color.Black
+            containerColor = backgroundColor,
+            contentColor = colorResource(R.color.grisOscuro)
+        ),
+        elevation = ButtonDefaults.buttonElevation(
+            defaultElevation = if (isSelected) 6.dp else 2.dp,
+            pressedElevation = 1.dp
         ),
         modifier = Modifier.padding(horizontal = 4.dp),
-        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp)
+        contentPadding = PaddingValues(horizontal = 10.dp, vertical = 4.dp)
     ) {
-        Text(text = texto, style = MaterialTheme.typography.bodySmall)
+        Text(
+            text = texto,
+            style = MaterialTheme.typography.labelMedium,
+            fontWeight = if (isSelected) FontWeight.ExtraBold else FontWeight.Medium
+        )
     }
 }
-

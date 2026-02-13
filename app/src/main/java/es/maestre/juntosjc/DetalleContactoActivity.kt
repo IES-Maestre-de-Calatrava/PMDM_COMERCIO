@@ -89,10 +89,20 @@ fun MyAppDetalleContacto(viewModel: ContactoViewModel, idContacto: Int, contacto
         topBar = {
             TopAppBar(
                 title = {
-                    Text(
-                        stringResource(R.string.txt_detalle),
-                        fontWeight = FontWeight.Bold
-                    )
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            painter = painterResource(R.drawable.recruitment_svgrepo_com),
+                            contentDescription = null,
+                            modifier = Modifier.size(30.dp),
+                            tint = Color.Unspecified
+
+                        )
+                        Spacer(modifier = Modifier.width(8.dp)) // Espacio entre texto e icono
+                        Text(
+                            stringResource(R.string.txt_detalle),
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = colorResource(R.color.container),

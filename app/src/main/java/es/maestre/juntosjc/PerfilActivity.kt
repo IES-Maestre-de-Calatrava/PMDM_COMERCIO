@@ -177,7 +177,20 @@ fun PantallaPerfil() {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Perfil", fontWeight = FontWeight.Bold) },
+                title = {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            painter = painterResource(R.drawable.perfil),
+                            contentDescription = null,
+                            modifier = Modifier.size(30.dp),
+                            tint = Color.Unspecified
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            "Perfil",
+                            fontWeight = FontWeight.Bold
+                        )
+                    } },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = colorResource(R.color.container),
                     titleContentColor = colorResource(R.color.content)

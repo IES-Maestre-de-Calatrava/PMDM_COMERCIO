@@ -248,13 +248,23 @@ fun GenerarComponentesMain(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = stringResource(R.string.txt_Juntos),
-                    style = MaterialTheme.typography.headlineMedium.copy(
-                        fontWeight = FontWeight.ExtraBold,
-                        color = JuntosTheme.colors.azulOscuroLogo
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.icono_tiendacampa_a),
+                        contentDescription = null,
+                        modifier = Modifier.size(30.dp),
+                        tint = Color.Unspecified
                     )
-                )
+                    Spacer(modifier = Modifier.size(8.dp))
+
+                    Text(
+                        text = stringResource(R.string.txt_Juntos),
+                        style = MaterialTheme.typography.headlineMedium.copy(
+                            fontWeight = FontWeight.ExtraBold,
+                            color = JuntosTheme.colors.azulOscuroLogo
+                        )
+                    )
+                }
 
                 Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                     // Icono Perfil

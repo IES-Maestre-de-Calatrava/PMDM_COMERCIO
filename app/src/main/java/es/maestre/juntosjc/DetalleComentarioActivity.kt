@@ -22,6 +22,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -66,6 +67,7 @@ class DetalleComentarioActivity: ComponentActivity() {
         val textoBackup = intent.getStringExtra("TEXTO") ?: ""
         val tituloBackup = intent.getStringExtra("TITULO") ?: ""
         val horaBackUp = intent.getStringExtra("HORA") ?: ""
+        val emailBackUp = intent.getStringExtra("EMAIL_USUARIO") ?: ""
 
 
         enableEdgeToEdge()
@@ -75,9 +77,15 @@ class DetalleComentarioActivity: ComponentActivity() {
                     if (idComentario > 0) {
                         // Buscamos en la lista descargada de Supabase
                         viewModel.listaComentariosSupabase.find { it.id_comentario == idComentario }
-                            ?: ComentarioItem(idComentario, nombreBackup, textoBackup, tituloBackup, hora=horaBackUp) // Si no lo encuentra, usa el backup
+                            ?: ComentarioItem(
+                                idComentario,
+                                nombreBackup,
+                                textoBackup,
+                                tituloBackup,
+                                hora=horaBackUp,
+                                email_usuario = emailBackUp)
                     } else {
-                        ComentarioItem(null, "", "", "", hora=horaBackUp) // Nuevo comentario
+                        ComentarioItem(null, "", "", "", hora=horaBackUp, email_usuario = viewModel.getEmailUsuario() ?: "") // Nuevo comentario
                     }
                 }
 
@@ -102,10 +110,20 @@ fun MyAppDetalle(viewModel: ComentarioViewModel, idComentario: Int, comentarioRe
         topBar = {
             TopAppBar(
                 title = {
-                    Text(
-                        stringResource(R.string.txt_detalle),
-                        fontWeight = FontWeight.Bold
-                    )
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            painter = painterResource(R.drawable.community_comments_svgrepo_com),
+                            contentDescription = null,
+                            modifier = Modifier.size(30.dp),
+                            tint = Color.Unspecified
+
+                        )
+                        Spacer(modifier = Modifier.width(8.dp)) // Espacio entre texto e icono
+                        Text(
+                            stringResource(R.string.txt_detalle),
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
                         },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = colorResource(R.color.container),
@@ -139,99 +157,91 @@ fun CamposDetalle(
     onActionDone: () -> Unit
 ) {
     // Usamos estados para que los campos sean editables
-    // Nota: Para editar realmente, luego usaremos estos valores en el botón Guardar
     var titulo by remember { mutableStateOf(comentario.titulo) }
-    var nombre by remember { mutableStateOf(comentario.nombre_usuario) }
     var texto by remember { mutableStateOf(comentario.texto) }
     var hora by remember { mutableStateOf(comentario.hora) }
 
-    val iconoUsuarioActual = remember { mutableStateOf<String?>(null) }
+    val mensajeError = "Modifique su nombre de usuario en el apartado perfil"
+    var nombreUsuarioPerfil by remember { mutableStateOf<String>(mensajeError) }
+    var iconoUsuarioActual by remember { mutableStateOf<String?>(null) }
+
+    // recuperamos el email actual
+    val emailSesion = remember { viewModel.getEmailUsuario() }
+
+
+    // Si el email es nuevo, el dueño es el actual, si no los comparamos
+    val esDueño = if (esNuevo) true else (emailSesion == comentario.email_usuario)
 
     LaunchedEffect(Unit) {
-        iconoUsuarioActual.value = viewModel.obtenerIconoDesdePerfiles()
+        val iconoRecuperado = viewModel.obtenerIconoDesdePerfiles()
+        val nombreRecuperado = viewModel.obtenernombreDesdePerfiles()
+        // Asignamos a las variables de estado para que la pantalla se actualice
+        iconoUsuarioActual = iconoRecuperado
+        if (!nombreRecuperado.isNullOrBlank()) {
+            nombreUsuarioPerfil = nombreRecuperado
+        }
     }
 
+
+    val esError = nombreUsuarioPerfil == mensajeError
+
     // Campos editables segun los atributos del comentario
+    Text(text = stringResource(R.string.lb_nombreUsuario), fontWeight = FontWeight.Bold)
+    Surface(
+        modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+        color = Color.LightGray.copy(alpha = 0.2f),
+        shape = MaterialTheme.shapes.small
+    ) {
+        Text(
+            text = if (esNuevo) nombreUsuarioPerfil else comentario.nombre_usuario,
+            modifier = Modifier.padding(16.dp),
+            style = MaterialTheme.typography.bodyLarge,
+            color = if (esError && esNuevo) colorResource(R.color.rojo) else colorResource(R.color.black)        )
+    }
+
     Text(text = stringResource(R.string.lbTitulo), fontWeight = FontWeight.Bold)
     OutlinedTextField(
         value = titulo,
-        onValueChange = { titulo = it },
+        onValueChange = { if (esDueño) titulo = it },
+        readOnly = !esDueño,
         modifier = Modifier.fillMaxWidth(),
         label = { Text(stringResource(R.string.lbTitulo)) }
-    )
-
-    Text(text = stringResource(R.string.lb_nombreUsuario), fontWeight = FontWeight.Bold)
-    OutlinedTextField(
-        value = nombre,
-        onValueChange = { nombre = it },
-        modifier = Modifier.fillMaxWidth(),
-        label = { Text(stringResource(R.string.lbNombre)) }
     )
 
     Text(text = stringResource(R.string.lb_comentario), fontWeight = FontWeight.Bold)
     OutlinedTextField(
         value = texto,
-        onValueChange = { texto = it },
+        onValueChange = { if (esDueño) texto = it },
+        readOnly = !esDueño,
         modifier = Modifier.fillMaxWidth(),
         label = { Text(stringResource(R.string.lbComentario)) },
         minLines = 3
     )
 
-    Button(
-        onClick = {
-            val horaNueva = horaActualComentario()
-
-            val nuevoItem = ComentarioItem(
-                id_comentario = if (esNuevo) null else comentario.id_comentario,
-                nombre_usuario = nombre,
-                texto = texto,
-                titulo = titulo,
-                icono_usuario = iconoUsuarioActual.value ?: comentario.icono_usuario,
-                hora = horaNueva
-            )
-            if (esNuevo) {
-                viewModel.insertarComentarioSupabase(nuevoItem) { onActionDone() }
-            } else {
-                viewModel.actualizarComentarioSupabase(nuevoItem) { onActionDone() }
-            }
-        },
-        modifier = Modifier.fillMaxWidth().height(50.dp),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = colorResource(R.color.azul_pastel),
-            contentColor = colorResource(R.color.white)
-        )
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.save_svgrepo_com),
-                contentDescription = stringResource(R.string.descripcion_btnGuardar_detalle),
-                modifier = Modifier.size(24.dp),
-                tint = Color.Unspecified
-            )
-            Spacer(modifier = Modifier.width(10.dp))
-            Text(
-                text = stringResource(R.string.btn_Guardar),
-                style = MaterialTheme.typography.titleMedium
-            )
-        }
-    }
-
-
-    if (!esNuevo) {
+    if (esDueño) {
         Button(
             onClick = {
-                comentario.id_comentario?.let { idSeguro ->
-                    viewModel.borrarComentarioSupabase(idSeguro) {
-                        onActionDone()
-                    }
+                val horaNueva = horaActualComentario()
+
+                val nuevoItem = ComentarioItem(
+                    id_comentario = if (esNuevo) null else comentario.id_comentario,
+                    nombre_usuario = nombreUsuarioPerfil,
+                    texto = texto,
+                    titulo = titulo,
+                    icono_usuario = iconoUsuarioActual ?: comentario.icono_usuario,
+                    hora = horaNueva,
+                    email_usuario = emailSesion
+                )
+                if (esNuevo) {
+                    viewModel.insertarComentarioSupabase(nuevoItem) { onActionDone() }
+                } else {
+                    viewModel.actualizarComentarioSupabase(nuevoItem) { onActionDone() }
                 }
             },
+            enabled = !(esNuevo && esError),
             modifier = Modifier.fillMaxWidth().height(50.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = colorResource(R.color.rojo_pastel),
+                containerColor = colorResource(R.color.azul_pastel),
                 contentColor = colorResource(R.color.white)
             )
         ) {
@@ -240,16 +250,51 @@ fun CamposDetalle(
                 horizontalArrangement = Arrangement.Center
             ) {
                 Icon(
-                    painter = painterResource(id = R.drawable.trash_svgrepo_com),
-                    contentDescription = stringResource(R.string.descripcion_btnEliminar_detalle),
+                    painter = painterResource(id = R.drawable.save_svgrepo_com),
+                    contentDescription = stringResource(R.string.descripcion_btnGuardar_detalle),
                     modifier = Modifier.size(24.dp),
                     tint = Color.Unspecified
                 )
                 Spacer(modifier = Modifier.width(10.dp))
                 Text(
-                    text = stringResource(R.string.btn_Eliminar),
+                    text = stringResource(R.string.btn_Guardar),
                     style = MaterialTheme.typography.titleMedium
                 )
+            }
+        }
+
+
+        if (!esNuevo) {
+            Button(
+                onClick = {
+                    comentario.id_comentario?.let { idSeguro ->
+                        viewModel.borrarComentarioSupabase(idSeguro) {
+                            onActionDone()
+                        }
+                    }
+                },
+                modifier = Modifier.fillMaxWidth().height(50.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = colorResource(R.color.rojo_pastel),
+                    contentColor = colorResource(R.color.white)
+                )
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.trash_svgrepo_com),
+                        contentDescription = stringResource(R.string.descripcion_btnEliminar_detalle),
+                        modifier = Modifier.size(24.dp),
+                        tint = Color.Unspecified
+                    )
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Text(
+                        text = stringResource(R.string.btn_Eliminar),
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                }
             }
         }
     }

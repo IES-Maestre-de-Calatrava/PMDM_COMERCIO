@@ -97,11 +97,20 @@ fun ConfiguracionScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    Text(
-                        text = stringResource(R.string.txt_configuracion),
-                        fontWeight = FontWeight.Bold,
-                        style = MaterialTheme.typography.headlineMedium
-                    )
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            painter = painterResource(R.drawable.configuracion),
+                            contentDescription = null,
+                            modifier = Modifier.size(30.dp),
+                            tint = Color.Unspecified
+
+                        )
+                        Spacer(modifier = Modifier.width(8.dp)) // Espacio entre texto e icono
+                        Text(
+                            stringResource(R.string.txt_configuracion),
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
                 },
                 navigationIcon = {
                     IconButton(onClick = onBack) {

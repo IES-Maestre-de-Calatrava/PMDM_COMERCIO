@@ -11,11 +11,14 @@ import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
@@ -110,11 +113,20 @@ fun MyAppCalendario(viewModel: EventoViewModel) {
         topBar = {
             TopAppBar(
                 title = {
-                    Text(
-                        stringResource(R.string.txt_calendario),
-                        fontWeight = FontWeight.Bold,
-                        style = MaterialTheme.typography.headlineMedium
-                    )
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            painter = painterResource(R.drawable.calendar_svgrepo_com),
+                            contentDescription = null,
+                            modifier = Modifier.size(30.dp),
+                            tint = Color.Unspecified
+
+                        )
+                        Spacer(modifier = Modifier.width(8.dp)) // Espacio entre texto e icono
+                        Text(
+                            stringResource(R.string.txt_calendario),
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = colorResource(R.color.container),
@@ -331,11 +343,21 @@ fun EventoItemRow(evento: EventoItem, onDeleteConfirmed: () -> Unit) {
         colors = CardDefaults.cardColors(containerColor = colorResource(R.color.white))
     ) {
         Column(modifier = Modifier.fillMaxWidth().padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(text = evento.titulo_evento,
+            horizontalAlignment = Alignment.Start)
+        {
+            Text(
+                text = evento.titulo_evento,
                 fontWeight = FontWeight.Bold,
                 style = MaterialTheme.typography.titleLarge,
-                color = colorResource(R.color.black))
+                color = colorResource(R.color.black)
+            )
+
+            Text(
+                text = "Hora: ${evento.Hora.take(5)}",
+                fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.titleMedium,
+                color = colorResource(R.color.grisOscuro)
+            )
         }
     }
 }

@@ -32,7 +32,7 @@
 
     <string name="txt_Juntos">JUNTOS</string>
     <string name="txt_Archivos">ARCHIVOS</string>
-    <string name="txt_documentos">Documentos</string>
+    <string name="txt_documentos">DOCUMENTOS</string>
     <string name="txt_descargar">Descargar</string>
     <string name="txt_redSocial">RED SOCIAL</string>
     <string name="txt_detalle">DETALLES</string>
@@ -73,7 +73,7 @@
     <string name="titulo">Titulo:</string>
     <string name="descripcion">Descripcion:</string>
     <string name="asistentes">Asistentes:</string>
-    <string name="hora">Hora: (hh:mm:ss)</string>
+    <string name="hora">Hora: (hh:mm)</string>
 
     <string name="preguntaEliminar">¿Eliminar Evento?</string>
     <string name="confirmacionEliminar">¿Estás seguro/a?</string>
@@ -150,7 +150,7 @@
     <string name="txt_btn_fotos">Fotos</string>
     <string name="txt_foto">Hacer foto</string>
     <string name="txt_hacer_fotos">Para realizar fotografías, primero debes conceder los permisos de cámara necesarios. Una vez activados, pulsa el botón circular situado en el centro de la pantalla para capturar la imagen.</string>
-    <string name="txt_galeria">Galeria</string>
+    <string name="txt_galeria">GALERIA</string>
     <string name="txt_entrar_galeria">Para acceder a tu galería, pulsa sobre la imagen circular de la previsualización. Al hacerlo, se mostrarán todas las fotos almacenadas en tu dispositivo.</string>
     <string name="icono_estado">icono que representa el estado de la tarea</string>
 
