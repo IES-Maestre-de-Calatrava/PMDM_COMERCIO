@@ -3,6 +3,7 @@ package es.maestre.juntosjc
 import android.content.Context.MODE_PRIVATE
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -95,7 +96,9 @@ fun LoginScreen(
                 value = email,
                 onValueChange = { email = it },
                 label = { Text(stringResource(R.string.lb_email)) },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                isError = loginState is LoginState.Error
+
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -105,7 +108,8 @@ fun LoginScreen(
                 onValueChange = { password = it },
                 label = { Text(stringResource(R.string.password)) },
                 visualTransformation = PasswordVisualTransformation(),
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                isError = loginState is LoginState.Error
             )
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -116,7 +120,15 @@ fun LoginScreen(
                 Button(
                     onClick = {
                         if (isSignUp) {
-                            viewModel.signUp(email, password)
+                            if (password.length < 6) {
+                                Toast.makeText(
+                                    context,
+                                    "La contraseña debe tener al menos 6 caracteres",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            } else {
+                                viewModel.signUp(email, password)
+                            }
                         } else {
                             viewModel.signIn(email, password)
                         }
