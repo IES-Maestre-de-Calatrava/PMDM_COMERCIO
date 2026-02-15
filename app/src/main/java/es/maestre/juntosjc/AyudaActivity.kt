@@ -132,7 +132,7 @@ fun AyudaPrincipalPreview(){
 fun AyudaCalendario(){
     val icono = R.drawable.calendar_svgrepo_com
 
-    BotonAyuda(icono,stringResource(R.string.txt_btn_calendario)){
+    BotonAyuda(icono,stringResource(R.string.txt_btn_calendario),stringResource(R.string.txt_btn_ocultar_calendario),stringResource(R.string.txt_descripcion_calendario)){
         BotonTexto(
             stringResource(R.string.txt_eventos),
             stringResource(R.string.txt_eventos_content))
@@ -149,7 +149,7 @@ fun AyudaCalendario(){
 fun AyudaTareas(){
     val icono = R.drawable.information_svgrepo_com
 
-    BotonAyuda(icono, stringResource(R.string.txt_btn_tareas), {
+    BotonAyuda(icono, stringResource(R.string.txt_btn_tareas), stringResource(R.string.txt_btn_ocultar_tareas),stringResource(R.string.txt_descripcion_tareas)){
         BotonTexto(
             stringResource(R.string.txt_add),
             stringResource(R.string.txt_add_tarea_content))
@@ -159,7 +159,7 @@ fun AyudaTareas(){
         BotonTexto(
             stringResource(R.string.txt_eliminar),
             stringResource(R.string.txt_eliminar_tarea_content))
-    })
+    }
 }
 
 @Composable
@@ -167,7 +167,7 @@ fun AyudaTareas(){
 fun AyudaDocumentos() {
     val icono = R.drawable.favorite_file_svgrepo_com
 
-    BotonAyuda(icono, stringResource(R.string.txt_btn_documentos), {
+    BotonAyuda(icono, stringResource(R.string.txt_btn_documentos), stringResource(R.string.txt_btn_ocultar_documentos),stringResource(R.string.txt_descripcion_documentos)){
         BotonTexto(
             stringResource(R.string.txt_subir),
             stringResource(R.string.txt_subir_documento)
@@ -176,14 +176,14 @@ fun AyudaDocumentos() {
             stringResource(R.string.txt_descargar),
             stringResource(R.string.txt_descargar_documento)
         )
-    })
+    }
 }
 
 @Composable
 fun AyudaRedSocial() {
     val icono = R.drawable.community_comments_svgrepo_com
 
-    BotonAyuda(icono, stringResource(R.string.txt_btn_red_social), {
+    BotonAyuda(icono, stringResource(R.string.txt_btn_red_social), stringResource(R.string.txt_btn_ocultar_redsocial),stringResource(R.string.txt_descripcion_redsocial)){
         BotonTexto(
             stringResource(R.string.txt_crear),
             stringResource(R.string.txt_crear_comentario)
@@ -196,22 +196,21 @@ fun AyudaRedSocial() {
             stringResource(R.string.txt_borrar),
             stringResource(R.string.txt_eliminar_comentario)
         )
-    })
+    }
 }
 
 //TODO Establecer textos correctamente
 @Composable
 fun AyudaInvitar(){
     val icono = R.drawable.invite_friends_svgrepo_com
-    BotonAyuda(icono , stringResource(R.string.txt_btn_invitar), {
-        Text( stringResource(R.string.txt_contenido_invitar))
-    })
+    BotonAyuda(icono , stringResource(R.string.txt_btn_invitar), stringResource(R.string.txt_btn_ocultar_inivitar),stringResource(R.string.txt_contenido_invitar)){
+    }
 }
 
 @Composable
 fun AyudaContactos(){
     val icono = R.drawable.recruitment_svgrepo_com
-    BotonAyuda(icono, stringResource(R.string.txt_btn_contactos), {
+    BotonAyuda(icono, stringResource(R.string.txt_btn_contactos), stringResource(R.string.txt_btn_ocultar_contactos), stringResource(R.string.txt_descripcion_contactos)){
         BotonTexto(
             stringResource(R.string.txt_crear),
             stringResource(R.string.txt_crear_contacto)
@@ -224,24 +223,24 @@ fun AyudaContactos(){
             stringResource(R.string.txt_borrar),
             stringResource(R.string.txt_eliminar_contacto)
         )
-    })
+    }
 }
 
 @Composable
 fun AyudaFotos(){
 
     val icono = R.drawable.photo_album_svgrepo_com
-    BotonAyuda(icono, stringResource(R.string.txt_btn_fotos), {
+    BotonAyuda(icono, stringResource(R.string.txt_btn_fotos), stringResource(R.string.txt_btn_ocultar_fotos),stringResource(R.string.txt_descripcion_fotos)){
         BotonTexto(stringResource(R.string.txt_foto),stringResource(R.string.txt_hacer_fotos) )
         BotonTexto(stringResource(R.string.txt_galeria),stringResource(R.string.txt_entrar_galeria) )
-    })
+    }
 }
 
 @Composable
 fun AyudaConfigurar(){
     val icono = R.drawable.help_question_svgrepo_com
 
-    BotonAyuda(icono, stringResource(R.string.txt_btn_configurar), {
+    BotonAyuda(icono, stringResource(R.string.txt_btn_configurar), stringResource(R.string.txt_btn_ocultar_configurar),stringResource(R.string.txt_descripcion_configuracion) ){
         BotonTexto(
             stringResource(R.string.txt_apariencia),
             stringResource(R.string.txt_configurar_tema)
@@ -250,16 +249,16 @@ fun AyudaConfigurar(){
             stringResource(R.string.txt_caracteristicas),
             stringResource(R.string.txt_actydesact_carecteristicas)
         )
-    })
+    }
 }
 
 @Composable
 fun AyudaPerfil(){
     val icono = R.drawable.perfil
 
-    BotonAyuda(icono, stringResource(R.string.txt_btn_perfil), {
+    BotonAyuda(icono, stringResource(R.string.txt_btn_perfil), stringResource(R.string.txt_btn_ocultar_perfil), stringResource(R.string.txt_descripcion_perfil)){
         BotonTexto(stringResource(R.string.txt_añadir_informacion), stringResource(R.string.txt_añadir_informacion_perfil))
-    })
+    }
 }
 
 /**
@@ -269,12 +268,12 @@ fun AyudaPerfil(){
  * @param function Componentes que mostrará el botón cuando sea pulsado
  */
 @Composable
-fun BotonAyuda(icono: Int, contenido: String, function: @Composable () -> Unit) {
+fun BotonAyuda(icono: Int, contenido: String, textoOcultar: String,descripcion: String? = null, function: @Composable () -> Unit) {
     var expandido by remember { mutableStateOf(false) }
 
     Column(
         modifier = ColumnaPrincipalModifier,
-        horizontalAlignment = androidx.compose.ui.Alignment.Start
+        horizontalAlignment = Alignment.Start
     ) {
 
         androidx.compose.material3.ElevatedButton(
@@ -292,9 +291,10 @@ fun BotonAyuda(icono: Int, contenido: String, function: @Composable () -> Unit) 
 
             )
             Text(
-                text = if (expandido) stringResource(R.string.txt_ocultar_detalles) else contenido,
+                text = if (expandido) textoOcultar else contenido,
                 style = androidx.compose.material3.MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(horizontal = 25.dp)
             )
         }
 
@@ -305,8 +305,16 @@ fun BotonAyuda(icono: Int, contenido: String, function: @Composable () -> Unit) 
         ) {
             Column(
                 modifier = ColumnaDetalleModifier,
-                horizontalAlignment = androidx.compose.ui.Alignment.Start
+                horizontalAlignment = Alignment.Start
             ) {
+                if (descripcion != null) {
+                    Text(
+                        text = descripcion,
+                        modifier = Modifier.padding(vertical = 8.dp, horizontal = 4.dp),
+                        style = androidx.compose.material3.MaterialTheme.typography.bodySmall,
+                        color = Color.Gray
+                    )
+                }
                 function()
             }
         }
