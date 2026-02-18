@@ -177,7 +177,20 @@ fun PantallaPerfil() {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Perfil", fontWeight = FontWeight.Bold) },
+                title = {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            painter = painterResource(R.drawable.perfil),
+                            contentDescription = null,
+                            modifier = Modifier.size(30.dp),
+                            tint = Color.Unspecified
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            "Perfil",
+                            fontWeight = FontWeight.Bold
+                        )
+                    } },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = colorResource(R.color.container),
                     titleContentColor = colorResource(R.color.content)
@@ -252,7 +265,6 @@ fun PantallaPerfil() {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .background(colorResource(R.color.azul_pastel))
                             .padding(vertical = 32.dp),
                         contentAlignment = Alignment.Center
                     ) {
@@ -290,13 +302,6 @@ fun PantallaPerfil() {
                             }
                             
                             Spacer(modifier = Modifier.height(16.dp))
-
-                            Text(
-                                text = nombreUsuario,
-                                fontSize = 20.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = Color.White
-                            )
                         }
                     }
 
@@ -310,14 +315,14 @@ fun PantallaPerfil() {
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
+                        if (email.isNotEmpty()) {
+                            InfoRow(label = "Email:", value = email)
+                        }
                         if (nombre.isNotEmpty()) {
                             InfoRow(label = "Nombre:", value = nombre)
                         }
                         if (apellido.isNotEmpty()) {
                             InfoRow(label = "Apellidos:", value = apellido)
-                        }
-                        if (email.isNotEmpty()) {
-                            InfoRow(label = "Email:", value = email)
                         }
                         if (edad.isNotEmpty()) {
                             InfoRow(label = "Edad:", value = edad)
@@ -403,13 +408,13 @@ fun InfoRow(label: String, value: String) {
     ) {
         Text(
             text = "$label ",
-            fontSize = 22.sp,
+            fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
             color = Color.Gray
         )
         Text(
             text = value,
-            fontSize = 22.sp,
+            fontSize = 18.sp,
             fontWeight = FontWeight.Medium
         )
     }
@@ -417,6 +422,7 @@ fun InfoRow(label: String, value: String) {
 
 @Composable
 fun ModalEditarPerfil(
+
     nombreActual: String,
     apellidoActual: String,
     edadActual: String,
@@ -427,6 +433,7 @@ fun ModalEditarPerfil(
     onGuardar: (String, String, String, String, String?) -> Unit
 ) {
     var nombre by remember { mutableStateOf(nombreActual) }
+    var email by remember { mutableStateOf("") }
     var apellido by remember { mutableStateOf(apellidoActual) }
     var edad by remember { mutableStateOf(edadActual) }
     var curso by remember { mutableStateOf(cursoActual) }
@@ -560,6 +567,14 @@ fun ModalEditarPerfil(
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
+
+                OutlinedTextField(
+                    value = email,
+                    onValueChange = { },
+                    label = { Text("Email") },
+                    modifier = Modifier.fillMaxWidth(),
+                    enabled = false
+                )
 
                 OutlinedTextField(
                     value = nombre,

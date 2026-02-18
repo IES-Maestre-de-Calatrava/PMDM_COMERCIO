@@ -10,10 +10,15 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -23,8 +28,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -59,10 +67,20 @@ fun AyudaPrincipal(seccion: Ayuda){
         topBar = {
             TopAppBar(
                 title = {
-                    Text(
-                        stringResource(R.string.txt_ayuda),
-                        fontWeight = FontWeight.Bold
-                    )
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            painter = painterResource(R.drawable.help_question_svgrepo_com),
+                            contentDescription = null,
+                            modifier = Modifier.size(30.dp),
+                            tint = Color.Unspecified
+
+                        )
+                        Spacer(modifier = Modifier.width(8.dp)) // Espacio entre texto e icono
+                        Text(
+                            stringResource(R.string.txt_ayuda),
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = colorResource(R.color.container),
@@ -112,7 +130,9 @@ fun AyudaPrincipalPreview(){
 
 @Composable
 fun AyudaCalendario(){
-    BotonAyuda(stringResource(R.string.txt_btn_calendario)){
+    val icono = R.drawable.calendar_svgrepo_com
+
+    BotonAyuda(icono,stringResource(R.string.txt_btn_calendario),stringResource(R.string.txt_btn_ocultar_calendario),stringResource(R.string.txt_descripcion_calendario)){
         BotonTexto(
             stringResource(R.string.txt_eventos),
             stringResource(R.string.txt_eventos_content))
@@ -127,7 +147,9 @@ fun AyudaCalendario(){
 
 @Composable
 fun AyudaTareas(){
-    BotonAyuda(stringResource(R.string.txt_btn_tareas)){
+    val icono = R.drawable.information_svgrepo_com
+
+    BotonAyuda(icono, stringResource(R.string.txt_btn_tareas), stringResource(R.string.txt_btn_ocultar_tareas),stringResource(R.string.txt_descripcion_tareas)){
         BotonTexto(
             stringResource(R.string.txt_add),
             stringResource(R.string.txt_add_tarea_content))
@@ -141,8 +163,11 @@ fun AyudaTareas(){
 }
 
 @Composable
+
 fun AyudaDocumentos() {
-    BotonAyuda(stringResource(R.string.txt_btn_documentos)) {
+    val icono = R.drawable.favorite_file_svgrepo_com
+
+    BotonAyuda(icono, stringResource(R.string.txt_btn_documentos), stringResource(R.string.txt_btn_ocultar_documentos),stringResource(R.string.txt_descripcion_documentos)){
         BotonTexto(
             stringResource(R.string.txt_subir),
             stringResource(R.string.txt_subir_documento)
@@ -156,7 +181,9 @@ fun AyudaDocumentos() {
 
 @Composable
 fun AyudaRedSocial() {
-    BotonAyuda(stringResource(R.string.txt_btn_red_social)) {
+    val icono = R.drawable.community_comments_svgrepo_com
+
+    BotonAyuda(icono, stringResource(R.string.txt_btn_red_social), stringResource(R.string.txt_btn_ocultar_redsocial),stringResource(R.string.txt_descripcion_redsocial)){
         BotonTexto(
             stringResource(R.string.txt_crear),
             stringResource(R.string.txt_crear_comentario)
@@ -175,14 +202,15 @@ fun AyudaRedSocial() {
 //TODO Establecer textos correctamente
 @Composable
 fun AyudaInvitar(){
-    BotonAyuda(stringResource(R.string.txt_btn_invitar)) {
-        Text( stringResource(R.string.txt_contenido_invitar))
+    val icono = R.drawable.invite_friends_svgrepo_com
+    BotonAyuda(icono , stringResource(R.string.txt_btn_invitar), stringResource(R.string.txt_btn_ocultar_inivitar),stringResource(R.string.txt_contenido_invitar)){
     }
 }
 
 @Composable
 fun AyudaContactos(){
-    BotonAyuda(stringResource(R.string.txt_btn_contactos)) {
+    val icono = R.drawable.recruitment_svgrepo_com
+    BotonAyuda(icono, stringResource(R.string.txt_btn_contactos), stringResource(R.string.txt_btn_ocultar_contactos), stringResource(R.string.txt_descripcion_contactos)){
         BotonTexto(
             stringResource(R.string.txt_crear),
             stringResource(R.string.txt_crear_contacto)
@@ -200,7 +228,9 @@ fun AyudaContactos(){
 
 @Composable
 fun AyudaFotos(){
-    BotonAyuda(stringResource(R.string.txt_btn_fotos)) {
+
+    val icono = R.drawable.photo_album_svgrepo_com
+    BotonAyuda(icono, stringResource(R.string.txt_btn_fotos), stringResource(R.string.txt_btn_ocultar_fotos),stringResource(R.string.txt_descripcion_fotos)){
         BotonTexto(stringResource(R.string.txt_foto),stringResource(R.string.txt_hacer_fotos) )
         BotonTexto(stringResource(R.string.txt_galeria),stringResource(R.string.txt_entrar_galeria) )
     }
@@ -208,7 +238,9 @@ fun AyudaFotos(){
 
 @Composable
 fun AyudaConfigurar(){
-    BotonAyuda(stringResource(R.string.txt_btn_configurar)) {
+    val icono = R.drawable.help_question_svgrepo_com
+
+    BotonAyuda(icono, stringResource(R.string.txt_btn_configurar), stringResource(R.string.txt_btn_ocultar_configurar),stringResource(R.string.txt_descripcion_configuracion) ){
         BotonTexto(
             stringResource(R.string.txt_apariencia),
             stringResource(R.string.txt_configurar_tema)
@@ -222,7 +254,9 @@ fun AyudaConfigurar(){
 
 @Composable
 fun AyudaPerfil(){
-    BotonAyuda(stringResource(R.string.txt_btn_perfil)){
+    val icono = R.drawable.perfil
+
+    BotonAyuda(icono, stringResource(R.string.txt_btn_perfil), stringResource(R.string.txt_btn_ocultar_perfil), stringResource(R.string.txt_descripcion_perfil)){
         BotonTexto(stringResource(R.string.txt_añadir_informacion), stringResource(R.string.txt_añadir_informacion_perfil))
     }
 }
@@ -234,13 +268,14 @@ fun AyudaPerfil(){
  * @param function Componentes que mostrará el botón cuando sea pulsado
  */
 @Composable
-fun BotonAyuda(contenido: String, function: @Composable () -> Unit) {
+fun BotonAyuda(icono: Int, contenido: String, textoOcultar: String,descripcion: String? = null, function: @Composable () -> Unit) {
     var expandido by remember { mutableStateOf(false) }
 
     Column(
         modifier = ColumnaPrincipalModifier,
-        horizontalAlignment = androidx.compose.ui.Alignment.Start
+        horizontalAlignment = Alignment.Start
     ) {
+
         androidx.compose.material3.ElevatedButton(
             onClick = { expandido = !expandido },
 
@@ -248,10 +283,18 @@ fun BotonAyuda(contenido: String, function: @Composable () -> Unit) {
             shape = BotonRedondearAyuda,
             colors = botonPrincipalColores()
         ) {
+            Icon(
+                painter = painterResource(icono),
+                contentDescription = null,
+                modifier = Modifier.size(30.dp),
+                tint = Color.Unspecified
+
+            )
             Text(
-                text = if (expandido) stringResource(R.string.txt_ocultar_detalles) else contenido,
+                text = if (expandido) textoOcultar else contenido,
                 style = androidx.compose.material3.MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(horizontal = 25.dp)
             )
         }
 
@@ -262,8 +305,16 @@ fun BotonAyuda(contenido: String, function: @Composable () -> Unit) {
         ) {
             Column(
                 modifier = ColumnaDetalleModifier,
-                horizontalAlignment = androidx.compose.ui.Alignment.Start
+                horizontalAlignment = Alignment.Start
             ) {
+                if (descripcion != null) {
+                    Text(
+                        text = descripcion,
+                        modifier = Modifier.padding(vertical = 8.dp, horizontal = 4.dp),
+                        style = androidx.compose.material3.MaterialTheme.typography.bodySmall,
+                        color = Color.Gray
+                    )
+                }
                 function()
             }
         }

@@ -115,11 +115,20 @@ fun MyAppDocumentos(viewModel: DocumentoViewModel, onPickDocument: () -> Unit) {
         topBar = {
             TopAppBar(
                 title = {
-                    Text(
-                        text = stringResource(R.string.txt_documentos),
-                        fontWeight = FontWeight.Bold,
-                        style = MaterialTheme.typography.headlineMedium
-                    )
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            painter = painterResource(R.drawable.favorite_file_svgrepo_com),
+                            contentDescription = null,
+                            modifier = Modifier.size(30.dp),
+                            tint = Color.Unspecified
+
+                        )
+                        Spacer(modifier = Modifier.width(8.dp)) // Espacio entre texto e icono
+                        Text(
+                            stringResource(R.string.txt_documentos),
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = colorResource(R.color.container),
@@ -173,44 +182,39 @@ fun MyAppDocumentos(viewModel: DocumentoViewModel, onPickDocument: () -> Unit) {
     }
 }
 
-@Composable
-fun GenerarComponentesDocumento(viewModel: DocumentoViewModel, consulta: String) {
-    val listaDocumentos = viewModel.listaArchivosSupabase
-    val context = LocalContext.current
+    @Composable
+    fun GenerarComponentesDocumento(viewModel: DocumentoViewModel, consulta: String) {
 
-    val listaFiltrada = remember(listaDocumentos, consulta) {
-        if (consulta.isEmpty()) {
+        val listaDocumentos = viewModel.listaArchivosSupabase
+        val context = LocalContext.current
+
+
+        val listaFiltrada = remember(listaDocumentos.toList(), consulta) {
             listaDocumentos
-        } else {
-            listaDocumentos.filter { documento ->
-                documento.nombre_archivo.contains(consulta, ignoreCase = true)
+                .filter { it.nombre_archivo.contains(consulta, ignoreCase = true) } // filtro por el nombre del archivo
+                .sortedBy { it.nombre_archivo.lowercase() } // ordenado por nombres
+        }
+
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            items(listaFiltrada) { documento ->
+                FileArchivoItem(
+                    archivo = documento,
+                    onClick = {
+                        try {
+                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(documento.ruta_archivo))
+                            context.startActivity(intent)
+                        } catch (e: Exception) {
+                            Toast.makeText(context, "No se pudo abrir el enlace", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                )
             }
         }
     }
-
-
-    // El LazyColumn directamente aquí para que ocupe el espacio
-    LazyColumn(
-        modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(16.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        items(listaFiltrada) { documento ->
-            FileArchivoItem(
-                archivo = documento,
-                onClick = {
-                    try {
-                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(documento.ruta_archivo))
-                        context.startActivity(intent)
-                    } catch (e: Exception) {
-                        Toast.makeText(context, "No se pudo abrir el enlace", Toast.LENGTH_SHORT).show()
-                    }
-                }
-            )
-        }
-    }
-}
-}
 
 @Composable
 fun DialogoNombreArchivo(onConfirm: (String) -> Unit, onDismiss: () -> Unit) {
@@ -270,5 +274,5 @@ fun FileArchivoItem(archivo: es.maestre.juntosjc.model.ArchivoItem, onClick: () 
             }
         }
     }
-}
+}}
 

@@ -102,11 +102,20 @@ fun MyAppRedSocial(viewModel: ComentarioViewModel) {
         topBar = {
             TopAppBar(
                 title = {
-                    Text(
-                        text = stringResource(R.string.txt_redSocial),
-                        fontWeight = FontWeight.Bold,
-                        style = MaterialTheme.typography.headlineMedium
-                    )
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            painter = painterResource(R.drawable.community_comments_svgrepo_com),
+                            contentDescription = null,
+                            modifier = Modifier.size(30.dp),
+                            tint = Color.Unspecified
+
+                        )
+                        Spacer(modifier = Modifier.width(8.dp)) // Espacio entre texto e icono
+                        Text(
+                            stringResource(R.string.txt_redSocial),
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = colorResource(R.color.container),
@@ -179,6 +188,7 @@ fun ListaComentarios(viewModel: ComentarioViewModel) {
                         putExtra("TEXTO", comentario.texto)
                         putExtra("TITULO", comentario.titulo)
                         putExtra("HORA", comentario.hora)
+                        putExtra("EMAIL_USUARIO", comentario.email_usuario)
                     }
                     context.startActivity(intent)
                 }
@@ -236,8 +246,13 @@ fun ComentarioItem(comentario: ComentarioItem, onClick: () -> Unit) {
 
             Column {
                 Text(
-                    text = comentario.titulo,
-                    style = MaterialTheme.typography.titleMedium,
+                    text = comentario.nombre_usuario,
+                    style = MaterialTheme.typography.titleLarge,
+                    color = colorResource(R.color.black)
+                )
+                Text(
+                    text = comentario.texto,
+                    style = MaterialTheme.typography.titleSmall,
                     color = colorResource(R.color.black)
                 )
                 Text(

@@ -110,11 +110,20 @@ class GaleriaFotosSupabaseActivity : ComponentActivity() {
             topBar = {
                 TopAppBar(
                     title = {
-                        Text(
-                            text = stringResource(R.string.txt_fotos),
-                            fontWeight = FontWeight.Bold,
-                            style = MaterialTheme.typography.headlineMedium
-                        )
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(
+                                painter = painterResource(R.drawable.photo_album_svgrepo_com),
+                                contentDescription = null,
+                                modifier = Modifier.size(30.dp),
+                                tint = Color.Unspecified
+
+                            )
+                            Spacer(modifier = Modifier.width(8.dp)) // Espacio entre texto e icono
+                            Text(
+                                stringResource(R.string.txt_galeria),
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
                     },
                     colors = TopAppBarDefaults.topAppBarColors(
                         containerColor = MaterialTheme.colorScheme.primaryContainer,

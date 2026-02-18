@@ -81,7 +81,7 @@ class ComentarioViewModel(application: Application) : AndroidViewModel(applicati
         }
     }
 
-    private fun getEmailUsuario(): String? {
+    fun getEmailUsuario(): String? {
         val prefs = getApplication<Application>().getSharedPreferences("APP", 0)
         return prefs.getString("email_usuario", null)
     }
@@ -106,5 +106,24 @@ class ComentarioViewModel(application: Application) : AndroidViewModel(applicati
         }
     }
 
+
+    suspend fun obtenernombreDesdePerfiles(): String? {
+        val email = getEmailUsuario() ?: return null
+
+        return try {
+            val perfiles = SupabaseClient.client.from("perfiles")
+                .select {
+                    filter {
+                        eq("email", email)
+                    }
+                }
+                .decodeList<PerfilRow>()
+
+            perfiles.firstOrNull()?.nombre
+        } catch (e: Exception) {
+            Log.e("Supabase.Perfiles", "Error obteniendo nombre: ${e.message}")
+            null
+        }
+    }
 
 }

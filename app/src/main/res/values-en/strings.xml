@@ -37,7 +37,7 @@
 
     <string name="txt_Juntos">TOGETHER</string>
     <string name="txt_Archivos">FILES</string>
-    <string name="txt_documentos">Files</string>
+    <string name="txt_documentos">FILES</string>
     <string name="txt_descargar">Download</string>
     <string name="txt_crear">Create</string>
     <string name="txt_borrar">Delete</string>
@@ -86,7 +86,7 @@
     <string name="titulo">Tittle:</string>
     <string name="descripcion">Description:</string>
     <string name="asistentes">Assistants:</string>
-    <string name="hora">Time: (hh:mm:ss)</string>
+    <string name="hora">Time: (hh:mm)</string>
     <string name="preguntaEliminar">Delete Event?</string>
     <string name="confirmacionEliminar">Are you sure?</string>
     <string name="title_activity_ayuda">HelpActivity</string>
@@ -96,7 +96,7 @@
     <string name="lb_telefono">Phone</string>
     <string name="lb_email">Email</string>
     <string name="lb_direccion">Address</string>
-    <string name="txt_btn_calendario">Calendar</string>
+    <string name="txt_btn_calendario">v Calendar v</string>
     <string name="txt_eventos">Events</string>
     <string name="txt_subir">Upload</string>
     <string name="txt_add">Add</string>
@@ -104,9 +104,9 @@
     <string name="txt_eventos_content">The events planned for the selected day are shown in the lower half</string>
     <string name="txt_add_evento_content">Press the button that is at the bottom right with a plus symbol, enter the details in the floating dialog and press Save to add a new event to the selected date</string>
     <string name="txt_eliminar_evento">When you tap an event, the Save or Delete button will appear in the event editor. Tap Delete to remove the event. Alternatively, tap and hold the event you want to delete and then tap "Delete" in the pop-up window.</string>
-    <string name="txt_btn_tareas">Tasks</string>
-    <string name="txt_btn_documentos">Documents</string>
-    <string name="txt_btn_red_social">Social networks</string>
+    <string name="txt_btn_tareas">v Tasks v</string>
+    <string name="txt_btn_documentos">v Documents v</string>
+    <string name="txt_btn_red_social">v Social networks v</string>
     <string name="txt_add_tarea_content">To add a new task press the Create button, enter all the details and press Save</string>
     <string name="txt_eliminar_tarea_content">To delete a task press on the task you want to delete and press the Delete button</string>
     <string name="txt_editar_tarea_content">To edit a task press on the task you want to modify, change any detail you want and press Save</string>
@@ -150,26 +150,43 @@
     <string name="txt_crear_comentario">To create a comment, you have to press the create button, enter the tittle, the username, and the comment.</string>
     <string name="txt_editar_comentario">To edit, you have to click on a post and you will be able to edit the tittle, the name and the comment</string>
     <string name="txt_eliminar_comentario">" To delete, you have to click on a post and you will see a button to delete it."</string>
-    <string name="txt_btn_invitar">Invite</string>
+    <string name="txt_btn_invitar">v Invite v</string>
     <string name="txt_contenido_invitar">Pressing the invite button on the home screen will display a menu with several applications through which to share the application link.</string>
-    <string name="txt_btn_contactos">Contacts</string>
+    <string name="txt_btn_contactos">v Contacts v</string>
     <string name="txt_crear_contacto">To create a contact, you have to press the create button and enter the requested information.</string>
     <string name="txt_editar_contacto">To edit, you have to tap on the contact, modify the data you want, and tap save.</string>
     <string name="txt_eliminar_contacto">To delete, you have to tap on the contact, modify the data you want, and tap delete.</string>
-    <string name="txt_btn_configurar">Configuration</string>
+    <string name="txt_btn_configurar">v Configuration v</string>
     <string name="txt_apariencia">Theme</string>
     <string name="txt_caracteristicas">Enable or disable</string>
     <string name="txt_configurar_tema">To configure the theme, you have to tap on Theme and choose your preferred mode: dark mode, light mode, or automatic.</string>
     <string name="txt_actydesact_carecteristicas">To enable or disable a feature, press the corresponding switch. Doing so will show or hide it in the main menu.</string>
-    <string name="txt_btn_perfil">"Profile "</string>
+    <string name="txt_btn_perfil">v Profile v</string>
     <string name="txt_añadir_informacion_perfil">To add information to your profile, tap the button in the upper right corner, enter the requested information, and select Save.</string>
     <string name="txt_añadir_informacion">" Add information"</string>
-    <string name="txt_btn_fotos">Photos</string>
+    <string name="txt_btn_fotos">v Photos v</string>
     <string name="txt_foto">" Take photo"</string>
     <string name="txt_hacer_fotos">To take photos, you must first grant the necessary camera permissions. Once activated, press the circular button in the center of the screen to capture the image.</string>
-    <string name="txt_galeria">Gallery</string>
+    <string name="txt_galeria">GALLERY</string>
     <string name="txt_entrar_galeria">To access your gallery, tap the circular preview image. This will display all the photos stored on your device.</string>
     <string name="icono_estado">representation icon of the tasks status</string>
+    <string name="txt_btn_ocultar_perfil">ʌ Profile ʌ</string>
+    <string name="txt_btn_ocultar_configurar">ʌ Configuration ʌ</string>
+    <string name="txt_btn_ocultar_fotos">ʌ Photos ʌ</string>
+    <string name="txt_btn_ocultar_contactos">ʌ Contacts ʌ</string>
+    <string name="txt_btn_ocultar_inivitar">ʌ Invite ʌ</string>
+    <string name="txt_btn_ocultar_redsocial">ʌ Social network ʌ</string>
+    <string name="txt_btn_ocultar_documentos">ʌ Documents ʌ</string>
+    <string name="txt_btn_ocultar_tareas">ʌ Tasks ʌ</string>
+    <string name="txt_btn_ocultar_calendario">ʌ Calendar ʌ</string>
+    <string name="txt_descripcion_perfil">It shows you the data with the user you logged in with.</string>
+    <string name="txt_descripcion_configuracion">Settings panel where you can choose the application theme (automatic) and select which tools you want to see in your main menu.</string>
+    <string name="txt_descripcion_fotos">It allows you to take photographs and access the image gallery using a preview button located next to the shutter release.</string>
+    <string name="txt_descripcion_contactos">It allows you to easily view, search, add, and edit your contact information from a centralized list.</string>
+    <string name="txt_descripcion_redsocial">Interactive wall to publish, edit and share messages in real time with the rest of the team.</string>
+    <string name="txt_descripcion_documentos">Interactive wall for sharing messages with the team. Allows you to post text, edit it, and view attached images in full screen with just a tap.</string>
+    <string name="txt_descripcion_tareas">Organize your to-dos with statuses (Done, In Progress, Pending). Tap the colored buttons at the top to instantly filter the list and see only the tasks with that status.</string>
+    <string name="txt_descripcion_calendario">Organize your daily events clearly. Add new appointments with details (attendees, time, and description) and quickly view your entire schedule.</string>
 
 
 </resources>

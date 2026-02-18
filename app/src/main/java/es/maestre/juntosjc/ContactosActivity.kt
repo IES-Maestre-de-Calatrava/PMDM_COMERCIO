@@ -90,11 +90,20 @@ fun MyAppContactos(viewModel: ContactoViewModel) {
         topBar = {
             TopAppBar(
                 title = {
-                    Text(
-                        text = stringResource(R.string.txt_contactos),
-                        fontWeight = FontWeight.Bold,
-                        style = MaterialTheme.typography.headlineMedium
-                    )
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            painter = painterResource(R.drawable.recruitment_svgrepo_com),
+                            contentDescription = null,
+                            modifier = Modifier.size(30.dp),
+                            tint = Color.Unspecified
+
+                        )
+                        Spacer(modifier = Modifier.width(8.dp)) // Espacio entre texto e icono
+                        Text(
+                            stringResource(R.string.txt_contactos),
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = colorResource(R.color.container),
@@ -157,6 +166,7 @@ fun BarraBusquedaContactos(viewModel: ContactoViewModel) {
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 8.dp),
         placeholder = { Text("Buscar contacto...") },
+        shape = MaterialTheme.shapes.medium,
         leadingIcon = {
             Icon(
                 imageVector = Icons.Default.Search,

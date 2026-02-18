@@ -11,12 +11,16 @@ import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -49,6 +53,7 @@ import es.maestre.juntosjc.viewModel.EventoViewModel
 import kotlin.getValue
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DatePickerDefaults
+import androidx.compose.material3.DatePickerState
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -57,7 +62,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import es.maestre.juntosjc.model.Ayuda
 import es.maestre.juntosjc.model.EventoItem
-
+import androidx.compose.material3.SelectableDates
 /**
  * Clase CalendarioActivity: en esta clase se podrán añadir eventos
  * a días en un calendario y eliminarlos, los eventos aparecerán al
@@ -89,9 +94,8 @@ class CalendarioActivity: ComponentActivity()  {
 @Composable
 fun MyAppCalendario(viewModel: EventoViewModel) {
     val context = LocalContext.current
-    // Estado del DatePicker
-    val datePickerState = rememberDatePickerState()
     val eventos = viewModel.listaEventosFiltrados
+    val fechasConEventos = viewModel.fechasConEventos
 
     var showDialog by remember { mutableStateOf(false) }
     var nuevoTitulo by remember { mutableStateOf("") }
@@ -100,6 +104,22 @@ fun MyAppCalendario(viewModel: EventoViewModel) {
     var nuevaHora by remember{mutableStateOf("") }
 
     // Efecto para cargar eventos cuando cambie la fecha seleccionada
+    LaunchedEffect(Unit) {
+        viewModel.cargarTodasLasFechasConEventos()
+    }
+
+    val datePickerState = rememberDatePickerState(
+        selectableDates = object : SelectableDates {
+            override fun isSelectableDate(utcTimeMillis: Long): Boolean {
+                return true
+            }
+
+            override fun isSelectableYear(year: Int): Boolean {
+                return true
+            }
+        }
+    )
+
     LaunchedEffect(datePickerState.selectedDateMillis) {
         datePickerState.selectedDateMillis?.let { milis ->
             viewModel.obtenerEventosPorFechaSupabase(milis)
@@ -110,11 +130,20 @@ fun MyAppCalendario(viewModel: EventoViewModel) {
         topBar = {
             TopAppBar(
                 title = {
-                    Text(
-                        stringResource(R.string.txt_calendario),
-                        fontWeight = FontWeight.Bold,
-                        style = MaterialTheme.typography.headlineMedium
-                    )
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            painter = painterResource(R.drawable.calendar_svgrepo_com),
+                            contentDescription = null,
+                            modifier = Modifier.size(30.dp),
+                            tint = Color.Unspecified
+
+                        )
+                        Spacer(modifier = Modifier.width(8.dp)) // Espacio entre texto e icono
+                        Text(
+                            stringResource(R.string.txt_calendario),
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = colorResource(R.color.container),
@@ -163,15 +192,71 @@ fun MyAppCalendario(viewModel: EventoViewModel) {
                 showModeToggle = false, // Para que no cambie a modo escribir
                 title = null,
                 headline = null,
-                modifier = Modifier.weight(1.2f), // Ocupa la parte de arriba
+                modifier = Modifier.fillMaxWidth(),
                 colors = DatePickerDefaults.colors(
                     containerColor = colorResource(R.color.white),
                     selectedDayContainerColor = colorResource(R.color.azul_cielo),
                     selectedDayContentColor = colorResource(R.color.azul_contraste),
                     todayContentColor = colorResource(R.color.container),
-                    todayDateBorderColor = colorResource(R.color.container)
+                    todayDateBorderColor = colorResource(R.color.container),
+                    dayContentColor = colorResource(R.color.black)
                 )
             )
+
+            if (fechasConEventos.isNotEmpty()) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp)
+                ) {
+                    Text(
+                        text = "Días con eventos:",
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
+                        style = MaterialTheme.typography.labelLarge,
+                        color = colorResource(R.color.gris),
+                        fontWeight = FontWeight.Bold
+                    )
+
+                    LazyRow(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(50.dp), // Forzamos una altura para que no sea 0
+                        contentPadding = PaddingValues(horizontal = 16.dp),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        // Ordenamos las fechas para que aparezcan en orden cronológico
+                        items(fechasConEventos.sorted()) { fechaMilis ->
+                            val fechaFormateada = java.text.SimpleDateFormat("dd MMM", java.util.Locale.getDefault())
+                                .format(java.util.Date(fechaMilis))
+
+                            androidx.compose.material3.FilterChip(
+                                selected = datePickerState.selectedDateMillis == fechaMilis,
+                                onClick = {
+                                    datePickerState.selectedDateMillis = fechaMilis
+                                },
+                                label = { Text(fechaFormateada) },
+                                leadingIcon = {
+                                    Icon(
+                                        painter = painterResource(R.drawable.calendar_svgrepo_com),
+                                        contentDescription = null,
+                                        modifier = Modifier.size(16.dp),
+                                        tint = colorResource(R.color.azul_cielo)
+                                    )
+                                }
+                            )
+                        }
+                    }
+                }
+            } else {
+                // ESTO ES PARA DEPURAR: Si no ves nada, es que la lista llega vacía de Supabase
+                Text(
+                    "Buscando eventos...",
+                    modifier = Modifier.padding(16.dp),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Color.LightGray
+                )
+            }
 
             HorizontalDivider()
 
@@ -255,6 +340,7 @@ fun MyAppCalendario(viewModel: EventoViewModel) {
                             )
 
                             viewModel.insertarEventoSupabase(nuevoEvento){
+                                viewModel.cargarTodasLasFechasConEventos()
                                 // Limpiar y cerrar
                                 nuevoTitulo = ""
                                 nuevaDesc = ""
@@ -331,11 +417,21 @@ fun EventoItemRow(evento: EventoItem, onDeleteConfirmed: () -> Unit) {
         colors = CardDefaults.cardColors(containerColor = colorResource(R.color.white))
     ) {
         Column(modifier = Modifier.fillMaxWidth().padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(text = evento.titulo_evento,
+            horizontalAlignment = Alignment.Start)
+        {
+            Text(
+                text = evento.titulo_evento,
                 fontWeight = FontWeight.Bold,
                 style = MaterialTheme.typography.titleLarge,
-                color = colorResource(R.color.black))
+                color = colorResource(R.color.black)
+            )
+
+            Text(
+                text = "Hora: ${evento.Hora.take(5)}",
+                fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.titleMedium,
+                color = colorResource(R.color.grisOscuro)
+            )
         }
     }
 }

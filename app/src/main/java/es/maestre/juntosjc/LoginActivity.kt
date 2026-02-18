@@ -3,15 +3,18 @@ package es.maestre.juntosjc
 import android.content.Context.MODE_PRIVATE
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
@@ -20,8 +23,6 @@ import es.maestre.juntosjc.ui.theme.JUNTOSJCTheme
 import es.maestre.juntosjc.viewModel.LoginState
 import es.maestre.juntosjc.viewModel.AuthenticationViewModel
 
-
-// activity de login y registro de usuarios
 class LoginActivity : ComponentActivity() {
 
     private val viewModel: AuthenticationViewModel by viewModels()
@@ -33,7 +34,6 @@ class LoginActivity : ComponentActivity() {
                 LoginScreen(
                     viewModel = viewModel,
                     onLoginSuccess = {
-                        // Cuando el login sea correcto, se lanza MainActivity y se finaliza MainActivity
                         startActivity(Intent(this@LoginActivity, MainActivity::class.java))
                         finish()
                     }
@@ -48,26 +48,24 @@ fun LoginScreen(
     viewModel: AuthenticationViewModel,
     onLoginSuccess: () -> Unit
 ) {
-    // Estado para email, password y si estamos en modo registro o login
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var isSignUp by remember { mutableStateOf(false) }
     val context = LocalContext.current
 
-
-    val loginState by viewModel. loginState.collectAsStateWithLifecycle()
+    val loginState by viewModel.loginState.collectAsStateWithLifecycle()
 
     LaunchedEffect(loginState) {
         if (loginState is LoginState.Success) {
 
             val prefs = context.getSharedPreferences("APP", MODE_PRIVATE)
-            prefs.edit().putString("email_usuario",email).apply()
+            prefs.edit().putString("email_usuario", email).apply()
 
             onLoginSuccess()
             viewModel.resetState()
         }
     }
-// esta es la estructura de la UI
+
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background
@@ -79,7 +77,14 @@ fun LoginScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            // este titulo cambia segun si es registro o login
+            Image(
+                painter = painterResource(id = R.drawable.juntos),
+                contentDescription = "Logo Juntos",
+                modifier = Modifier
+                    .size(250.dp)
+                    .padding(bottom = 30.dp)
+            )
+
             Text(
                 text = if (isSignUp) stringResource(R.string.sign_up) else stringResource(R.string.log_in),
                 style = MaterialTheme.typography.headlineLarge
@@ -88,31 +93,42 @@ fun LoginScreen(
             Spacer(modifier = Modifier.height(32.dp))
 
             OutlinedTextField(
-                value = email,
+                value = email.trim(),
                 onValueChange = { email = it },
                 label = { Text(stringResource(R.string.lb_email)) },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                isError = loginState is LoginState.Error
+
             )
 
             Spacer(modifier = Modifier.height(16.dp))
-            // el campo de la contraseña y oculta los caracteres
+
             OutlinedTextField(
                 value = password,
                 onValueChange = { password = it },
                 label = { Text(stringResource(R.string.password)) },
                 visualTransformation = PasswordVisualTransformation(),
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                isError = loginState is LoginState.Error
             )
 
             Spacer(modifier = Modifier.height(24.dp))
-            // Si el estado es Loading se muestra un Progress, si no se muestra el botón
+
             if (loginState is LoginState.Loading) {
                 CircularProgressIndicator()
             } else {
                 Button(
                     onClick = {
                         if (isSignUp) {
-                            viewModel.signUp(email, password)
+                            if (password.length < 6) {
+                                Toast.makeText(
+                                    context,
+                                    "La contraseña debe tener al menos 6 caracteres",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            } else {
+                                viewModel.signUp(email, password)
+                            }
                         } else {
                             viewModel.signIn(email, password)
                         }

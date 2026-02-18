@@ -12,12 +12,15 @@ import es.maestre.juntosjc.supabase.SupabaseClient
 import io.github.jan.supabase.postgrest.from
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import io.github.jan.supabase.postgrest.query.Columns
+
 
 /**
  * ViewModel de los eventos
  */
 class EventoViewModel(application: Application) : AndroidViewModel(application) {
 
+    val fechasConEventos = mutableStateListOf<Long>()
     val listaEventosFiltrados = mutableStateListOf<EventoItem>()
 
     // 1. Obtener los archivos de la tabla de supabase de evento
@@ -45,6 +48,7 @@ class EventoViewModel(application: Application) : AndroidViewModel(application) 
             try {
                 SupabaseClient.client.from("evento").insert(evento)
                 // Refrescamos la lista para la fecha del evento insertado
+                cargarTodasLasFechasConEventos()
                 obtenerEventosPorFechaSupabase(evento.fecha_evento)
                 onDone()
             } catch (e: Exception) {
@@ -60,6 +64,7 @@ class EventoViewModel(application: Application) : AndroidViewModel(application) 
                 SupabaseClient.client.from("evento").delete {
                     filter { eq("id_evento", id) }
                 }
+                cargarTodasLasFechasConEventos()
                 // Refrescamos la lista de ese día
                 obtenerEventosPorFechaSupabase(fechaActual)
             } catch (e: Exception) {
@@ -85,4 +90,20 @@ class EventoViewModel(application: Application) : AndroidViewModel(application) 
         }
     }
 
+    fun cargarTodasLasFechasConEventos() {
+        viewModelScope.launch {
+            try {
+                val resultado = SupabaseClient.client.from("evento")
+                    .select(columns = Columns.list("fecha_evento"))
+                    .decodeList<EventoItem>()
+
+                fechasConEventos.clear()
+                fechasConEventos.addAll(resultado.map { it.fecha_evento })
+
+                Log.d("Supabase", "Fechas cargadas: ${fechasConEventos.size}")
+            } catch (e: Exception) {
+                Log.e("Supabase", "Error al cargar fechas: ${e.message}")
+            }
+        }
+    }
 }

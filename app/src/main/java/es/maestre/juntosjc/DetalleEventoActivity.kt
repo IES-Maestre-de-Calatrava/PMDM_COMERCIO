@@ -65,7 +65,22 @@ fun MyAppDetalleEvento(viewModel: EventoViewModel, idEvento: Int, eventoRecibido
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(stringResource(R.string.txt_detalle), fontWeight = FontWeight.Bold) },
+                title = {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            painter = painterResource(R.drawable.calendar_svgrepo_com),
+                            contentDescription = null,
+                            modifier = Modifier.size(30.dp),
+                            tint = Color.Unspecified
+
+                        )
+                        Spacer(modifier = Modifier.width(8.dp)) // Espacio entre texto e icono
+                        Text(
+                            stringResource(R.string.txt_calendario),
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                        },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = colorResource(R.color.container),
                     titleContentColor = colorResource(R.color.content)
