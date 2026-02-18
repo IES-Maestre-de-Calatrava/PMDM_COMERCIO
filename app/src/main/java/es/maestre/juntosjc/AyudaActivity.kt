@@ -9,6 +9,8 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -17,8 +19,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -35,6 +42,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import es.maestre.juntosjc.model.Ayuda
@@ -278,24 +286,25 @@ fun BotonAyuda(icono: Int, contenido: String, textoOcultar: String,descripcion: 
 
         androidx.compose.material3.ElevatedButton(
             onClick = { expandido = !expandido },
-
-            modifier = Modifier.fillMaxWidth(),
             shape = BotonRedondearAyuda,
             colors = botonPrincipalColores()
         ) {
-            Icon(
-                painter = painterResource(icono),
-                contentDescription = null,
-                modifier = Modifier.size(30.dp),
-                tint = Color.Unspecified
+            Box(modifier = Modifier.fillMaxWidth()) {
+                Icon(
+                    painter = painterResource(icono),
+                    contentDescription = null,
+                    modifier = Modifier.size(30.dp),
+                    tint = Color.Unspecified
 
-            )
-            Text(
-                text = if (expandido) textoOcultar else contenido,
-                style = androidx.compose.material3.MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(horizontal = 25.dp)
-            )
+                )
+                Text(
+                    text = if (expandido) textoOcultar else contenido,
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.fillMaxWidth(),
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
+                )
+            }
         }
 
         AnimatedVisibility(
@@ -310,9 +319,7 @@ fun BotonAyuda(icono: Int, contenido: String, textoOcultar: String,descripcion: 
                 if (descripcion != null) {
                     Text(
                         text = descripcion,
-                        modifier = Modifier.padding(vertical = 8.dp, horizontal = 4.dp),
-                        style = androidx.compose.material3.MaterialTheme.typography.bodySmall,
-                        color = Color.Gray
+                        modifier = Modifier.padding(vertical = 8.dp, horizontal = 4.dp)
                     )
                 }
                 function()
@@ -333,16 +340,16 @@ fun BotonTexto(contenido: String, texto: String) {
 
     Column(
         modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
-        horizontalAlignment = androidx.compose.ui.Alignment.Start
+        horizontalAlignment = Alignment.Start
     ) {
-        androidx.compose.material3.OutlinedButton(
+        OutlinedButton(
             onClick = { expandido = !expandido },
             modifier = Modifier.fillMaxWidth(),
             border = botonSecundarioColores()
         ) {
             Text(
                 text = if (expandido) stringResource(R.string.txt_ocultar_detalles) else contenido,
-                style = androidx.compose.material3.MaterialTheme.typography.bodyLarge
+                style = MaterialTheme.typography.bodyLarge
             )
         }
         AnimatedVisibility(
@@ -360,7 +367,7 @@ fun BotonTexto(contenido: String, texto: String) {
                 Text(
                     text = texto,
                     modifier = Modifier.padding(12.dp),
-                    style = androidx.compose.material3.MaterialTheme.typography.bodyMedium
+                    style = MaterialTheme.typography.bodyMedium
                 )
             }
         }
@@ -377,19 +384,19 @@ val ColumnaDetalleModifier = Modifier
     .fillMaxWidth()
 
 
-val BotonRedondearAyuda = androidx.compose.foundation.shape.RoundedCornerShape(8.dp)
+val BotonRedondearAyuda = RoundedCornerShape(8.dp)
 
 @Composable
-fun botonPrincipalColores() = androidx.compose.material3.ButtonDefaults.elevatedButtonColors(
+fun botonPrincipalColores() = ButtonDefaults.elevatedButtonColors(
     containerColor = colorResource(R.color.container),
     contentColor = colorResource(R.color.content)
 )
 @Composable
-fun botonSecundarioColores() = androidx.compose.foundation.BorderStroke(
+fun botonSecundarioColores() = BorderStroke(
     width = 1.dp,
     color = colorResource(R.color.container)
 )
 @Composable
-fun cardTextoAyudaColores() = androidx.compose.material3.CardDefaults.cardColors(
+fun cardTextoAyudaColores() = CardDefaults.cardColors(
     containerColor = colorResource(R.color.container).copy(alpha = 0.1f)
 )
