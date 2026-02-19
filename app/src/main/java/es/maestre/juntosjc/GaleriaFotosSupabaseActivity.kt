@@ -209,7 +209,7 @@ class GaleriaFotosSupabaseActivity : ComponentActivity() {
                 .padding(16.dp)
         ) {
             Icon(
-                painter = painterResource(id = R.drawable.add_to_svgrepo_com),
+                painter = painterResource(id = R.drawable.ic_hacer_foto),
                 contentDescription = stringResource(R.string.txt_descripcion_fotos)
             )
         }
