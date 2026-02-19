@@ -308,6 +308,9 @@ fun GenerarComponentesMain(
                 }
             }
 
+            // Spacer para empujar los botones hacia el centro/mitad de la pantalla
+            Spacer(modifier = Modifier.weight(0.8f))
+
             // BOTONES - Grid dinámico según preferencias
             LazyVerticalGrid(
                 columns = GridCells.Fixed(3),
@@ -328,6 +331,8 @@ fun GenerarComponentesMain(
                     }
                 }
             }
+
+            Spacer(modifier = Modifier.weight(1f))
         }
 
         // Loading overlay
