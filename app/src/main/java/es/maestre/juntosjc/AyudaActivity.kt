@@ -81,8 +81,7 @@ class AyudaActivity : ComponentActivity() {
             val isDarkTheme by preferencesViewModel.isDarkTheme.collectAsStateWithLifecycle()
 
             JUNTOSJCTheme(darkTheme = isDarkTheme) {
-                AyudaPrincipal(seccion as Ayuda,
-                    preferencesViewModel = preferencesViewModel)
+                AyudaPrincipal(seccion as Ayuda)
             }
         }
     }
@@ -90,7 +89,7 @@ class AyudaActivity : ComponentActivity() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AyudaPrincipal(seccion: Ayuda,  preferencesViewModel: UserPreferencesViewModel? = null){
+fun AyudaPrincipal(seccion: Ayuda){
     Scaffold(
         topBar = {
             TopAppBar(
@@ -187,6 +186,7 @@ fun AyudaPrincipal(seccion: Ayuda,  preferencesViewModel: UserPreferencesViewMod
 @Preview
 @Composable
 fun AyudaPrincipalPreview(){
+    AyudaPrincipal(Ayuda.GENERAL)
 }
 
 @Composable
