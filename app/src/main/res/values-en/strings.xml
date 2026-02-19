@@ -178,6 +178,7 @@
     <string name="txt_descripcion_documentos">Interactive wall for sharing messages with the team. Allows you to post text, edit it, and view attached images in full screen with just a tap.</string>
     <string name="txt_descripcion_tareas">Organize your to-dos with statuses (Done, In Progress, Pending). Tap the colored buttons at the top to instantly filter the list and see only the tasks with that status.</string>
     <string name="txt_descripcion_calendario">Organize your daily events clearly. Add new appointments with details (attendees, time, and description) and quickly view your entire schedule.</string>
+    <string name="descripcion_btnHacerFoto">Botton to take a picture</string>
 
 
 </resources>

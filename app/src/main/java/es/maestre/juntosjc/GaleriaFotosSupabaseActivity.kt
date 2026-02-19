@@ -25,6 +25,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Download
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -104,7 +105,6 @@ class GaleriaFotosSupabaseActivity : ComponentActivity() {
                 isLoading = false
             }
         }
-
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             topBar = {
@@ -123,6 +123,7 @@ class GaleriaFotosSupabaseActivity : ComponentActivity() {
                                 stringResource(R.string.txt_galeria),
                                 fontWeight = FontWeight.Bold
                             )
+
                         }
                     },
                     colors = TopAppBarDefaults.topAppBarColors(
@@ -143,15 +144,19 @@ class GaleriaFotosSupabaseActivity : ComponentActivity() {
                         }
                     }
                 )
-            }
-        ) { paddingValues ->
+            },
+            // Mover el FAB al slot correcto del Scaffold y posicionarlo a la derecha
+            floatingActionButton = { btnHacerFoto() },
+            floatingActionButtonPosition = FabPosition.End
 
+        ) { paddingValues ->
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(paddingValues)
                     .background(MaterialTheme.colorScheme.background)
             ) {
+
                 when {
                     isLoading -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { CircularProgressIndicator(color = MaterialTheme.colorScheme.primary) }
                     errorMessage != null -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { Text(errorMessage ?: "Error", color = MaterialTheme.colorScheme.error) }
@@ -169,8 +174,10 @@ class GaleriaFotosSupabaseActivity : ComponentActivity() {
                                 FotoGridItem(foto) { selectedFoto = foto }
                             }
                         }
+
                     }
                 }
+
             }
 
             // Diálogo de detalle de foto
@@ -185,9 +192,29 @@ class GaleriaFotosSupabaseActivity : ComponentActivity() {
                     }
                 )
             }
+
         }
     }
+    @Composable
+    fun btnHacerFoto(){
+        val context = LocalContext.current
+        FloatingActionButton(
+            onClick = {
+                val intent = Intent(context, FotosActivity::class.java)
+                context.startActivity(intent)
+            },
+            containerColor = colorResource(R.color.white),
+            contentColor = Color.Unspecified,
+            modifier = Modifier
+                .padding(16.dp)
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.add_to_svgrepo_com),
+                contentDescription = stringResource(R.string.txt_descripcion_fotos)
+            )
+        }
 
+    }
     @Composable
     fun FotoGridItem(foto: FotoCamaraItem, onClick: () -> Unit) {
         val context = LocalContext.current

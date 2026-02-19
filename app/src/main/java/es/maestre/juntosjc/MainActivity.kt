@@ -211,7 +211,7 @@ fun GenerarComponentesMain(
                 titleRes = R.string.txt_fotos,
                 iconRes = R.drawable.photo_album_svgrepo_com,
                 onClick = { ctx ->
-                    ctx.startActivity(Intent(ctx, FotosActivity::class.java))
+                    ctx.startActivity(Intent(ctx, GaleriaFotosSupabaseActivity::class.java))
                 }
             ),
             // Configuración es FIJA - siempre visible
