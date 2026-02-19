@@ -20,6 +20,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -42,6 +43,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import es.maestre.juntosjc.model.ContactoItem
 import es.maestre.juntosjc.viewModel.ContactoViewModel
 
@@ -57,6 +59,9 @@ class DetalleContactoActivity : ComponentActivity() {
 
     private val viewModel: ContactoViewModel by viewModels()
 
+    private val preferencesViewModel: UserPreferencesViewModel by viewModels()
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -68,7 +73,9 @@ class DetalleContactoActivity : ComponentActivity() {
 
         enableEdgeToEdge()
         setContent {
-            JUNTOSJCTheme {
+            val isDarkTheme by preferencesViewModel.isDarkTheme.collectAsStateWithLifecycle()
+
+            JUNTOSJCTheme (darkTheme = isDarkTheme) {
                 val contactoActual = remember(idContacto) {
                     if (idContacto > 0) {
                         viewModel.listaContactosSupabase.find { it.id_contacto == idContacto }
@@ -78,7 +85,7 @@ class DetalleContactoActivity : ComponentActivity() {
                     }
                 }
 
-                MyAppDetalleContacto(viewModel = viewModel, idContacto = idContacto, contactoRecibido = contactoActual)
+                MyAppDetalleContacto(viewModel = viewModel, idContacto = idContacto, contactoRecibido = contactoActual,  preferencesViewModel = preferencesViewModel)
             }
         }
     }
@@ -86,31 +93,36 @@ class DetalleContactoActivity : ComponentActivity() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyAppDetalleContacto(viewModel: ContactoViewModel, idContacto: Int, contactoRecibido: ContactoItem?) {
+fun MyAppDetalleContacto(viewModel: ContactoViewModel, idContacto: Int, contactoRecibido: ContactoItem?,  preferencesViewModel: UserPreferencesViewModel) {
     val context = LocalContext.current
 
     Scaffold(
         topBar = {
             TopAppBar(
                 title = {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
                         Icon(
-                            painter = painterResource(R.drawable.recruitment_svgrepo_com),
+                            painter = painterResource(R.drawable.icono_tiendacampa_a),
                             contentDescription = null,
                             modifier = Modifier.size(30.dp),
                             tint = Color.Unspecified
 
                         )
-                        Spacer(modifier = Modifier.width(8.dp)) // Espacio entre texto e icono
+                        Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            stringResource(R.string.txt_detalle),
-                            fontWeight = FontWeight.Bold
+                            text = stringResource(R.string.txt_Juntos),
+                            style = MaterialTheme.typography.headlineMedium.copy(
+                                fontWeight = FontWeight.ExtraBold,
+                                color = JuntosTheme.colors.azulOscuroLogo
+                            )
                         )
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = colorResource(R.color.container),
-                    titleContentColor = colorResource(R.color.content)
+                    containerColor = JuntosTheme.colors.container,
+                    titleContentColor = JuntosTheme.colors.content
                 )
             )
         }
@@ -123,6 +135,26 @@ fun MyAppDetalleContacto(viewModel: ContactoViewModel, idContacto: Int, contacto
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    painter = painterResource(R.drawable.recruitment_svgrepo_com),
+                    contentDescription = null,
+                    modifier = Modifier.size(30.dp),
+                    tint = Color.Unspecified
+
+                )
+                Spacer(modifier = Modifier.width(8.dp)) // Espacio entre texto e icono
+                Text(
+                    stringResource(R.string.txt_detalle),
+                    style = MaterialTheme.typography.headlineMedium.copy(
+                        fontWeight = FontWeight.ExtraBold,
+                        color = JuntosTheme.colors.azulOscuroLogo
+                    )
+                )
+            }
+
+            HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
+
             contactoRecibido?.let { contacto ->
                 CamposDetalleContacto(
                     contacto = contacto,

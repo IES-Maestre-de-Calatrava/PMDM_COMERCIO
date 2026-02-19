@@ -52,6 +52,9 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.foundation.lazy.items
 import coil.compose.AsyncImage
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 import es.maestre.juntosjc.viewModel.UserPreferencesViewModel
 import es.maestre.juntosjc.ui.theme.JUNTOSJCTheme
@@ -68,6 +71,8 @@ class RedSocialActivity : ComponentActivity() {
     // instancio mi viewModel para el acceso a BBDD
     private val viewModel: ComentarioViewModel by viewModels()
 
+    private val preferencesViewModel: UserPreferencesViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -76,8 +81,13 @@ class RedSocialActivity : ComponentActivity() {
         viewModel.obtenerComentariosSupabase()
 
         setContent {
-            JUNTOSJCTheme {
-                MyAppRedSocial(viewModel = viewModel)
+            val isDarkTheme by preferencesViewModel.isDarkTheme.collectAsStateWithLifecycle()
+
+            JUNTOSJCTheme (darkTheme = isDarkTheme) {
+                MyAppRedSocial(
+                    viewModel = viewModel,
+                    preferencesViewModel = preferencesViewModel
+                )
             }
         }
     }
@@ -94,7 +104,7 @@ class RedSocialActivity : ComponentActivity() {
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyAppRedSocial(viewModel: ComentarioViewModel) {
+fun MyAppRedSocial(viewModel: ComentarioViewModel, preferencesViewModel: UserPreferencesViewModel) {
     val context = LocalContext.current
 
     androidx.compose.runtime.LaunchedEffect(Unit) {
@@ -106,24 +116,29 @@ fun MyAppRedSocial(viewModel: ComentarioViewModel) {
         topBar = {
             TopAppBar(
                 title = {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
                         Icon(
-                            painter = painterResource(R.drawable.community_comments_svgrepo_com),
+                            painter = painterResource(R.drawable.icono_tiendacampa_a),
                             contentDescription = null,
                             modifier = Modifier.size(30.dp),
                             tint = Color.Unspecified
 
                         )
-                        Spacer(modifier = Modifier.width(8.dp)) // Espacio entre texto e icono
+                        Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            stringResource(R.string.txt_redSocial),
-                            fontWeight = FontWeight.Bold
+                            text = stringResource(R.string.txt_Juntos),
+                            style = MaterialTheme.typography.headlineMedium.copy(
+                                fontWeight = FontWeight.ExtraBold,
+                                color = JuntosTheme.colors.azulOscuroLogo
+                            )
                         )
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = colorResource(R.color.container),
-                    titleContentColor = colorResource(R.color.content)
+                    containerColor = JuntosTheme.colors.container,
+                    titleContentColor = JuntosTheme.colors.content
                 ),
                 actions = {
                     IconButton(onClick = {
@@ -161,9 +176,28 @@ fun MyAppRedSocial(viewModel: ComentarioViewModel) {
         Column(
             modifier = Modifier
                 .padding(paddingSobrante)
-                .fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .fillMaxSize()
+                .padding(16.dp)
         ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    painter = painterResource(R.drawable.community_comments_svgrepo_com),
+                    contentDescription = null,
+                    modifier = Modifier.size(30.dp),
+                    tint = Color.Unspecified
+
+                )
+                Spacer(modifier = Modifier.width(8.dp)) // Espacio entre texto e icono
+                Text(
+                    stringResource(R.string.txt_redSocial),
+                    style = MaterialTheme.typography.headlineMedium.copy(
+                        fontWeight = FontWeight.ExtraBold,
+                        color = JuntosTheme.colors.azulOscuroLogo
+                    )
+                )
+            }
+            HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
+
             ListaComentarios(viewModel = viewModel)
         }
     }
@@ -213,7 +247,7 @@ fun ComentarioItem(comentario: ComentarioItem, onClick: () -> Unit) {
             .fillMaxWidth()
             .clickable { onClick() },
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-        colors = CardDefaults.cardColors(containerColor = colorResource(R.color.white))
+        colors = CardDefaults.cardColors(containerColor = JuntosTheme.colors.container)
     ) {
         Row(
             modifier = Modifier
@@ -252,17 +286,17 @@ fun ComentarioItem(comentario: ComentarioItem, onClick: () -> Unit) {
                 Text(
                     text = comentario.nombre_usuario,
                     style = MaterialTheme.typography.titleLarge,
-                    color = colorResource(R.color.black)
+                    color = JuntosTheme.colors.content
                 )
                 Text(
                     text = comentario.texto,
                     style = MaterialTheme.typography.titleSmall,
-                    color = colorResource(R.color.black)
+                    color = JuntosTheme.colors.content
                 )
                 Text(
                     text = comentario.hora,
                     style = MaterialTheme.typography.titleSmall,
-                    color = colorResource(R.color.grisOscuro)
+                    color = JuntosTheme.colors.content
                 )
             }
         }

@@ -9,6 +9,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -36,6 +37,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -49,6 +51,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -62,6 +65,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import es.maestre.juntosjc.model.Ayuda
 import es.maestre.juntosjc.supabase.SupabaseClient
@@ -80,6 +84,7 @@ import es.maestre.juntosjc.viewModel.UserPreferencesViewModel
 import es.maestre.juntosjc.ui.theme.JUNTOSJCTheme
 import es.maestre.juntosjc.ui.theme.JuntosTheme
 import es.maestre.juntosjc.model.AppFeature
+import kotlin.getValue
 
 @Serializable
 data class PerfilRow(
@@ -93,12 +98,16 @@ data class PerfilRow(
 )
 
 class PerfilActivity : ComponentActivity() {
+
+    private val preferencesViewModel: UserPreferencesViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            JUNTOSJCTheme {
-                PantallaPerfil()
+            val isDarkTheme by preferencesViewModel.isDarkTheme.collectAsStateWithLifecycle()
+            JUNTOSJCTheme (darkTheme = isDarkTheme) {
+                PantallaPerfil( preferencesViewModel = preferencesViewModel)
             }
         }
     }
@@ -106,7 +115,7 @@ class PerfilActivity : ComponentActivity() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PantallaPerfil() {
+fun PantallaPerfil(preferencesViewModel: UserPreferencesViewModel) {
     var showDialog by remember { mutableStateOf(false) }
 
     // Estados para los datos del perfil
@@ -182,29 +191,36 @@ fun PantallaPerfil() {
         topBar = {
             TopAppBar(
                 title = {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
                         Icon(
-                            painter = painterResource(R.drawable.perfil),
+                            painter = painterResource(R.drawable.icono_tiendacampa_a),
                             contentDescription = null,
                             modifier = Modifier.size(30.dp),
                             tint = Color.Unspecified
+
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            "Perfil",
-                            fontWeight = FontWeight.Bold
+                            text = stringResource(R.string.txt_Juntos),
+                            style = MaterialTheme.typography.headlineMedium.copy(
+                                fontWeight = FontWeight.ExtraBold,
+                                color = JuntosTheme.colors.azulOscuroLogo
+                            )
                         )
-                    } },
+                    }
+                    },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = colorResource(R.color.container),
-                    titleContentColor = colorResource(R.color.content)
+                    containerColor = JuntosTheme.colors.container,
+                    titleContentColor = JuntosTheme.colors.content
                 ),
                 actions = {
                     IconButton(onClick = { showDialog = true }) {
                         Icon(
                             imageVector = Icons.Default.Edit,
                             contentDescription = "Editar perfil",
-                            tint = colorResource(R.color.content)
+                            tint = JuntosTheme.colors.content
                         )
                     }
                     IconButton(onClick = {
@@ -227,7 +243,24 @@ fun PantallaPerfil() {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
+                .padding(16.dp)
         ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    painter = painterResource(R.drawable.perfil),
+                    contentDescription = null,
+                    modifier = Modifier.size(30.dp),
+                    tint = Color.Unspecified
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    "Perfil",
+                    style = MaterialTheme.typography.headlineMedium.copy(
+                        fontWeight = FontWeight.ExtraBold,
+                        color = JuntosTheme.colors.azulOscuroLogo
+                    )
+                )
+            }
             if (isLoading) {
                 // Mostrar indicador de carga
                 Column(

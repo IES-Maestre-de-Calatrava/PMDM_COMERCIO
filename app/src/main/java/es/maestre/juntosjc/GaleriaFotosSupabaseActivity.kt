@@ -110,20 +110,24 @@ class GaleriaFotosSupabaseActivity : ComponentActivity() {
             topBar = {
                 TopAppBar(
                     title = {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
                             Icon(
-                                painter = painterResource(R.drawable.photo_album_svgrepo_com),
+                                painter = painterResource(R.drawable.icono_tiendacampa_a),
                                 contentDescription = null,
                                 modifier = Modifier.size(30.dp),
                                 tint = Color.Unspecified
 
                             )
-                            Spacer(modifier = Modifier.width(8.dp)) // Espacio entre texto e icono
+                            Spacer(modifier = Modifier.width(8.dp))
                             Text(
-                                stringResource(R.string.txt_galeria),
-                                fontWeight = FontWeight.Bold
+                                text = stringResource(R.string.txt_Juntos),
+                                style = MaterialTheme.typography.headlineMedium.copy(
+                                    fontWeight = FontWeight.ExtraBold,
+                                    color = JuntosTheme.colors.azulOscuroLogo
+                                )
                             )
-
                         }
                     },
                     colors = TopAppBarDefaults.topAppBarColors(
@@ -154,8 +158,28 @@ class GaleriaFotosSupabaseActivity : ComponentActivity() {
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(paddingValues)
+                    .padding(16.dp)
                     .background(MaterialTheme.colorScheme.background)
             ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        painter = painterResource(R.drawable.photo_album_svgrepo_com),
+                        contentDescription = null,
+                        modifier = Modifier.size(30.dp),
+                        tint = Color.Unspecified
+
+                    )
+                    Spacer(modifier = Modifier.width(8.dp)) // Espacio entre texto e icono
+                    Text(
+                        stringResource(R.string.txt_galeria),
+                        style = MaterialTheme.typography.headlineMedium.copy(
+                            fontWeight = FontWeight.ExtraBold,
+                            color = JuntosTheme.colors.azulOscuroLogo
+                        )
+                    )
+                }
+                HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
+
 
                 when {
                     isLoading -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { CircularProgressIndicator(color = MaterialTheme.colorScheme.primary) }

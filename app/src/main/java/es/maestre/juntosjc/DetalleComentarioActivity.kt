@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -41,6 +42,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import es.maestre.juntosjc.viewModel.ComentarioViewModel
 import kotlin.getValue
 import es.maestre.juntosjc.model.ComentarioItem
@@ -62,6 +64,9 @@ class DetalleComentarioActivity: ComponentActivity() {
     // instancio mi viewModel para el acceso a BBDD
     private val viewModel: ComentarioViewModel by viewModels()
 
+    private val preferencesViewModel: UserPreferencesViewModel by viewModels()
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -76,7 +81,9 @@ class DetalleComentarioActivity: ComponentActivity() {
 
         enableEdgeToEdge()
         setContent {
-            JUNTOSJCTheme {
+            val isDarkTheme by preferencesViewModel.isDarkTheme.collectAsStateWithLifecycle()
+
+            JUNTOSJCTheme (darkTheme = isDarkTheme) {
                 val comentarioActual = remember(idComentario) {
                     if (idComentario > 0) {
                         // Buscamos en la lista descargada de Supabase
@@ -93,7 +100,7 @@ class DetalleComentarioActivity: ComponentActivity() {
                     }
                 }
 
-                MyAppDetalle(viewModel = viewModel, idComentario = idComentario, comentarioRecibido = comentarioActual) // hay que pasarselo a la funcion para completar los campos
+                MyAppDetalle(viewModel = viewModel, idComentario = idComentario, comentarioRecibido = comentarioActual,  preferencesViewModel = preferencesViewModel) // hay que pasarselo a la funcion para completar los campos
             }
         }
     }
@@ -106,7 +113,7 @@ class DetalleComentarioActivity: ComponentActivity() {
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyAppDetalle(viewModel: ComentarioViewModel, idComentario: Int, comentarioRecibido: ComentarioItem?) {
+fun MyAppDetalle(viewModel: ComentarioViewModel, idComentario: Int, comentarioRecibido: ComentarioItem?,  preferencesViewModel: UserPreferencesViewModel) {
 
     val context = LocalContext.current // Para cerrar la pantalla tras la acción
 
@@ -114,24 +121,30 @@ fun MyAppDetalle(viewModel: ComentarioViewModel, idComentario: Int, comentarioRe
         topBar = {
             TopAppBar(
                 title = {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
                         Icon(
-                            painter = painterResource(R.drawable.community_comments_svgrepo_com),
+                            painter = painterResource(R.drawable.icono_tiendacampa_a),
                             contentDescription = null,
                             modifier = Modifier.size(30.dp),
                             tint = Color.Unspecified
 
                         )
-                        Spacer(modifier = Modifier.width(8.dp)) // Espacio entre texto e icono
+                        Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            stringResource(R.string.txt_detalle),
-                            fontWeight = FontWeight.Bold
+                            text = stringResource(R.string.txt_Juntos),
+                            style = MaterialTheme.typography.headlineMedium.copy(
+                                fontWeight = FontWeight.ExtraBold,
+                                color = JuntosTheme.colors.azulOscuroLogo
+                            )
                         )
                     }
+
                         },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = colorResource(R.color.container),
-                    titleContentColor = colorResource(R.color.content)
+                    containerColor = JuntosTheme.colors.container,
+                    titleContentColor = JuntosTheme.colors.content
                 )
             )
         }
@@ -143,6 +156,27 @@ fun MyAppDetalle(viewModel: ComentarioViewModel, idComentario: Int, comentarioRe
                 .fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
+
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    painter = painterResource(R.drawable.community_comments_svgrepo_com),
+                    contentDescription = null,
+                    modifier = Modifier.size(30.dp),
+                    tint = Color.Unspecified
+
+                )
+                Spacer(modifier = Modifier.width(8.dp)) // Espacio entre texto e icono
+                Text(
+                    stringResource(R.string.txt_detalle),
+                    style = MaterialTheme.typography.headlineMedium.copy(
+                        fontWeight = FontWeight.ExtraBold,
+                        color = JuntosTheme.colors.azulOscuroLogo
+                    )
+                )
+            }
+
+            HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
+
             // Solo mostramos los campos si el comentario ha cargado
             comentarioRecibido?.let { comentario ->
                 CamposDetalle(comentario = comentario, viewModel = viewModel, esNuevo = idComentario <= 0, onActionDone = { (context as ComponentActivity).finish() })            }

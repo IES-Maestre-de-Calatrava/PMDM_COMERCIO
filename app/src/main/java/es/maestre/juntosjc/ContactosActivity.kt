@@ -274,7 +274,7 @@ fun ContactoItemRow(contacto: ContactoItem, onClick: () -> Unit) {
             .fillMaxWidth()
             .clickable { onClick() },
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-        colors = CardDefaults.cardColors(containerColor = colorResource(R.color.white))
+        colors = CardDefaults.cardColors(containerColor = JuntosTheme.colors.container)
     ) {
         Row(
             modifier = Modifier
@@ -285,17 +285,19 @@ fun ContactoItemRow(contacto: ContactoItem, onClick: () -> Unit) {
             Icon(
                 imageVector = Icons.Default.Contacts,
                 contentDescription = "Icono Contacto",
-                tint = MaterialTheme.colorScheme.primary
+                tint = JuntosTheme.colors.content
             )
             Spacer(modifier = Modifier.width(16.dp))
             Column {
                 Text(
                     text = contacto.nombre_contacto,
-                    style = MaterialTheme.typography.titleMedium
+                    style = MaterialTheme.typography.titleMedium,
+                    color = JuntosTheme.colors.content
                 )
                 Text(
                     text = contacto.telefono_contacto,
-                    style = MaterialTheme.typography.bodySmall
+                    style = MaterialTheme.typography.bodySmall,
+                    color = JuntosTheme.colors.content
                 )
             }
         }

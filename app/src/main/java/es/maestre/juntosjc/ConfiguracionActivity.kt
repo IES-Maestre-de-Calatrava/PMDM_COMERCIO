@@ -79,12 +79,9 @@ fun ConfiguracionScreen(
     val error by viewModel.error.collectAsStateWithLifecycle()
     val context = LocalContext.current
 
-
     var showThemeDialog by remember { mutableStateOf(false) }
-
-    // Snackbar para errores
     val snackbarHostState = remember { SnackbarHostState() }
-    
+
     LaunchedEffect(error) {
         error?.let {
             snackbarHostState.showSnackbar(it)
@@ -99,16 +96,18 @@ fun ConfiguracionScreen(
                 title = {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(
-                            painter = painterResource(R.drawable.configuracion),
+                            painter = painterResource(R.drawable.icono_tiendacampa_a),
                             contentDescription = null,
                             modifier = Modifier.size(30.dp),
                             tint = Color.Unspecified
-
                         )
-                        Spacer(modifier = Modifier.width(8.dp)) // Espacio entre texto e icono
+                        Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            stringResource(R.string.txt_configuracion),
-                            fontWeight = FontWeight.Bold
+                            text = stringResource(R.string.txt_Juntos),
+                            style = MaterialTheme.typography.headlineMedium.copy(
+                                fontWeight = FontWeight.ExtraBold,
+                                color = JuntosTheme.colors.azulOscuroLogo
+                            )
                         )
                     }
                 },
@@ -142,100 +141,114 @@ fun ConfiguracionScreen(
             )
         }
     ) { paddingValues ->
-        Box(
+        // CAMBIO CLAVE: Usamos Column en lugar de Box para evitar la superposición
+        Column(
             modifier = Modifier
                 .padding(paddingValues)
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
         ) {
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+            // Cabecera de la sección (Icono + CONFIGURACIÓN)
+            Row(
+                modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 16.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                // SECCIÓN: APARIENCIA
-                item {
-                    SettingsSection(title = stringResource(R.string.settings_appearance)) {
-                        SettingsItem(
-                            icon = Icons.Default.Palette,
-                            title = stringResource(R.string.settings_theme),
-                            subtitle = when (themeMode) {
-                                ThemeMode.LIGHT -> stringResource(R.string.theme_light)
-                                ThemeMode.DARK -> stringResource(R.string.theme_dark)
-                                ThemeMode.AUTO -> stringResource(R.string.theme_auto)
-                            },
-                            onClick = { showThemeDialog = true }
-                        )
-                    }
-                }
-
-                // SECCIÓN: FUNCIONALIDADES
-                item {
-                    Text(
-                        text = stringResource(R.string.settings_features),
-                        style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.primary,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(vertical = 8.dp)
+                Icon(
+                    painter = painterResource(R.drawable.configuracion),
+                    contentDescription = null,
+                    modifier = Modifier.size(30.dp),
+                    tint = Color.Unspecified
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = stringResource(R.string.txt_configuracion),
+                    style = MaterialTheme.typography.headlineMedium.copy(
+                        fontWeight = FontWeight.ExtraBold,
+                        color = JuntosTheme.colors.azulOscuroLogo
                     )
-                    
-                    Text(
-                        text = stringResource(R.string.settings_features_description),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.padding(bottom = 8.dp)
-                    )
-                }
-
-                // Lista de funcionalidades
-                items(AppFeature.entries) { feature ->
-                    FeatureToggleItem(
-                        feature = feature,
-                        isEnabled = enabledFeatures[feature] ?: true,
-                        onToggle = { enabled ->
-                            viewModel.setFeatureEnabled(feature, enabled)
-                        }
-                    )
-                }
-
-                // Botón para restablecer todas las funcionalidades
-                item {
-                    Spacer(modifier = Modifier.height(8.dp))
-                    
-                    OutlinedButton(
-                        onClick = { viewModel.enableAllFeatures() },
-                        modifier = Modifier.fillMaxWidth(),
-                        colors = ButtonDefaults.outlinedButtonColors(
-                            contentColor = MaterialTheme.colorScheme.primary
-                        )
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.RestartAlt,
-                            contentDescription = null,
-                            modifier = Modifier.size(20.dp)
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(stringResource(R.string.settings_reset_features))
-                    }
-                }
-
-                // Espacio extra al final
-                item {
-                    Spacer(modifier = Modifier.height(32.dp))
-                }
+                )
             }
 
-            // Loading indicator
-            if (isLoading) {
-                CircularProgressIndicator(
-                    modifier = Modifier.align(Alignment.Center)
-                )
+            HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp))
+
+            // El contenido de la configuración
+            Box(modifier = Modifier.weight(1f)) {
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    contentPadding = PaddingValues(16.dp), // Padding interno para la lista
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    // SECCIÓN: APARIENCIA
+                    item {
+                        SettingsSection(title = stringResource(R.string.settings_appearance)) {
+                            SettingsItem(
+                                icon = Icons.Default.Palette,
+                                title = stringResource(R.string.settings_theme),
+                                subtitle = when (themeMode) {
+                                    ThemeMode.LIGHT -> stringResource(R.string.theme_light)
+                                    ThemeMode.DARK -> stringResource(R.string.theme_dark)
+                                    ThemeMode.AUTO -> stringResource(R.string.theme_auto)
+                                },
+                                onClick = { showThemeDialog = true }
+                            )
+                        }
+                    }
+
+                    // SECCIÓN: FUNCIONALIDADES
+                    item {
+                        Text(
+                            text = stringResource(R.string.settings_features),
+                            style = MaterialTheme.typography.titleMedium,
+                            color = MaterialTheme.colorScheme.primary,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(vertical = 8.dp)
+                        )
+                        Text(
+                            text = stringResource(R.string.settings_features_description),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.padding(bottom = 8.dp)
+                        )
+                    }
+
+                    items(AppFeature.entries) { feature ->
+                        FeatureToggleItem(
+                            feature = feature,
+                            isEnabled = enabledFeatures[feature] ?: true,
+                            onToggle = { enabled ->
+                                viewModel.setFeatureEnabled(feature, enabled)
+                            }
+                        )
+                    }
+
+                    item {
+                        Spacer(modifier = Modifier.height(8.dp))
+                        OutlinedButton(
+                            onClick = { viewModel.enableAllFeatures() },
+                            modifier = Modifier.fillMaxWidth(),
+                            colors = ButtonDefaults.outlinedButtonColors(
+                                contentColor = MaterialTheme.colorScheme.primary
+                            )
+                        ) {
+                            Icon(Icons.Default.RestartAlt, contentDescription = null, modifier = Modifier.size(20.dp))
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(stringResource(R.string.settings_reset_features))
+                        }
+                    }
+
+                    item { Spacer(modifier = Modifier.height(32.dp)) }
+                }
+
+                // El loading se mantiene en un Box para poder centrarlo sobre la lista
+                if (isLoading) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.align(Alignment.Center)
+                    )
+                }
             }
         }
     }
 
-    // Diálogo de selección de tema
     if (showThemeDialog) {
         ThemeSelectionDialog(
             currentTheme = themeMode,

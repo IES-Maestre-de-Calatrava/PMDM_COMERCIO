@@ -11,11 +11,11 @@
 
     <color name="verde_esmeralda">#4FE660</color>
     <color name="verde_pastel">#8BD98B</color>
-    <color name="azul_contraste">#3577B4</color>
-    <color name="azul_pastel">#A7C7E7</color>
+    <color name="azul_contraste">#2577C5</color>
+    <color name="azul_pastel">#6398DE</color>
     <color name="azul_cielo">#FFB3E5FC</color>
-    <color name="rojo">#EB5151</color>
-    <color name="rojo_pastel">#F68E89</color>
+    <color name="rojo">#E93636</color>
+    <color name="rojo_pastel">#DE5A54</color>
     <color name="amarillo_electrico">#FFFF00</color>
     <color name="amarillo_pastel">#fdfd96</color>
     <color name="grisOscuro">#323232</color>

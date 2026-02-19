@@ -10,6 +10,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -19,6 +20,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import es.maestre.juntosjc.model.EventoItem
 import es.maestre.juntosjc.viewModel.EventoViewModel
 
@@ -30,6 +32,9 @@ import es.maestre.juntosjc.model.AppFeature
 class DetalleEventoActivity : ComponentActivity() {
 
     private val viewModel: EventoViewModel by viewModels()
+
+    private val preferencesViewModel: UserPreferencesViewModel by viewModels()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,7 +49,9 @@ class DetalleEventoActivity : ComponentActivity() {
 
         enableEdgeToEdge()
         setContent {
-            JUNTOSJCTheme {
+            val isDarkTheme by preferencesViewModel.isDarkTheme.collectAsStateWithLifecycle()
+
+            JUNTOSJCTheme (darkTheme = isDarkTheme) {
                 val eventoActual = remember(idEvento) {
                     if (idEvento > 0) {
                         viewModel.listaEventosFiltrados.find { it.id_evento == idEvento }
@@ -55,7 +62,7 @@ class DetalleEventoActivity : ComponentActivity() {
                     }
                 }
 
-                MyAppDetalleEvento(viewModel = viewModel, idEvento = idEvento, eventoRecibido = eventoActual)
+                MyAppDetalleEvento(viewModel = viewModel, idEvento = idEvento, eventoRecibido = eventoActual,  preferencesViewModel = preferencesViewModel)
             }
         }
     }
@@ -63,31 +70,37 @@ class DetalleEventoActivity : ComponentActivity() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyAppDetalleEvento(viewModel: EventoViewModel, idEvento: Int, eventoRecibido: EventoItem?) {
+fun MyAppDetalleEvento(viewModel: EventoViewModel, idEvento: Int, eventoRecibido: EventoItem?,  preferencesViewModel: UserPreferencesViewModel) {
     val context = LocalContext.current
 
     Scaffold(
         topBar = {
             TopAppBar(
                 title = {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
                         Icon(
-                            painter = painterResource(R.drawable.calendar_svgrepo_com),
+                            painter = painterResource(R.drawable.icono_tiendacampa_a),
                             contentDescription = null,
                             modifier = Modifier.size(30.dp),
                             tint = Color.Unspecified
 
                         )
-                        Spacer(modifier = Modifier.width(8.dp)) // Espacio entre texto e icono
+                        Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            stringResource(R.string.txt_calendario),
-                            fontWeight = FontWeight.Bold
+                            text = stringResource(R.string.txt_Juntos),
+                            style = MaterialTheme.typography.headlineMedium.copy(
+                                fontWeight = FontWeight.ExtraBold,
+                                color = JuntosTheme.colors.azulOscuroLogo
+                            )
                         )
                     }
+
                         },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = colorResource(R.color.container),
-                    titleContentColor = colorResource(R.color.content)
+                    containerColor = JuntosTheme.colors.container,
+                    titleContentColor = JuntosTheme.colors.content
                 )
             )
         }
@@ -100,6 +113,27 @@ fun MyAppDetalleEvento(viewModel: EventoViewModel, idEvento: Int, eventoRecibido
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    painter = painterResource(R.drawable.calendar_svgrepo_com),
+                    contentDescription = null,
+                    modifier = Modifier.size(30.dp),
+                    tint = Color.Unspecified
+
+                )
+                Spacer(modifier = Modifier.width(8.dp)) // Espacio entre texto e icono
+                Text(
+                    stringResource(R.string.txt_calendario),
+                    style = MaterialTheme.typography.headlineMedium.copy(
+                        fontWeight = FontWeight.ExtraBold,
+                        color = JuntosTheme.colors.azulOscuroLogo
+                    )
+                )
+            }
+
+            HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
+
+
             eventoRecibido?.let { evento ->
                 CamposDetalleEvento(
                     evento = evento,

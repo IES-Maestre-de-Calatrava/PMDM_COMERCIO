@@ -42,7 +42,7 @@
     <string name="txt_crear">Create</string>
     <string name="txt_borrar">Delete</string>
     <string name="txt_redSocial">SOCIAL NETWORK</string>
-    <string name="txt_detalle">DETAILS</string>
+    <string name="txt_detalle">DISCHARGE</string>
     <string name="txt_tareas">TASKS</string>
     <string name="txt_calendario">CALENDAR</string>
     <string name="txt_contactos">CONTACTS</string>
@@ -167,7 +167,7 @@
     <string name="txt_btn_fotos">Photos</string>
     <string name="txt_foto">" Take photo"</string>
     <string name="txt_hacer_fotos">To take photos, you must first grant the necessary camera permissions. Once activated, press the circular button in the center of the screen to capture the image.</string>
-    <string name="txt_galeria">Gallery</string>
+    <string name="txt_galeria">GALLERY</string>
     <string name="txt_entrar_galeria">To access your gallery, tap the circular preview image. This will display all the photos stored in your device.</string>
     <string name="icono_estado">representation icon of the tasks status</string>
     <string name="txt_descripcion_perfil">It shows you the data with the user you logged in with.</string>

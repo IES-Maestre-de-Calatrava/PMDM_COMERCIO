@@ -31,6 +31,8 @@ import es.maestre.juntosjc.viewModel.DocumentoViewModel
 import androidx.compose.runtime.*
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 import es.maestre.juntosjc.viewModel.UserPreferencesViewModel
 import es.maestre.juntosjc.ui.theme.JUNTOSJCTheme
@@ -40,6 +42,9 @@ import es.maestre.juntosjc.model.AppFeature
 class DocumentoActivity : ComponentActivity() {
 
     private val viewModel: DocumentoViewModel by viewModels()
+
+    private val preferencesViewModel: UserPreferencesViewModel by viewModels()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,7 +71,9 @@ class DocumentoActivity : ComponentActivity() {
         }
 
         setContent {
-            JUNTOSJCTheme {
+            val isDarkTheme by preferencesViewModel.isDarkTheme.collectAsStateWithLifecycle()
+
+            JUNTOSJCTheme (darkTheme = isDarkTheme){
                 // Diálogo para pedir el nombre
                 if (viewModel.mostrarDialogoNombre) {
                     DialogoNombreArchivo(
@@ -99,7 +106,8 @@ class DocumentoActivity : ComponentActivity() {
 
                 MyAppDocumentos(
                     viewModel = viewModel,
-                    onPickDocument = {
+                    preferencesViewModel = preferencesViewModel,
+                            onPickDocument = {
                         pickImageLauncher.launch(arrayOf("image/*", "application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"))
                     }
                 )
@@ -109,7 +117,7 @@ class DocumentoActivity : ComponentActivity() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyAppDocumentos(viewModel: DocumentoViewModel, onPickDocument: () -> Unit) {
+fun MyAppDocumentos(viewModel: DocumentoViewModel, preferencesViewModel: UserPreferencesViewModel, onPickDocument: () -> Unit) {
     val context = LocalContext.current
 
     var textoBusqueda by remember { mutableStateOf("")}
@@ -119,24 +127,29 @@ fun MyAppDocumentos(viewModel: DocumentoViewModel, onPickDocument: () -> Unit) {
         topBar = {
             TopAppBar(
                 title = {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
                         Icon(
-                            painter = painterResource(R.drawable.favorite_file_svgrepo_com),
+                            painter = painterResource(R.drawable.icono_tiendacampa_a),
                             contentDescription = null,
                             modifier = Modifier.size(30.dp),
                             tint = Color.Unspecified
 
                         )
-                        Spacer(modifier = Modifier.width(8.dp)) // Espacio entre texto e icono
+                        Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            stringResource(R.string.txt_documentos),
-                            fontWeight = FontWeight.Bold
+                            text = stringResource(R.string.txt_Juntos),
+                            style = MaterialTheme.typography.headlineMedium.copy(
+                                fontWeight = FontWeight.ExtraBold,
+                                color = JuntosTheme.colors.azulOscuroLogo
+                            )
                         )
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = colorResource(R.color.container),
-                    titleContentColor = colorResource(R.color.content)
+                    containerColor = JuntosTheme.colors.container,
+                    titleContentColor = JuntosTheme.colors.content
                 ),
                 actions = {
                     IconButton(onClick = {
@@ -166,7 +179,30 @@ fun MyAppDocumentos(viewModel: DocumentoViewModel, onPickDocument: () -> Unit) {
             }
         }
     ) { innerPadding ->
-        Column(modifier = Modifier.padding(innerPadding)) {
+        Column(modifier = Modifier
+            .padding(innerPadding)
+            .fillMaxSize()
+            .padding(16.dp)
+        ) {
+
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    painter = painterResource(R.drawable.favorite_file_svgrepo_com),
+                    contentDescription = null,
+                    modifier = Modifier.size(30.dp),
+                    tint = Color.Unspecified
+
+                )
+                Spacer(modifier = Modifier.width(8.dp)) // Espacio entre texto e icono
+                Text(
+                    stringResource(R.string.txt_documentos),
+                    style = MaterialTheme.typography.headlineMedium.copy(
+                        fontWeight = FontWeight.ExtraBold,
+                        color = JuntosTheme.colors.azulOscuroLogo
+                    )
+                )
+            }
+            HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
 
             OutlinedTextField(
                 value = textoBusqueda,
@@ -251,7 +287,7 @@ fun FileArchivoItem(archivo: es.maestre.juntosjc.model.ArchivoItem, onClick: () 
             .fillMaxWidth()
             .clickable { onClick() },
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-        colors = CardDefaults.cardColors(containerColor = colorResource(R.color.white))
+        colors = CardDefaults.cardColors(containerColor = JuntosTheme.colors.container)
     ) {
         Row(
             modifier = Modifier
@@ -262,18 +298,20 @@ fun FileArchivoItem(archivo: es.maestre.juntosjc.model.ArchivoItem, onClick: () 
             Icon(
                 imageVector = Icons.Default.Description,
                 contentDescription = "Icono documento",
-                tint = MaterialTheme.colorScheme.primary
+                tint = JuntosTheme.colors.content
             )
             Spacer(modifier = Modifier.width(16.dp))
             Column {
                 Text(
                     text = archivo.nombre_archivo,
                     style = MaterialTheme.typography.titleMedium,
-                    color = colorResource(R.color.black)
+                    color = JuntosTheme.colors.content
                 )
                 Text(
                     text = stringResource(R.string.texto_ver_descargar_DESCARGAR),
                     style = MaterialTheme.typography.bodySmall,
+                    color = JuntosTheme.colors.content
+
                 )
             }
         }

@@ -28,6 +28,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -55,6 +56,7 @@ import kotlin.getValue
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 import es.maestre.juntosjc.viewModel.UserPreferencesViewModel
 import es.maestre.juntosjc.ui.theme.JUNTOSJCTheme
@@ -70,6 +72,8 @@ class TareasActivity: ComponentActivity()  {
     // instancio mi viewModel para el acceso a BBDD
     private val viewModel: TareaViewModel by viewModels()
 
+    private val preferencesViewModel: UserPreferencesViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -78,8 +82,13 @@ class TareasActivity: ComponentActivity()  {
         viewModel.obtenerTareasSupabase()
 
         setContent {
-            JUNTOSJCTheme {
-                MyAppTareas(viewModel = viewModel)
+            val isDarkTheme by preferencesViewModel.isDarkTheme.collectAsStateWithLifecycle()
+
+            JUNTOSJCTheme (darkTheme = isDarkTheme){
+                MyAppTareas(
+                    viewModel = viewModel,
+                    preferencesViewModel = preferencesViewModel
+                )
             }
         }
     }
@@ -96,7 +105,7 @@ class TareasActivity: ComponentActivity()  {
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyAppTareas(viewModel: TareaViewModel) {
+fun MyAppTareas(viewModel: TareaViewModel, preferencesViewModel: UserPreferencesViewModel) {
     val context = LocalContext.current
 
     var filtroEstado by remember { mutableIntStateOf(0) }
@@ -111,24 +120,29 @@ fun MyAppTareas(viewModel: TareaViewModel) {
             // Cabecera con TopAppBar
             TopAppBar(
                 title = {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
                         Icon(
-                            painter = painterResource(R.drawable.information_svgrepo_com),
+                            painter = painterResource(R.drawable.icono_tiendacampa_a),
                             contentDescription = null,
                             modifier = Modifier.size(30.dp),
                             tint = Color.Unspecified
 
                         )
-                        Spacer(modifier = Modifier.width(8.dp)) // Espacio entre texto e icono
+                        Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            stringResource(R.string.txt_tareas),
-                            fontWeight = FontWeight.Bold
+                            text = stringResource(R.string.txt_Juntos),
+                            style = MaterialTheme.typography.headlineMedium.copy(
+                                fontWeight = FontWeight.ExtraBold,
+                                color = JuntosTheme.colors.azulOscuroLogo
+                            )
                         )
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = colorResource(R.color.container),
-                    titleContentColor = colorResource(R.color.content)
+                    containerColor = JuntosTheme.colors.container,
+                    titleContentColor = JuntosTheme.colors.content
                 ),
                 actions = {
                     IconButton(onClick = {
@@ -169,9 +183,28 @@ fun MyAppTareas(viewModel: TareaViewModel) {
         // El contenido de la LazyColumn se ajusta debajo de la cabecera gracias a paddingSobrante
         Column(
             modifier = Modifier.padding(paddingSobrante)
-                .fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .fillMaxSize()
+                .padding(16.dp)
         ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    painter = painterResource(R.drawable.information_svgrepo_com),
+                    contentDescription = null,
+                    modifier = Modifier.size(30.dp),
+                    tint = Color.Unspecified
+
+                )
+                Spacer(modifier = Modifier.width(8.dp)) // Espacio entre texto e icono
+                Text(
+                    stringResource(R.string.txt_tareas),
+                    style = MaterialTheme.typography.headlineMedium.copy(
+                        fontWeight = FontWeight.ExtraBold,
+                        color = JuntosTheme.colors.azulOscuroLogo
+                    )
+                )
+            }
+            HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
+
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -245,7 +278,7 @@ fun TareaItem(tarea: TareaItem, onClick: () -> Unit) {
             .fillMaxWidth()
             .clickable { onClick() },
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-        colors = CardDefaults.cardColors(containerColor = colorResource(R.color.white))
+        colors = CardDefaults.cardColors(containerColor = JuntosTheme.colors.container)
     ) {
         Row(
             modifier = Modifier
@@ -264,12 +297,12 @@ fun TareaItem(tarea: TareaItem, onClick: () -> Unit) {
                 Text(
                     text = tarea.titulo_tarea, // titulo de la tarea
                     style = MaterialTheme.typography.titleMedium,
-                    color=colorResource(R.color.black)
+                    color=JuntosTheme.colors.content
                 )
                 Text(
                     text = tarea.hora,
                     style = MaterialTheme.typography.titleSmall,
-                    color = colorResource(R.color.grisOscuro)
+                    color = JuntosTheme.colors.content
                 )
             }
         }

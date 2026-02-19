@@ -23,6 +23,7 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -44,6 +45,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import es.maestre.juntosjc.model.TareaItem
 import es.maestre.juntosjc.viewModel.TareaViewModel
 import kotlin.getValue
@@ -64,6 +66,9 @@ class DetalleTareaActivity: ComponentActivity() {
     // instancio mi viewModel para el acceso a BBDD
     private val viewModel: TareaViewModel by viewModels()
 
+    private val preferencesViewModel: UserPreferencesViewModel by viewModels()
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -79,7 +84,9 @@ class DetalleTareaActivity: ComponentActivity() {
 
         enableEdgeToEdge()
         setContent {
-            JUNTOSJCTheme {
+            val isDarkTheme by preferencesViewModel.isDarkTheme.collectAsStateWithLifecycle()
+
+            JUNTOSJCTheme (darkTheme = isDarkTheme) {
 
                 val tareaActual = remember(idTarea) {
                     if (idTarea > 0) {
@@ -92,7 +99,7 @@ class DetalleTareaActivity: ComponentActivity() {
                 }
 
 
-                MyAppDetalleTarea(viewModel = viewModel, idTarea = idTarea, tareaRecibida = tareaActual) // hay que pasárselo a la funcion para completar los campos
+                MyAppDetalleTarea(viewModel = viewModel, idTarea = idTarea, tareaRecibida = tareaActual, preferencesViewModel = preferencesViewModel) // hay que pasárselo a la funcion para completar los campos
             }
         }
     }
@@ -106,7 +113,7 @@ class DetalleTareaActivity: ComponentActivity() {
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyAppDetalleTarea(viewModel: TareaViewModel, idTarea: Int, tareaRecibida: TareaItem?) {
+fun MyAppDetalleTarea(viewModel: TareaViewModel, idTarea: Int, tareaRecibida: TareaItem?,  preferencesViewModel: UserPreferencesViewModel) {
 
     val context = LocalContext.current // Para cerrar la pantalla tras la acción
 
@@ -114,24 +121,29 @@ fun MyAppDetalleTarea(viewModel: TareaViewModel, idTarea: Int, tareaRecibida: Ta
         topBar = {
             TopAppBar(
                 title = {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
                         Icon(
-                            painter = painterResource(R.drawable.information_svgrepo_com),
+                            painter = painterResource(R.drawable.icono_tiendacampa_a),
                             contentDescription = null,
                             modifier = Modifier.size(30.dp),
                             tint = Color.Unspecified
 
                         )
-                        Spacer(modifier = Modifier.width(8.dp)) // Espacio entre texto e icono
+                        Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            stringResource(R.string.txt_detalle),
-                            fontWeight = FontWeight.Bold
+                            text = stringResource(R.string.txt_Juntos),
+                            style = MaterialTheme.typography.headlineMedium.copy(
+                                fontWeight = FontWeight.ExtraBold,
+                                color = JuntosTheme.colors.azulOscuroLogo
+                            )
                         )
                     }
                         },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = colorResource(R.color.container),
-                    titleContentColor = colorResource(R.color.content)
+                    containerColor = JuntosTheme.colors.container,
+                    titleContentColor = JuntosTheme.colors.content
                 )
             )
         }
@@ -144,6 +156,26 @@ fun MyAppDetalleTarea(viewModel: TareaViewModel, idTarea: Int, tareaRecibida: Ta
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    painter = painterResource(R.drawable.information_svgrepo_com),
+                    contentDescription = null,
+                    modifier = Modifier.size(30.dp),
+                    tint = Color.Unspecified
+
+                )
+                Spacer(modifier = Modifier.width(8.dp)) // Espacio entre texto e icono
+                Text(
+                    stringResource(R.string.txt_detalle),
+                    style = MaterialTheme.typography.headlineMedium.copy(
+                        fontWeight = FontWeight.ExtraBold,
+                        color = JuntosTheme.colors.azulOscuroLogo
+                    )
+                )
+            }
+
+            HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
+
             // Solo mostramos los campos si la tarea se ha cargado
             tareaRecibida?.let { tarea ->
                 CamposDetalleTarea(tarea = tarea, viewModel = viewModel, esNuevo = idTarea <= 0, onActionDone = { (context as ComponentActivity).finish() })

@@ -445,7 +445,7 @@ fun EventoItemRow(evento: EventoItem, onDeleteConfirmed: () -> Unit) {
                 },
                 onLongClick = { showDeleteDialog = true }
             ),
-        colors = CardDefaults.cardColors(containerColor = colorResource(R.color.white))
+        colors = CardDefaults.cardColors(containerColor = JuntosTheme.colors.container)
     ) {
         Column(modifier = Modifier.fillMaxWidth().padding(16.dp),
             horizontalAlignment = Alignment.Start)
@@ -454,7 +454,7 @@ fun EventoItemRow(evento: EventoItem, onDeleteConfirmed: () -> Unit) {
                 text = " ${evento.titulo_evento}  Hora: ${evento.Hora.take(5)}",
                 fontWeight = FontWeight.Bold,
                 style = MaterialTheme.typography.titleLarge,
-                color = colorResource(R.color.black)
+                color = JuntosTheme.colors.content
             )
 
 
