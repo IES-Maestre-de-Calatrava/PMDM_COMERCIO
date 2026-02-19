@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
@@ -11,10 +12,12 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -26,6 +29,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -49,11 +53,20 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import es.maestre.juntosjc.model.Ayuda
+
+import es.maestre.juntosjc.viewModel.UserPreferencesViewModel
 import es.maestre.juntosjc.ui.theme.JUNTOSJCTheme
+import es.maestre.juntosjc.ui.theme.JuntosTheme
+import es.maestre.juntosjc.model.AppFeature
+import kotlin.getValue
 
 class AyudaActivity : ComponentActivity() {
     val modifier: Modifier = Modifier.fillMaxWidth()
+
+    private val preferencesViewModel: UserPreferencesViewModel by viewModels()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,8 +78,11 @@ class AyudaActivity : ComponentActivity() {
         val seccion = intent.getSerializableExtra("SECCION") ?: Ayuda.GENERAL
 
         setContent {
-            JUNTOSJCTheme {
-                AyudaPrincipal(seccion as Ayuda)
+            val isDarkTheme by preferencesViewModel.isDarkTheme.collectAsStateWithLifecycle()
+
+            JUNTOSJCTheme(darkTheme = isDarkTheme) {
+                AyudaPrincipal(seccion as Ayuda,
+                    preferencesViewModel = preferencesViewModel)
             }
         }
     }
@@ -74,59 +90,93 @@ class AyudaActivity : ComponentActivity() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AyudaPrincipal(seccion: Ayuda){
+fun AyudaPrincipal(seccion: Ayuda,  preferencesViewModel: UserPreferencesViewModel? = null){
     Scaffold(
         topBar = {
             TopAppBar(
                 title = {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
                         Icon(
-                            painter = painterResource(R.drawable.help_question_svgrepo_com),
+                            painter = painterResource(id = R.drawable.icono_tiendacampa_a),
                             contentDescription = null,
                             modifier = Modifier.size(30.dp),
                             tint = Color.Unspecified
-
                         )
-                        Spacer(modifier = Modifier.width(8.dp)) // Espacio entre texto e icono
+
+                        Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            stringResource(R.string.txt_ayuda),
-                            fontWeight = FontWeight.Bold
+                            text = stringResource(R.string.txt_Juntos),
+                            style = MaterialTheme.typography.headlineMedium.copy(
+                                fontWeight = FontWeight.ExtraBold,
+                                color = JuntosTheme.colors.azulOscuroLogo
+                            )
                         )
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = colorResource(R.color.container),
-                    titleContentColor = colorResource(R.color.content)
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
                 )
             )
         }
-    ){
-        LazyColumn(
-            modifier = Modifier.padding(it)
+    ) { padding ->
+        Column(
+            modifier = Modifier
+                .padding(padding)
+                .fillMaxSize()
+                .padding(16.dp)
         ) {
-            item {
-                // Usamos un when para llamar a las funciones dependiendo de la seccion
-                when (seccion) {
-                    Ayuda.CALENDARIO -> AyudaCalendario()
-                    Ayuda.CONFIGURACION -> AyudaConfigurar()
-                    Ayuda.CONTACTOS -> AyudaContactos()
-                    Ayuda.DOCUMENTOS -> AyudaDocumentos()
-                    Ayuda.FOTOS -> AyudaFotos()
-                    Ayuda.INVITAR -> AyudaInvitar()
-                    Ayuda.PERFIL -> AyudaPerfil()
-                    Ayuda.SOCIAL -> AyudaRedSocial()
-                    Ayuda.TAREAS -> AyudaTareas()
-                    // si llamamos desde la main, se muestran todos
-                    else -> {
-                        AyudaCalendario()
-                        AyudaConfigurar()
-                        AyudaContactos()
-                        AyudaDocumentos()
-                        AyudaFotos()
-                        AyudaInvitar()
-                        AyudaPerfil()
-                        AyudaRedSocial()
-                        AyudaTareas()
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    painter = painterResource(R.drawable.help_question_svgrepo_com),
+                    contentDescription = null,
+                    modifier = Modifier.size(30.dp),
+                    tint = Color.Unspecified
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = stringResource(R.string.txt_ayuda),
+                    style = MaterialTheme.typography.headlineMedium.copy(
+                        fontWeight = FontWeight.ExtraBold,
+                        color = JuntosTheme.colors.azulOscuroLogo
+                    )
+                )
+
+            }
+
+            HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
+
+            // --- LISTA DE AYUDA (LazyColumn) ---
+            LazyColumn(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                item {
+                    when (seccion) {
+                        Ayuda.CALENDARIO -> AyudaCalendario()
+                        Ayuda.CONFIGURACION -> AyudaConfigurar()
+                        Ayuda.CONTACTOS -> AyudaContactos()
+                        Ayuda.DOCUMENTOS -> AyudaDocumentos()
+                        Ayuda.FOTOS -> AyudaFotos()
+                        Ayuda.INVITAR -> AyudaInvitar()
+                        Ayuda.PERFIL -> AyudaPerfil()
+                        Ayuda.SOCIAL -> AyudaRedSocial()
+                        Ayuda.TAREAS -> AyudaTareas()
+                        else -> {
+                            Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                                AyudaCalendario()
+                                AyudaConfigurar()
+                                AyudaContactos()
+                                AyudaDocumentos()
+                                AyudaFotos()
+                                AyudaInvitar()
+                                AyudaPerfil()
+                                AyudaRedSocial()
+                                AyudaTareas()
+                            }
+                        }
                     }
                 }
             }
@@ -137,7 +187,6 @@ fun AyudaPrincipal(seccion: Ayuda){
 @Preview
 @Composable
 fun AyudaPrincipalPreview(){
-    AyudaPrincipal(Ayuda.GENERAL)
 }
 
 @Composable

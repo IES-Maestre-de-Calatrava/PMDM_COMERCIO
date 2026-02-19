@@ -65,6 +65,11 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Locale
 
+import es.maestre.juntosjc.viewModel.UserPreferencesViewModel
+import es.maestre.juntosjc.ui.theme.JUNTOSJCTheme
+import es.maestre.juntosjc.ui.theme.JuntosTheme
+import es.maestre.juntosjc.model.AppFeature
+
 /**
  * Clase FotosActivity: en esta clase se muestran dos botones, uno que permite abrir la cámara y echar una foto,
  * y el otro que te permite abrir la galería y visualizar las imágenes que has añadido anteriormente

@@ -64,7 +64,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import es.maestre.juntosjc.model.Ayuda
-import es.maestre.juntosjc.ui.theme.JUNTOSJCTheme
 import es.maestre.juntosjc.supabase.SupabaseClient
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.postgrest.from
@@ -76,6 +75,11 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import java.io.InputStream
+
+import es.maestre.juntosjc.viewModel.UserPreferencesViewModel
+import es.maestre.juntosjc.ui.theme.JUNTOSJCTheme
+import es.maestre.juntosjc.ui.theme.JuntosTheme
+import es.maestre.juntosjc.model.AppFeature
 
 @Serializable
 data class PerfilRow(

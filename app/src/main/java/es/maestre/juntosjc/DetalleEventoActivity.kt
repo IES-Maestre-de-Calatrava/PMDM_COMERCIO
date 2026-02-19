@@ -20,8 +20,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import es.maestre.juntosjc.model.EventoItem
-import es.maestre.juntosjc.ui.theme.JUNTOSJCTheme
 import es.maestre.juntosjc.viewModel.EventoViewModel
+
+import es.maestre.juntosjc.viewModel.UserPreferencesViewModel
+import es.maestre.juntosjc.ui.theme.JUNTOSJCTheme
+import es.maestre.juntosjc.ui.theme.JuntosTheme
+import es.maestre.juntosjc.model.AppFeature
 
 class DetalleEventoActivity : ComponentActivity() {
 

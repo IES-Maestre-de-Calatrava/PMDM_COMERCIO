@@ -112,7 +112,7 @@
     <string name="txt_editar_tarea_content">To edit a task press on the task you want to modify, change any detail you want and press Save</string>
     <string name="txt_editar">Edit</string>
     <string name="txt_ocultar_detalles">Hide details</string>
-    <string name="txt_ayuda">Help</string>
+    <string name="txt_ayuda">HELP</string>
 
     <!-- Settings - Appearance -->
     <string name="settings_appearance">Appearance</string>

@@ -42,12 +42,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import es.maestre.juntosjc.viewModel.ComentarioViewModel
-import es.maestre.juntosjc.ui.theme.JUNTOSJCTheme
 import kotlin.getValue
 import es.maestre.juntosjc.model.ComentarioItem
 import io.github.jan.supabase.SupabaseClient
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
+
+import es.maestre.juntosjc.viewModel.UserPreferencesViewModel
+import es.maestre.juntosjc.ui.theme.JUNTOSJCTheme
+import es.maestre.juntosjc.ui.theme.JuntosTheme
+import es.maestre.juntosjc.model.AppFeature
 
 /**
  * Clase DetalleComentarioActivity: esta clase es la que muestra la informacion

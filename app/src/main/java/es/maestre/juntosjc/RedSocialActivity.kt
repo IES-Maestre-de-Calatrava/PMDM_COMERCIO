@@ -45,7 +45,6 @@ import coil.compose.AsyncImage
 import es.maestre.juntosjc.model.Ayuda
 import es.maestre.juntosjc.viewModel.ComentarioViewModel
 import es.maestre.juntosjc.model.ComentarioItem
-import es.maestre.juntosjc.ui.theme.JUNTOSJCTheme
 import kotlin.getValue
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.ui.draw.clip
@@ -53,6 +52,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.foundation.lazy.items
 import coil.compose.AsyncImage
 import androidx.compose.material.icons.filled.Person
+
+import es.maestre.juntosjc.viewModel.UserPreferencesViewModel
+import es.maestre.juntosjc.ui.theme.JUNTOSJCTheme
+import es.maestre.juntosjc.ui.theme.JuntosTheme
+import es.maestre.juntosjc.model.AppFeature
 
 
 /**

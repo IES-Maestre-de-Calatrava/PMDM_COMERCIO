@@ -48,7 +48,6 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import es.maestre.juntosjc.ui.theme.JUNTOSJCTheme
 import es.maestre.juntosjc.viewModel.EventoViewModel
 import kotlin.getValue
 import androidx.compose.material3.AlertDialog
@@ -63,6 +62,15 @@ import androidx.compose.ui.res.painterResource
 import es.maestre.juntosjc.model.Ayuda
 import es.maestre.juntosjc.model.EventoItem
 import androidx.compose.material3.SelectableDates
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+
+import es.maestre.juntosjc.viewModel.UserPreferencesViewModel
+import es.maestre.juntosjc.ui.theme.JUNTOSJCTheme
+import es.maestre.juntosjc.ui.theme.JuntosTheme
+import es.maestre.juntosjc.model.AppFeature
+
+
+
 /**
  * Clase CalendarioActivity: en esta clase se podrán añadir eventos
  * a días en un calendario y eliminarlos, los eventos aparecerán al
@@ -73,13 +81,20 @@ class CalendarioActivity: ComponentActivity()  {
     // instancio mi viewModel para el acceso a BBDD
     private val viewModel: EventoViewModel by viewModels()
 
+    private val preferencesViewModel: UserPreferencesViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
         setContent {
-            JUNTOSJCTheme {
-                MyAppCalendario(viewModel = viewModel)
+            val isDarkTheme by preferencesViewModel.isDarkTheme.collectAsStateWithLifecycle()
+
+            JUNTOSJCTheme (darkTheme = isDarkTheme){
+                MyAppCalendario(
+                                viewModel = viewModel,
+                                preferencesViewModel = preferencesViewModel
+                )
             }
         }
     }
@@ -92,7 +107,7 @@ class CalendarioActivity: ComponentActivity()  {
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyAppCalendario(viewModel: EventoViewModel) {
+fun MyAppCalendario(viewModel: EventoViewModel, preferencesViewModel: UserPreferencesViewModel) {
     val context = LocalContext.current
     val eventos = viewModel.listaEventosFiltrados
     val fechasConEventos = viewModel.fechasConEventos
@@ -130,24 +145,29 @@ fun MyAppCalendario(viewModel: EventoViewModel) {
         topBar = {
             TopAppBar(
                 title = {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
                         Icon(
-                            painter = painterResource(R.drawable.calendar_svgrepo_com),
+                            painter = painterResource(R.drawable.icono_tiendacampa_a),
                             contentDescription = null,
                             modifier = Modifier.size(30.dp),
                             tint = Color.Unspecified
 
                         )
-                        Spacer(modifier = Modifier.width(8.dp)) // Espacio entre texto e icono
+                        Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            stringResource(R.string.txt_calendario),
-                            fontWeight = FontWeight.Bold
+                            text = stringResource(R.string.txt_Juntos),
+                            style = MaterialTheme.typography.headlineMedium.copy(
+                                fontWeight = FontWeight.ExtraBold,
+                                color = JuntosTheme.colors.azulOscuroLogo
+                            )
                         )
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = colorResource(R.color.container),
-                    titleContentColor = colorResource(R.color.content)
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
                 ),
 
                 actions = {
@@ -185,7 +205,28 @@ fun MyAppCalendario(viewModel: EventoViewModel) {
             modifier = Modifier
                 .padding(padding)
                 .fillMaxSize()
+                .padding(16.dp)
         ) {
+
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    painter = painterResource(R.drawable.calendar_svgrepo_com),
+                    contentDescription = null,
+                    modifier = Modifier.size(30.dp),
+                    tint = Color.Unspecified
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = stringResource(R.string.txt_calendario),
+                    style = MaterialTheme.typography.headlineMedium.copy(
+                        fontWeight = FontWeight.ExtraBold,
+                        color = JuntosTheme.colors.azulOscuroLogo
+                    )
+                )
+
+            }
+
+            HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
             // El calendario (DatePicker)
             DatePicker(
                 state = datePickerState,
@@ -194,8 +235,8 @@ fun MyAppCalendario(viewModel: EventoViewModel) {
                 headline = null,
                 modifier = Modifier.fillMaxWidth(),
                 colors = DatePickerDefaults.colors(
-                    containerColor = colorResource(R.color.white),
-                    selectedDayContainerColor = colorResource(R.color.azul_cielo),
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    selectedDayContainerColor = MaterialTheme.colorScheme.primary,
                     selectedDayContentColor = colorResource(R.color.azul_contraste),
                     todayContentColor = colorResource(R.color.container),
                     todayDateBorderColor = colorResource(R.color.container),
@@ -248,17 +289,7 @@ fun MyAppCalendario(viewModel: EventoViewModel) {
                         }
                     }
                 }
-            } else {
-                // ESTO ES PARA DEPURAR: Si no ves nada, es que la lista llega vacía de Supabase
-                Text(
-                    "Buscando eventos...",
-                    modifier = Modifier.padding(16.dp),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = Color.LightGray
-                )
             }
-
-            HorizontalDivider()
 
             // La LazyColumn
             Text(
@@ -279,7 +310,7 @@ fun MyAppCalendario(viewModel: EventoViewModel) {
                         color = colorResource(R.color.gris))
                     }
                 } else {
-                    items(eventos) { evento ->
+                    items(eventos.sortedBy {it.Hora} ) { evento ->
                         EventoItemRow(
                             evento = evento,
                             onDeleteConfirmed = {
@@ -420,18 +451,13 @@ fun EventoItemRow(evento: EventoItem, onDeleteConfirmed: () -> Unit) {
             horizontalAlignment = Alignment.Start)
         {
             Text(
-                text = evento.titulo_evento,
+                text = " ${evento.titulo_evento}  Hora: ${evento.Hora.take(5)}",
                 fontWeight = FontWeight.Bold,
                 style = MaterialTheme.typography.titleLarge,
                 color = colorResource(R.color.black)
             )
 
-            Text(
-                text = "Hora: ${evento.Hora.take(5)}",
-                fontWeight = FontWeight.Bold,
-                style = MaterialTheme.typography.titleMedium,
-                color = colorResource(R.color.grisOscuro)
-            )
+
         }
     }
 }

@@ -19,9 +19,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import es.maestre.juntosjc.ui.theme.JUNTOSJCTheme
 import es.maestre.juntosjc.viewModel.LoginState
 import es.maestre.juntosjc.viewModel.AuthenticationViewModel
+
+import es.maestre.juntosjc.viewModel.UserPreferencesViewModel
+import es.maestre.juntosjc.ui.theme.JUNTOSJCTheme
+import es.maestre.juntosjc.ui.theme.JuntosTheme
+import es.maestre.juntosjc.model.AppFeature
 
 class LoginActivity : ComponentActivity() {
 

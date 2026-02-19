@@ -45,11 +45,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import es.maestre.juntosjc.model.TareaItem
-import es.maestre.juntosjc.ui.theme.JUNTOSJCTheme
 import es.maestre.juntosjc.viewModel.TareaViewModel
 import kotlin.getValue
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
+
+import es.maestre.juntosjc.viewModel.UserPreferencesViewModel
+import es.maestre.juntosjc.ui.theme.JUNTOSJCTheme
+import es.maestre.juntosjc.ui.theme.JuntosTheme
+import es.maestre.juntosjc.model.AppFeature
 
 /**
  * Clase DetalleActivity: esta clase es la que muestra la informacion

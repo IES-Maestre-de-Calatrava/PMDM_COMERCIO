@@ -28,10 +28,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import es.maestre.juntosjc.model.Ayuda
 import es.maestre.juntosjc.viewModel.DocumentoViewModel
-import es.maestre.juntosjc.ui.theme.JUNTOSJCTheme
 import androidx.compose.runtime.*
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.filled.Search
+
+import es.maestre.juntosjc.viewModel.UserPreferencesViewModel
+import es.maestre.juntosjc.ui.theme.JUNTOSJCTheme
+import es.maestre.juntosjc.ui.theme.JuntosTheme
+import es.maestre.juntosjc.model.AppFeature
 
 class DocumentoActivity : ComponentActivity() {
 

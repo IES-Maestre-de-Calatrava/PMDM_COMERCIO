@@ -49,13 +49,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import es.maestre.juntosjc.model.Ayuda
 import es.maestre.juntosjc.model.TareaItem
-import es.maestre.juntosjc.ui.theme.JUNTOSJCTheme
 import es.maestre.juntosjc.viewModel.TareaViewModel
 import kotlin.getValue
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.mutableIntStateOf
+
+import es.maestre.juntosjc.viewModel.UserPreferencesViewModel
+import es.maestre.juntosjc.ui.theme.JUNTOSJCTheme
+import es.maestre.juntosjc.ui.theme.JuntosTheme
+import es.maestre.juntosjc.model.AppFeature
 
 /**
  * Clase TareasActivity: en esta clase se muestra una LazyColumn con

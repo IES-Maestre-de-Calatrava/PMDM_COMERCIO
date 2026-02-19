@@ -30,6 +30,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -39,6 +40,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -48,10 +50,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import es.maestre.juntosjc.model.Ayuda
 import es.maestre.juntosjc.model.ContactoItem
-import es.maestre.juntosjc.ui.theme.JUNTOSJCTheme
 import es.maestre.juntosjc.viewModel.ContactoViewModel
+
+import es.maestre.juntosjc.viewModel.UserPreferencesViewModel
+import es.maestre.juntosjc.ui.theme.JUNTOSJCTheme
+import es.maestre.juntosjc.ui.theme.JuntosTheme
+import es.maestre.juntosjc.model.AppFeature
 
 /**
  * Clase ContactosActivity: lista de contactos (añadir, modificar, eliminar)
@@ -60,12 +67,20 @@ class ContactosActivity : ComponentActivity() {
 
     private val viewModel: ContactoViewModel by viewModels()
 
+    private val preferencesViewModel: UserPreferencesViewModel by viewModels()
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            JUNTOSJCTheme {
-                MyAppContactos(viewModel = viewModel)
+            val isDarkTheme by preferencesViewModel.isDarkTheme.collectAsStateWithLifecycle()
+
+            JUNTOSJCTheme(darkTheme = isDarkTheme) {
+                MyAppContactos(
+                    viewModel = viewModel,
+                    preferencesViewModel = preferencesViewModel
+                )
             }
         }
     }
@@ -78,7 +93,7 @@ class ContactosActivity : ComponentActivity() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyAppContactos(viewModel: ContactoViewModel) {
+fun MyAppContactos(viewModel: ContactoViewModel, preferencesViewModel: UserPreferencesViewModel) {
     val context = LocalContext.current
 
     androidx.compose.runtime.LaunchedEffect(Unit) {
@@ -86,28 +101,32 @@ fun MyAppContactos(viewModel: ContactoViewModel) {
     }
 
     Scaffold(
-        modifier = Modifier.fillMaxSize(),
         topBar = {
             TopAppBar(
                 title = {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
                         Icon(
-                            painter = painterResource(R.drawable.recruitment_svgrepo_com),
+                            painter = painterResource(R.drawable.icono_tiendacampa_a),
                             contentDescription = null,
                             modifier = Modifier.size(30.dp),
                             tint = Color.Unspecified
 
                         )
-                        Spacer(modifier = Modifier.width(8.dp)) // Espacio entre texto e icono
+                        Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            stringResource(R.string.txt_contactos),
-                            fontWeight = FontWeight.Bold
+                            text = stringResource(R.string.txt_Juntos),
+                            style = MaterialTheme.typography.headlineMedium.copy(
+                                fontWeight = FontWeight.ExtraBold,
+                                color = JuntosTheme.colors.azulOscuroLogo
+                            )
                         )
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = colorResource(R.color.container),
-                    titleContentColor = colorResource(R.color.content)
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
                 ),
                 actions = {
                     IconButton(onClick = {
@@ -145,9 +164,31 @@ fun MyAppContactos(viewModel: ContactoViewModel) {
 
     ) { paddingSobrante ->
         Column(
-            modifier = Modifier.padding(paddingSobrante),
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier = Modifier
+                .padding(paddingSobrante)
+                .fillMaxSize()
+                .padding(16.dp)
         ) {
+
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    painter = painterResource(R.drawable.recruitment_svgrepo_com),
+                    contentDescription = null,
+                    modifier = Modifier.size(30.dp),
+                    tint = Color.Unspecified
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = stringResource(R.string.txt_contactos),
+                    style = MaterialTheme.typography.headlineMedium.copy(
+                        fontWeight = FontWeight.ExtraBold,
+                        color = JuntosTheme.colors.azulOscuroLogo
+                    )
+                )
+
+            }
+
+            HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
             // === BARRA DE BÚSQUEDA ===
             BarraBusquedaContactos(viewModel = viewModel)
 
