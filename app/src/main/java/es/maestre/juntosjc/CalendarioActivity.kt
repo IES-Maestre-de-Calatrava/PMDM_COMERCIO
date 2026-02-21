@@ -190,7 +190,15 @@ fun MyAppCalendario(viewModel: EventoViewModel, preferencesViewModel: UserPrefer
         // al pulsar el boton de añadir, nos muestra un cuadro de diálogo para añadir un evento
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { showDialog = true },
+                onClick = {
+                    val fechaSeleccionada = datePickerState.selectedDateMillis ?: System.currentTimeMillis()
+
+                    val intent = Intent(context, DetalleEventoActivity::class.java).apply {
+                        putExtra("ID_EVENTO", 0)
+                        putExtra("FECHA_EVENTO", fechaSeleccionada)
+                    }
+                    context.startActivity(intent)
+                },
                 containerColor = colorResource(R.color.white),
                         contentColor = Color.Unspecified
             ) {

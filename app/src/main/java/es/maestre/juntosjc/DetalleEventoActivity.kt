@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -28,6 +29,8 @@ import es.maestre.juntosjc.viewModel.UserPreferencesViewModel
 import es.maestre.juntosjc.ui.theme.JUNTOSJCTheme
 import es.maestre.juntosjc.ui.theme.JuntosTheme
 import es.maestre.juntosjc.model.AppFeature
+import kotlinx.datetime.TimeZone
+import java.util.Calendar
 
 class DetalleEventoActivity : ComponentActivity() {
 
@@ -57,9 +60,7 @@ class DetalleEventoActivity : ComponentActivity() {
                         viewModel.listaEventosFiltrados.find { it.id_evento == idEvento }
                             ?: EventoItem(idEvento, titulo, descripcion, fecha, asistentes, hora)
                     } else {
-                        // Esto sería para crear uno nuevo si lo llamaras sin ID
-                        EventoItem(null, "", "", System.currentTimeMillis(), "", "")
-                    }
+                        EventoItem(null, "", "", fecha_evento = fecha, "", "")                    }
                 }
 
                 MyAppDetalleEvento(viewModel = viewModel, idEvento = idEvento, eventoRecibido = eventoActual,  preferencesViewModel = preferencesViewModel)
@@ -146,12 +147,17 @@ fun MyAppDetalleEvento(viewModel: EventoViewModel, idEvento: Int, eventoRecibido
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CamposDetalleEvento(evento: EventoItem, viewModel: EventoViewModel, esNuevo: Boolean, onActionDone: () -> Unit) {
     var titulo by remember { mutableStateOf(evento.titulo_evento) }
+    var fecha by remember { mutableStateOf(evento.fecha_evento)}
     var descripcion by remember { mutableStateOf(evento.descripcion_evento) }
     var asistentes by remember { mutableStateOf(evento.asistentes) }
     var hora by remember { mutableStateOf(evento.Hora) }
+
+    var showTimePicker by remember { mutableStateOf(false) }
+
 
     Text(text = "Título del evento:", fontWeight = FontWeight.Bold)
     OutlinedTextField(value = titulo, onValueChange = { titulo = it }, modifier = Modifier.fillMaxWidth())
@@ -162,19 +168,71 @@ fun CamposDetalleEvento(evento: EventoItem, viewModel: EventoViewModel, esNuevo:
     Text(text = "Asistentes:", fontWeight = FontWeight.Bold)
     OutlinedTextField(value = asistentes, onValueChange = { asistentes = it }, modifier = Modifier.fillMaxWidth())
 
-    Text(text = "Hora:", fontWeight = FontWeight.Bold)
-    OutlinedTextField(value = hora, onValueChange = { hora = it }, modifier = Modifier.fillMaxWidth())
+    // HORA
+    Text(text = "Hora del evento:", fontWeight = FontWeight.Bold)
+    OutlinedTextField(
+        value = hora,
+        onValueChange = { },
+        readOnly = true,
+        modifier = Modifier.fillMaxWidth().clickable { showTimePicker = true },
+        label = { Text("Seleccionar Hora") },
+        trailingIcon = {
+            IconButton(onClick = { showTimePicker = true }) {
+                Icon(painter = painterResource(id = R.drawable.clock_svgrepo_com),
+                    contentDescription = null,
+                    tint = Color.Unspecified)
+            }
+        },
+        enabled = false,
+        colors = OutlinedTextFieldDefaults.colors(
+            disabledTextColor = MaterialTheme.colorScheme.onSurface,
+            disabledBorderColor = MaterialTheme.colorScheme.outline,
+            disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+    )
+
+    if (showTimePicker) {
+        val timePickerState = rememberTimePickerState(
+            initialHour = if(hora.contains(":")) hora.split(":")[0].toInt() else 12,
+            initialMinute = if(hora.contains(":")) hora.split(":")[1].toInt() else 0,
+            is24Hour = true
+        )
+
+        androidx.compose.ui.window.Dialog(onDismissRequest = { showTimePicker = false }) {
+            Card(
+                modifier = Modifier.fillMaxWidth().padding(16.dp),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+            ) {
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    TimePicker(state = timePickerState)
+                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                        TextButton(onClick = { showTimePicker = false }) { Text("Cancelar") }
+                        TextButton(onClick = {
+                            hora = String.format("%02d:%02d", timePickerState.hour, timePickerState.minute)
+                            showTimePicker = false
+                        }) { Text("Aceptar") }
+                    }
+                }
+            }
+        }
+    }
+
+
 
     Spacer(modifier = Modifier.height(8.dp))
 
     // Botón Guardar
     Button(
         onClick = {
+
             val nuevoItem = EventoItem(
                 id_evento = if (esNuevo) null else evento.id_evento,
                 titulo_evento = titulo,
                 descripcion_evento = descripcion,
-                fecha_evento = evento.fecha_evento,
+                fecha_evento = fecha,
                 asistentes = asistentes,
                 Hora = hora
             )
