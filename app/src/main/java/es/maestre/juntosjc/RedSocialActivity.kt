@@ -227,6 +227,7 @@ fun ListaComentarios(viewModel: ComentarioViewModel) {
                         putExtra("TITULO", comentario.titulo)
                         putExtra("HORA", comentario.hora)
                         putExtra("EMAIL_USUARIO", comentario.email_usuario)
+                        putExtra("FECHA_PUBLICACION", comentario.fecha_publicacion)
                     }
                     context.startActivity(intent)
                 }
@@ -294,7 +295,7 @@ fun ComentarioItem(comentario: ComentarioItem, onClick: () -> Unit) {
                     color = JuntosTheme.colors.content
                 )
                 Text(
-                    text = comentario.hora,
+                    text = " ${comentario.fecha_publicacion}  Hora: ${comentario.hora}",
                     style = MaterialTheme.typography.titleSmall,
                     color = JuntosTheme.colors.content
                 )

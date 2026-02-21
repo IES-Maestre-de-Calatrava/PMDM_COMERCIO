@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,18 +16,28 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TimePicker
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -77,6 +88,7 @@ class DetalleComentarioActivity: ComponentActivity() {
         val tituloBackup = intent.getStringExtra("TITULO") ?: ""
         val horaBackUp = intent.getStringExtra("HORA") ?: ""
         val emailBackUp = intent.getStringExtra("EMAIL_USUARIO") ?: ""
+        val fechaBackUp = intent.getStringExtra("FECHA_PUBLICACION") ?: ""
 
 
         enableEdgeToEdge()
@@ -94,9 +106,10 @@ class DetalleComentarioActivity: ComponentActivity() {
                                 textoBackup,
                                 tituloBackup,
                                 hora=horaBackUp,
-                                email_usuario = emailBackUp)
+                                email_usuario = emailBackUp,
+                                fecha_publicacion = fechaBackUp)
                     } else {
-                        ComentarioItem(null, "", "", "", hora=horaBackUp, email_usuario = viewModel.getEmailUsuario() ?: "") // Nuevo comentario
+                        ComentarioItem(null, "", "", "", hora=horaBackUp, email_usuario = viewModel.getEmailUsuario() ?: "", fecha_publicacion = "") // Nuevo comentario
                     }
                 }
 
@@ -116,6 +129,7 @@ class DetalleComentarioActivity: ComponentActivity() {
 fun MyAppDetalle(viewModel: ComentarioViewModel, idComentario: Int, comentarioRecibido: ComentarioItem?,  preferencesViewModel: UserPreferencesViewModel) {
 
     val context = LocalContext.current // Para cerrar la pantalla tras la acción
+    val scrollState = rememberScrollState()
 
     Scaffold(
         topBar = {
@@ -153,7 +167,8 @@ fun MyAppDetalle(viewModel: ComentarioViewModel, idComentario: Int, comentarioRe
             modifier = Modifier
                 .padding(padding)
                 .padding(16.dp)
-                .fillMaxSize(),
+                .fillMaxSize()
+                .verticalScroll(scrollState),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
 
@@ -180,6 +195,8 @@ fun MyAppDetalle(viewModel: ComentarioViewModel, idComentario: Int, comentarioRe
             // Solo mostramos los campos si el comentario ha cargado
             comentarioRecibido?.let { comentario ->
                 CamposDetalle(comentario = comentario, viewModel = viewModel, esNuevo = idComentario <= 0, onActionDone = { (context as ComponentActivity).finish() })            }
+
+            Spacer(modifier = Modifier.height(20.dp))
         }
     }
 }
@@ -187,6 +204,7 @@ fun MyAppDetalle(viewModel: ComentarioViewModel, idComentario: Int, comentarioRe
 /**
  * Funcion que arma la pantalla con los campos editables y los botones de guardado y eliminado
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CamposDetalle(
     comentario: ComentarioItem,
@@ -194,36 +212,35 @@ fun CamposDetalle(
     esNuevo: Boolean,
     onActionDone: () -> Unit
 ) {
-    // Usamos estados para que los campos sean editables
     var titulo by remember { mutableStateOf(comentario.titulo) }
     var texto by remember { mutableStateOf(comentario.texto) }
-    var hora by remember { mutableStateOf(comentario.hora) }
 
     val mensajeError = "Modifique su nombre de usuario en el apartado perfil"
     var nombreUsuarioPerfil by remember { mutableStateOf<String>(mensajeError) }
     var iconoUsuarioActual by remember { mutableStateOf<String?>(null) }
 
-    // recuperamos el email actual
+    // Si es nuevo y la fecha está vacía, podemos poner la de hoy por defecto para evitar nulos en BD
+    var fecha by remember { mutableStateOf(if (comentario.fecha_publicacion.isNullOrBlank()) "" else comentario.fecha_publicacion) }
+    var hora by remember { mutableStateOf(if (comentario.hora.isNullOrBlank()) "" else comentario.hora) }
+
     val emailSesion = remember { viewModel.getEmailUsuario() }
+    var showCalendar by remember { mutableStateOf(false) }
+    var showTimePicker by remember { mutableStateOf(false) }
 
-
-    // Si el email es nuevo, el dueño es el actual, si no los comparamos
     val esDueño = if (esNuevo) true else (emailSesion == comentario.email_usuario)
 
     LaunchedEffect(Unit) {
         val iconoRecuperado = viewModel.obtenerIconoDesdePerfiles()
         val nombreRecuperado = viewModel.obtenernombreDesdePerfiles()
-        // Asignamos a las variables de estado para que la pantalla se actualice
         iconoUsuarioActual = iconoRecuperado
         if (!nombreRecuperado.isNullOrBlank()) {
             nombreUsuarioPerfil = nombreRecuperado
         }
     }
 
-
     val esError = nombreUsuarioPerfil == mensajeError
 
-    // Campos editables segun los atributos del comentario
+    // NOMBRE USUARIO
     Text(text = stringResource(R.string.lb_nombreUsuario), fontWeight = FontWeight.Bold)
     Surface(
         modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
@@ -234,18 +251,22 @@ fun CamposDetalle(
             text = if (esNuevo) nombreUsuarioPerfil else comentario.nombre_usuario,
             modifier = Modifier.padding(16.dp),
             style = MaterialTheme.typography.bodyLarge,
-            color = if (esError && esNuevo) colorResource(R.color.rojo) else colorResource(R.color.black)        )
+            color = if (esError && esNuevo) colorResource(R.color.rojo) else colorResource(R.color.black)
+        )
     }
 
+    // TITULO
     Text(text = stringResource(R.string.lbTitulo), fontWeight = FontWeight.Bold)
     OutlinedTextField(
         value = titulo,
         onValueChange = { if (esDueño) titulo = it },
         readOnly = !esDueño,
         modifier = Modifier.fillMaxWidth(),
-        label = { Text(stringResource(R.string.lbTitulo)) }
+        label = { Text(stringResource(R.string.lbTitulo)) },
+        enabled = esDueño // Bloquea visualmente si no es dueño
     )
 
+    // COMENTARIO
     Text(text = stringResource(R.string.lb_comentario), fontWeight = FontWeight.Bold)
     OutlinedTextField(
         value = texto,
@@ -253,22 +274,129 @@ fun CamposDetalle(
         readOnly = !esDueño,
         modifier = Modifier.fillMaxWidth(),
         label = { Text(stringResource(R.string.lbComentario)) },
-        minLines = 3
+        minLines = 3,
+        enabled = esDueño
     )
+
+    // FECHA
+    Text(text = "Fecha de publicación:", fontWeight = FontWeight.Bold)
+    OutlinedTextField(
+        value = fecha,
+        onValueChange = { },
+        readOnly = true,
+
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(enabled = esDueño) { showCalendar = true },
+        label = { Text("Seleccionar Día") },
+        trailingIcon = {
+            IconButton(onClick = { showCalendar = true }, enabled = esDueño) {
+                Icon(
+                    painter = painterResource(id = R.drawable.calendar_svgrepo_com),
+                    contentDescription = null,
+                    tint = if (esDueño) Color.Unspecified else Color.Gray
+                )
+            }
+        },
+        enabled = esDueño,
+        colors = OutlinedTextFieldDefaults.colors(
+            disabledTextColor = MaterialTheme.colorScheme.onSurface,
+            disabledBorderColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
+            disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+    )
+
+    // HORA
+    Text(text = "Hora:", fontWeight = FontWeight.Bold)
+    OutlinedTextField(
+        value = hora,
+        onValueChange = { },
+        readOnly = true,
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(enabled = esDueño) { showTimePicker = true },
+        label = { Text("Seleccionar Hora") },
+        trailingIcon = {
+            IconButton(onClick = { showTimePicker = true }, enabled = esDueño) {
+                Icon(
+                    painter = painterResource(id = R.drawable.clock_svgrepo_com),
+                    contentDescription = null,
+                    tint = if (esDueño) Color.Unspecified else Color.Gray
+                )
+            }
+        },
+        enabled = esDueño,
+        colors = OutlinedTextFieldDefaults.colors(
+            disabledTextColor = MaterialTheme.colorScheme.onSurface,
+            disabledBorderColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
+            disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+    )
+
+    if (showCalendar && esDueño) {
+        androidx.compose.ui.window.Dialog(onDismissRequest = { showCalendar = false }) {
+            Card(
+                modifier = Modifier.fillMaxWidth().padding(16.dp),
+                colors = CardDefaults.cardColors(JuntosTheme.colors.container)
+            ) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    androidx.compose.ui.viewinterop.AndroidView(
+                        factory = { context ->
+                            android.widget.CalendarView(context).apply {
+                                setOnDateChangeListener { _, year, month, dayOfMonth ->
+                                    fecha = String.format("%02d/%02d/%d", dayOfMonth, month + 1, year)
+                                    showCalendar = false
+                                }
+                            }
+                        },
+                        modifier = Modifier.wrapContentSize()
+                    )
+                }
+            }
+        }
+    }
+
+    if (showTimePicker && esDueño) {
+        val timePickerState = rememberTimePickerState(
+            initialHour = if(hora.contains(":")) hora.split(":")[0].toInt() else 12,
+            initialMinute = if(hora.contains(":")) hora.split(":")[1].toInt() else 0,
+            is24Hour = true
+        )
+
+        androidx.compose.ui.window.Dialog(onDismissRequest = { showTimePicker = false }) {
+            Card(
+                modifier = Modifier.fillMaxWidth().padding(16.dp),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+            ) {
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    TimePicker(state = timePickerState)
+                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                        TextButton(onClick = { showTimePicker = false }) { Text("Cancelar") }
+                        TextButton(onClick = {
+                            hora = String.format("%02d:%02d", timePickerState.hour, timePickerState.minute)
+                            showTimePicker = false
+                        }) { Text("Aceptar") }
+                    }
+                }
+            }
+        }
+    }
 
     if (esDueño) {
         Button(
             onClick = {
-                val horaNueva = horaActualComentario()
-
                 val nuevoItem = ComentarioItem(
                     id_comentario = if (esNuevo) null else comentario.id_comentario,
                     nombre_usuario = nombreUsuarioPerfil,
                     texto = texto,
                     titulo = titulo,
                     icono_usuario = iconoUsuarioActual ?: comentario.icono_usuario,
-                    hora = horaNueva,
-                    email_usuario = emailSesion
+                    hora = hora,
+                    email_usuario = emailSesion,
+                    fecha_publicacion = fecha
                 )
                 if (esNuevo) {
                     viewModel.insertarComentarioSupabase(nuevoItem) { onActionDone() }
@@ -283,32 +411,19 @@ fun CamposDetalle(
                 contentColor = colorResource(R.color.white)
             )
         ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.save_svgrepo_com),
-                    contentDescription = stringResource(R.string.descripcion_btnGuardar_detalle),
-                    modifier = Modifier.size(24.dp),
-                    tint = Color.Unspecified
-                )
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(painter = painterResource(id = R.drawable.save_svgrepo_com), contentDescription = null, modifier = Modifier.size(24.dp), tint = Color.Unspecified)
                 Spacer(modifier = Modifier.width(10.dp))
-                Text(
-                    text = stringResource(R.string.btn_Guardar),
-                    style = MaterialTheme.typography.titleMedium
-                )
+                Text(text = stringResource(R.string.btn_Guardar), style = MaterialTheme.typography.titleMedium)
             }
         }
 
-
         if (!esNuevo) {
+            Spacer(modifier = Modifier.height(8.dp))
             Button(
                 onClick = {
                     comentario.id_comentario?.let { idSeguro ->
-                        viewModel.borrarComentarioSupabase(idSeguro) {
-                            onActionDone()
-                        }
+                        viewModel.borrarComentarioSupabase(idSeguro) { onActionDone() }
                     }
                 },
                 modifier = Modifier.fillMaxWidth().height(50.dp),
@@ -317,34 +432,14 @@ fun CamposDetalle(
                     contentColor = colorResource(R.color.white)
                 )
             ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.trash_svgrepo_com),
-                        contentDescription = stringResource(R.string.descripcion_btnEliminar_detalle),
-                        modifier = Modifier.size(24.dp),
-                        tint = Color.Unspecified
-                    )
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(painter = painterResource(id = R.drawable.trash_svgrepo_com), contentDescription = null, modifier = Modifier.size(24.dp), tint = Color.Unspecified)
                     Spacer(modifier = Modifier.width(10.dp))
-                    Text(
-                        text = stringResource(R.string.btn_Eliminar),
-                        style = MaterialTheme.typography.titleMedium
-                    )
+                    Text(text = stringResource(R.string.btn_Eliminar), style = MaterialTheme.typography.titleMedium)
                 }
             }
         }
     }
-
 }
-
-
-fun horaActualComentario(): String {
-    val ahora = LocalTime.now()
-    val formatter = DateTimeFormatter.ofPattern("HH:mm")
-    return ahora.format(formatter)
-}
-
 
 

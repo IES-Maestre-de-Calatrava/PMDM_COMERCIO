@@ -300,7 +300,7 @@ fun TareaItem(tarea: TareaItem, onClick: () -> Unit) {
                     color=JuntosTheme.colors.content
                 )
                 Text(
-                    text = tarea.hora,
+                    text = tarea.fecha_entrega,
                     style = MaterialTheme.typography.titleSmall,
                     color = JuntosTheme.colors.content
                 )

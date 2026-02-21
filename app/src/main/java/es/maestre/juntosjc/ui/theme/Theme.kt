@@ -110,7 +110,8 @@ data class JuntosColors(
     val fondo: Color,
     val cardBackground: Color,
     val switchTrackOn: Color,
-    val switchTrackOff: Color
+    val switchTrackOff: Color,
+    val text: Color
 )
 
 val LightJuntosColors = JuntosColors(
@@ -124,7 +125,8 @@ val LightJuntosColors = JuntosColors(
     fondo = Color(0xFFF4F7FD),
     cardBackground = Color.White,
     switchTrackOn = Color(0xFF3F5AA9),
-    switchTrackOff = Color(0xFFD3D3D3)
+    switchTrackOff = Color(0xFFD3D3D3),
+    text = Color(0XFFFFFFFF)
 )
 
 val DarkJuntosColors = JuntosColors(
@@ -138,7 +140,8 @@ val DarkJuntosColors = JuntosColors(
     fondo = Color(0xFF111318),
     cardBackground = Color(0xFF1B1B21),
     switchTrackOn = Color(0xFF9EAEFF),
-    switchTrackOff = Color(0xFF44464F)
+    switchTrackOff = Color(0xFF44464F),
+    text = Color(0xFF000000)
 )
 
 val LocalJuntosColors = staticCompositionLocalOf { LightJuntosColors }

@@ -31,12 +31,18 @@ class LoginActivity : ComponentActivity() {
 
     private val viewModel: AuthenticationViewModel by viewModels()
 
+    private val preferencesViewModel: UserPreferencesViewModel by viewModels()
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            JUNTOSJCTheme {
+            val isDarkTheme by preferencesViewModel.isDarkTheme.collectAsStateWithLifecycle()
+
+            JUNTOSJCTheme (darkTheme = isDarkTheme) {
                 LoginScreen(
                     viewModel = viewModel,
+                    preferencesViewModel = preferencesViewModel,
                     onLoginSuccess = {
                         startActivity(Intent(this@LoginActivity, MainActivity::class.java))
                         finish()
@@ -50,6 +56,7 @@ class LoginActivity : ComponentActivity() {
 @Composable
 fun LoginScreen(
     viewModel: AuthenticationViewModel,
+    preferencesViewModel: UserPreferencesViewModel,
     onLoginSuccess: () -> Unit
 ) {
     var email by remember { mutableStateOf("") }
@@ -70,9 +77,23 @@ fun LoginScreen(
         }
     }
 
+    val customColors = JuntosTheme.colors
+
+    // Definimos el estilo de los campos usando tu color 'content'
+    val textFieldColors = OutlinedTextFieldDefaults.colors(
+        focusedTextColor = customColors.text,
+        unfocusedTextColor = customColors.text,
+        focusedLabelColor = customColors.text,
+        unfocusedLabelColor = customColors.text.copy(alpha = 0.7f),
+        focusedBorderColor = customColors.text,
+        unfocusedBorderColor = customColors.text.copy(alpha = 0.5f),
+        cursorColor = customColors.text
+    )
+
+
     Surface(
         modifier = Modifier.fillMaxSize(),
-        color = MaterialTheme.colorScheme.background
+        color = customColors.azulOscuroLogo
     ) {
         Column(
             modifier = Modifier
@@ -91,7 +112,8 @@ fun LoginScreen(
 
             Text(
                 text = if (isSignUp) stringResource(R.string.sign_up) else stringResource(R.string.log_in),
-                style = MaterialTheme.typography.headlineLarge
+                style = MaterialTheme.typography.headlineLarge,
+                color = customColors.text
             )
 
             Spacer(modifier = Modifier.height(32.dp))
@@ -101,7 +123,8 @@ fun LoginScreen(
                 onValueChange = { email = it },
                 label = { Text(stringResource(R.string.lb_email)) },
                 modifier = Modifier.fillMaxWidth(),
-                isError = loginState is LoginState.Error
+                isError = loginState is LoginState.Error,
+                colors = textFieldColors
 
             )
 
@@ -113,7 +136,8 @@ fun LoginScreen(
                 label = { Text(stringResource(R.string.password)) },
                 visualTransformation = PasswordVisualTransformation(),
                 modifier = Modifier.fillMaxWidth(),
-                isError = loginState is LoginState.Error
+                isError = loginState is LoginState.Error,
+                colors = textFieldColors
             )
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -148,7 +172,8 @@ fun LoginScreen(
             TextButton(onClick = { isSignUp = !isSignUp }) {
                 Text(
                     if (isSignUp) stringResource(R.string.suggest_login)
-                    else stringResource(R.string.suggest_signup)
+                    else stringResource(R.string.suggest_signup),
+                    color = customColors.text
                 )
             }
 

@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,22 +16,33 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TimePicker
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberDatePickerState
+import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -202,6 +214,9 @@ fun CamposDetalleTarea(
     var fecha by remember { mutableStateOf(tarea.fecha_entrega) }
     var estado by remember { mutableStateOf(tarea.estado) }
     var persona by remember { mutableStateOf(tarea.persona_encargada) }
+
+    var showCalendar by remember { mutableStateOf(false) }
+    var showTimePicker by remember { mutableStateOf(false) }
     var hora by remember { mutableStateOf(tarea.hora) }
 
     val opcionesEstado = listOf(
@@ -230,14 +245,103 @@ fun CamposDetalleTarea(
         minLines = 3
     )
 
-    Text(text = "Fecha de entrega de la tarea:", fontWeight = FontWeight.Bold)
+    // FECHA
+    Text(text = "Fecha de entrega:", fontWeight = FontWeight.Bold)
     OutlinedTextField(
         value = fecha,
-        onValueChange = { fecha = it },
-        modifier = Modifier.fillMaxWidth(),
-        label = { Text("Fecha Entrega") },
-        minLines = 1
+        onValueChange = { },
+        readOnly = true,
+        modifier = Modifier.fillMaxWidth().clickable { showCalendar = true },
+        label = { Text("Seleccionar Día") },
+        trailingIcon = {
+            IconButton(onClick = { showCalendar = true }) {
+                Icon(painter = painterResource(id = R.drawable.calendar_svgrepo_com),
+                    contentDescription = null,
+                    tint = Color.Unspecified)
+            }
+        },
+        enabled = false,
+        colors = OutlinedTextFieldDefaults.colors(
+            disabledTextColor = MaterialTheme.colorScheme.onSurface,
+            disabledBorderColor = MaterialTheme.colorScheme.outline,
+            disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant
+        )
     )
+
+    if (showCalendar) {
+        androidx.compose.ui.window.Dialog(onDismissRequest = { showCalendar = false }) {
+            Card(
+                modifier = Modifier.fillMaxWidth().padding(16.dp),
+                colors = CardDefaults.cardColors(JuntosTheme.colors.container)
+            ) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    androidx.compose.ui.viewinterop.AndroidView(
+                        factory = { context ->
+                            android.widget.CalendarView(context).apply {
+                                setOnDateChangeListener { _, year, month, dayOfMonth ->
+                                    fecha = String.format("%02d/%02d/%d", dayOfMonth, month + 1, year)
+                                    showCalendar = false
+                                }
+                            }
+                        },
+                        modifier = Modifier.wrapContentSize()
+                    )
+                }
+            }
+        }
+    }
+
+    // HORA
+    Text(text = "Hora de entrega:", fontWeight = FontWeight.Bold)
+    OutlinedTextField(
+        value = hora,
+        onValueChange = { },
+        readOnly = true,
+        modifier = Modifier.fillMaxWidth().clickable { showTimePicker = true },
+        label = { Text("Seleccionar Hora") },
+        trailingIcon = {
+            IconButton(onClick = { showTimePicker = true }) {
+                Icon(painter = painterResource(id = R.drawable.clock_svgrepo_com),
+                    contentDescription = null,
+                    tint = Color.Unspecified)
+            }
+        },
+        enabled = false,
+        colors = OutlinedTextFieldDefaults.colors(
+            disabledTextColor = MaterialTheme.colorScheme.onSurface,
+            disabledBorderColor = MaterialTheme.colorScheme.outline,
+            disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+    )
+
+    if (showTimePicker) {
+        val timePickerState = rememberTimePickerState(
+            initialHour = if(hora.contains(":")) hora.split(":")[0].toInt() else 12,
+            initialMinute = if(hora.contains(":")) hora.split(":")[1].toInt() else 0,
+            is24Hour = true
+        )
+
+        androidx.compose.ui.window.Dialog(onDismissRequest = { showTimePicker = false }) {
+            Card(
+                modifier = Modifier.fillMaxWidth().padding(16.dp),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+            ) {
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    TimePicker(state = timePickerState)
+                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                        TextButton(onClick = { showTimePicker = false }) { Text("Cancelar") }
+                        TextButton(onClick = {
+                            hora = String.format("%02d:%02d", timePickerState.hour, timePickerState.minute)
+                            showTimePicker = false
+                        }) { Text("Aceptar") }
+                    }
+                }
+            }
+        }
+    }
 
     /* ESTADO DE LA TAREA */
     Text(text = "Estado de la tarea:", fontWeight = FontWeight.Bold)
@@ -284,8 +388,6 @@ fun CamposDetalleTarea(
     Button(
         onClick = {
 
-            val horaNueva = horaActual()
-
             val nuevoItem = TareaItem(
                 id_tarea = if (esNuevo) null else tarea.id_tarea,
                 titulo_tarea = titulo,
@@ -293,7 +395,7 @@ fun CamposDetalleTarea(
                 fecha_entrega = fecha,
                 estado = estado,
                 persona_encargada = persona,
-                hora = horaNueva
+                hora = hora
             )
 
 
@@ -364,10 +466,4 @@ fun CamposDetalleTarea(
         }
     }
 
-}
-
-fun horaActual(): String {
-    val ahora = LocalTime.now()
-    val formatter = DateTimeFormatter.ofPattern("HH:mm")
-    return ahora.format(formatter)
 }
