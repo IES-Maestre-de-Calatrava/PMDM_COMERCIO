@@ -144,8 +144,13 @@ fun MyAppDetalleContacto(viewModel: ContactoViewModel, idContacto: Int, contacto
 
                 )
                 Spacer(modifier = Modifier.width(8.dp)) // Espacio entre texto e icono
+                val tituloPantalla = if (idContacto <= 0){
+                    stringResource(R.string.txt_alta)
+                } else {
+                    stringResource(R.string.txt_edición)
+                }
                 Text(
-                    stringResource(R.string.txt_detalle),
+                    tituloPantalla,
                     style = MaterialTheme.typography.headlineMedium.copy(
                         fontWeight = FontWeight.ExtraBold,
                         color = JuntosTheme.colors.azulOscuroLogo

@@ -181,8 +181,13 @@ fun MyAppDetalle(viewModel: ComentarioViewModel, idComentario: Int, comentarioRe
 
                 )
                 Spacer(modifier = Modifier.width(8.dp)) // Espacio entre texto e icono
+                val tituloPantalla = if (idComentario <= 0){
+                    stringResource(R.string.txt_alta)
+                } else {
+                    stringResource(R.string.txt_edición)
+                }
                 Text(
-                    stringResource(R.string.txt_detalle),
+                    tituloPantalla,
                     style = MaterialTheme.typography.headlineMedium.copy(
                         fontWeight = FontWeight.ExtraBold,
                         color = JuntosTheme.colors.azulOscuroLogo

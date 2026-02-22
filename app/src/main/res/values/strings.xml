@@ -35,7 +35,8 @@
     <string name="txt_documentos">DOCUMENTOS</string>
     <string name="txt_descargar">Descargar</string>
     <string name="txt_redSocial">RED SOCIAL</string>
-    <string name="txt_detalle">ALTA</string>
+    <string name="txt_alta">ALTA</string>
+    <string name="txt_edición">EDICIÓN</string>
     <string name="txt_tareas">TAREAS</string>
     <string name="txt_calendario">CALENDARIO</string>
     <string name="txt_contactos">CONTACTOS</string>
