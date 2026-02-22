@@ -385,61 +385,87 @@ fun CamposDetalle(
         }
     }
 
-    if (esDueño) {
-        Button(
-            onClick = {
-                val nuevoItem = ComentarioItem(
-                    id_comentario = if (esNuevo) null else comentario.id_comentario,
-                    nombre_usuario = nombreUsuarioPerfil,
-                    texto = texto,
-                    titulo = titulo,
-                    icono_usuario = iconoUsuarioActual ?: comentario.icono_usuario,
-                    hora = hora,
-                    email_usuario = emailSesion,
-                    fecha_publicacion = fecha
-                )
-                if (esNuevo) {
-                    viewModel.insertarComentarioSupabase(nuevoItem) { onActionDone() }
-                } else {
-                    viewModel.actualizarComentarioSupabase(nuevoItem) { onActionDone() }
-                }
-            },
-            enabled = !(esNuevo && esError),
-            modifier = Modifier.fillMaxWidth().height(50.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = colorResource(R.color.azul_pastel),
-                contentColor = colorResource(R.color.white)
-            )
-        ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(painter = painterResource(id = R.drawable.save_svgrepo_com), contentDescription = null, modifier = Modifier.size(24.dp), tint = Color.Unspecified)
-                Spacer(modifier = Modifier.width(10.dp))
-                Text(text = stringResource(R.string.btn_Guardar), style = MaterialTheme.typography.titleMedium)
-            }
-        }
 
-        if (!esNuevo) {
-            Spacer(modifier = Modifier.height(8.dp))
+    if (esDueño) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            // BOTÓN GUARDAR
             Button(
                 onClick = {
-                    comentario.id_comentario?.let { idSeguro ->
-                        viewModel.borrarComentarioSupabase(idSeguro) { onActionDone() }
+                    val nuevoItem = ComentarioItem(
+                        id_comentario = if (esNuevo) null else comentario.id_comentario,
+                        nombre_usuario = nombreUsuarioPerfil,
+                        texto = texto,
+                        titulo = titulo,
+                        icono_usuario = iconoUsuarioActual ?: comentario.icono_usuario,
+                        hora = hora,
+                        email_usuario = emailSesion,
+                        fecha_publicacion = fecha
+                    )
+                    if (esNuevo) {
+                        viewModel.insertarComentarioSupabase(nuevoItem) { onActionDone() }
+                    } else {
+                        viewModel.actualizarComentarioSupabase(nuevoItem) { onActionDone() }
                     }
                 },
-                modifier = Modifier.fillMaxWidth().height(50.dp),
+                enabled = !(esNuevo && esError),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = colorResource(R.color.rojo_pastel),
+                    containerColor = colorResource(R.color.azul_pastel),
                     contentColor = colorResource(R.color.white)
                 )
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(painter = painterResource(id = R.drawable.trash_svgrepo_com), contentDescription = null, modifier = Modifier.size(24.dp), tint = Color.Unspecified)
-                    Spacer(modifier = Modifier.width(10.dp))
-                    Text(text = stringResource(R.string.btn_Eliminar), style = MaterialTheme.typography.titleMedium)
+                    Icon(
+                        painter = painterResource(id = R.drawable.save_svgrepo_com),
+                        contentDescription = null,
+                        modifier = Modifier.size(24.dp),
+                        tint = Color.Unspecified
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(text = stringResource(R.string.btn_Guardar),
+                        style = MaterialTheme.typography.titleSmall)
+                }
+            }
+
+            // BOTÓN ELIMINAR
+            if (!esNuevo) {
+                Button(
+                    onClick = {
+                        comentario.id_comentario?.let { idSeguro ->
+                            viewModel.borrarComentarioSupabase(idSeguro) { onActionDone() }
+                        }
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(50.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = colorResource(R.color.rojo_pastel),
+                        contentColor = colorResource(R.color.white)
+                    )
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.trash_svgrepo_com),
+                            contentDescription = null,
+                            modifier = Modifier.size(24.dp),
+                            tint = Color.Unspecified
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(text = stringResource(R.string.btn_Eliminar),
+                            style = MaterialTheme.typography.titleSmall)
+                    }
                 }
             }
         }
     }
+
 }
 
 

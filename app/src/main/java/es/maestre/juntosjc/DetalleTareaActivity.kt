@@ -424,7 +424,6 @@ fun CamposDetalleTarea(
                 tint = Color.Unspecified
 
             )
-            Spacer(modifier = Modifier.width(10.dp))
             Text(
                 text = stringResource(R.string.btn_Guardar),
                 style = MaterialTheme.typography.titleMedium
@@ -457,7 +456,6 @@ fun CamposDetalleTarea(
                     modifier = Modifier.size(24.dp),
                     tint=Color.Unspecified
                 )
-                Spacer(modifier = Modifier.width(10.dp))
                 Text(
                     text = stringResource(R.string.btn_Eliminar),
                     style = MaterialTheme.typography.titleMedium

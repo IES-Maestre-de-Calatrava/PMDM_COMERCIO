@@ -93,7 +93,7 @@ fun LoginScreen(
 
     Surface(
         modifier = Modifier.fillMaxSize(),
-        color = customColors.azulOscuroLogo
+        color = JuntosTheme.colors.fondo
     ) {
         Column(
             modifier = Modifier
@@ -113,7 +113,7 @@ fun LoginScreen(
             Text(
                 text = if (isSignUp) stringResource(R.string.sign_up) else stringResource(R.string.log_in),
                 style = MaterialTheme.typography.headlineLarge,
-                color = customColors.text
+                color = JuntosTheme.colors.text
             )
 
             Spacer(modifier = Modifier.height(32.dp))
@@ -173,7 +173,7 @@ fun LoginScreen(
                 Text(
                     if (isSignUp) stringResource(R.string.suggest_login)
                     else stringResource(R.string.suggest_signup),
-                    color = customColors.text
+                    color = JuntosTheme.colors.text
                 )
             }
 

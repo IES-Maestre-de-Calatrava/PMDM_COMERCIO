@@ -273,10 +273,10 @@ fun GenerarComponentesMain(
                         context.startActivity(intent)
                     }){
                         Icon(
-                            painter = painterResource(id = R.drawable.perfil),
+                            painter = painterResource(id = R.drawable.user_profile),
                             contentDescription = stringResource(R.string.descripcion_btnPerfil_main),
-                            modifier = Modifier.size(28.dp),
-                            tint = JuntosTheme.colors.gris
+                            modifier = Modifier.size(30.dp),
+                            tint = Color.Unspecified
                         )
                     }
                     // Icono Ayuda

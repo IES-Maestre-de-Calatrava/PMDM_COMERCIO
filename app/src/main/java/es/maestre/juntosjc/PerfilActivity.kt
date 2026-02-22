@@ -247,7 +247,7 @@ fun PantallaPerfil(preferencesViewModel: UserPreferencesViewModel) {
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
-                    painter = painterResource(R.drawable.perfil),
+                    painter = painterResource(R.drawable.user_profile),
                     contentDescription = null,
                     modifier = Modifier.size(30.dp),
                     tint = Color.Unspecified
