@@ -13,6 +13,8 @@ data class ContactoItem(
     val telefono_contacto: String,
     @SerialName("email_contacto")
     val email_contacto: String,
+    @SerialName("empresa")
+    val empresa: String? = null,
     @SerialName("direccion_contacto")
     val direccion_contacto: String
 )

@@ -258,6 +258,7 @@ fun ListaContactos(viewModel: ContactoViewModel) {
                         putExtra("NOMBRE_CONTACTO", contacto.nombre_contacto)
                         putExtra("TELEFONO_CONTACTO", contacto.telefono_contacto)
                         putExtra("EMAIL_CONTACTO", contacto.email_contacto)
+                        putExtra("EMPRESA", contacto.empresa.orEmpty())
                         putExtra("DIRECCION_CONTACTO", contacto.direccion_contacto)
                     }
                     context.startActivity(intent)

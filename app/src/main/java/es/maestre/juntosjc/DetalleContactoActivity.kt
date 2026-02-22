@@ -1,6 +1,7 @@
 package es.maestre.juntosjc
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -69,6 +70,7 @@ class DetalleContactoActivity : ComponentActivity() {
         val nombreBackup = intent.getStringExtra("NOMBRE_CONTACTO") ?: ""
         val telefonoBackup = intent.getStringExtra("TELEFONO_CONTACTO") ?: ""
         val emailBackup = intent.getStringExtra("EMAIL_CONTACTO") ?: ""
+        val empresaBackup = intent.getStringExtra("EMPRESA") ?: ""
         val direccionBackup = intent.getStringExtra("DIRECCION_CONTACTO") ?: ""
 
         enableEdgeToEdge()
@@ -79,9 +81,9 @@ class DetalleContactoActivity : ComponentActivity() {
                 val contactoActual = remember(idContacto) {
                     if (idContacto > 0) {
                         viewModel.listaContactosSupabase.find { it.id_contacto == idContacto }
-                            ?: ContactoItem(idContacto, nombreBackup, telefonoBackup, emailBackup, direccionBackup)
+                            ?: ContactoItem(idContacto, nombreBackup, telefonoBackup, emailBackup, empresaBackup, direccionBackup)
                     } else {
-                        ContactoItem(null, "", "", "", "")
+                        ContactoItem(null, "", "", "", "", "")
                     }
                 }
 
@@ -177,7 +179,10 @@ fun CamposDetalleContacto(
     var nombre by remember { mutableStateOf(contacto.nombre_contacto) }
     var telefono by remember { mutableStateOf(contacto.telefono_contacto) }
     var email by remember { mutableStateOf(contacto.email_contacto) }
+    var empresa by remember { mutableStateOf(contacto.empresa.orEmpty()) }
     var direccion by remember { mutableStateOf(contacto.direccion_contacto) }
+
+    Log.d("DetalleContacto", "Cargando contacto: $contacto Empresa: ${contacto.empresa}")
 
     Text(text = stringResource(R.string.lb_nombreUsuario), fontWeight = FontWeight.Bold)
     OutlinedTextField(
@@ -204,6 +209,14 @@ fun CamposDetalleContacto(
         label = { Text(stringResource(R.string.lb_email)) },
         minLines = 1
     )
+    Text(text = stringResource(R.string.lb_empresa), fontWeight = FontWeight.Bold)
+    OutlinedTextField(
+        value = empresa,
+        onValueChange = { empresa = it },
+        modifier = Modifier.fillMaxWidth(),
+        label = { Text(stringResource(R.string.lb_empresa)) },
+        minLines = 1
+    )
 
     Text(text = stringResource(R.string.lb_direccion), fontWeight = FontWeight.Bold)
     OutlinedTextField(
@@ -221,8 +234,10 @@ fun CamposDetalleContacto(
                 nombre_contacto = nombre,
                 telefono_contacto = telefono,
                 email_contacto = email,
+                empresa = empresa,
                 direccion_contacto = direccion
             )
+            Log.d("DetalleContacto", "Guardando contacto: $nuevoItem Empresa: ${nuevoItem.empresa}")
             if (esNuevo) {
                 viewModel.insertarContactoSupabase(nuevoItem) { onActionDone() }
             } else {

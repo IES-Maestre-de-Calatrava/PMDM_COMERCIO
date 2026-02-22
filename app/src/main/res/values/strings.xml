@@ -162,5 +162,6 @@
     <string name="txt_descripcion_tareas">Organiza tus pendientes con estados (Hecha, En Proceso, Pendiente). Pulsa los botones de colores superiores para filtrar la lista al instante y ver solo las tareas que tengan ese estado.</string>
     <string name="txt_descripcion_calendario">Organiza tus eventos diarios de forma clara. Permite añadir nuevas citas con detalles (asistentes, hora y descripción) y visualizar rápidamente toda tu planificación.</string>
     <string name="descripcion_btnHacerFoto">Boton para ir a hacer foto</string>
+    <string name="lb_empresa">Empresa</string>
 
 </resources>

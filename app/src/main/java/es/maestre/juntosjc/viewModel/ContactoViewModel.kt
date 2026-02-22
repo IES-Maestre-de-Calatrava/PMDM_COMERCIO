@@ -40,7 +40,8 @@ class ContactoViewModel(application: Application) : AndroidViewModel(application
                 contacto.nombre_contacto.contains(filtro, ignoreCase = true) ||
                         contacto.telefono_contacto.contains(filtro, ignoreCase = true) ||
                         contacto.email_contacto.contains(filtro, ignoreCase = true) ||
-                        contacto.direccion_contacto.contains(filtro, ignoreCase = true)
+                        contacto.direccion_contacto.contains(filtro, ignoreCase = true) ||
+                        contacto.empresa.orEmpty().contains(filtro, ignoreCase = true)
             }
         }
 
