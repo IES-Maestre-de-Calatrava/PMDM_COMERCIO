@@ -52,7 +52,6 @@ import es.maestre.juntosjc.viewModel.EventoViewModel
 import kotlin.getValue
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DatePickerDefaults
-import androidx.compose.material3.DatePickerState
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -67,8 +66,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import es.maestre.juntosjc.viewModel.UserPreferencesViewModel
 import es.maestre.juntosjc.ui.theme.JUNTOSJCTheme
 import es.maestre.juntosjc.ui.theme.JuntosTheme
-import es.maestre.juntosjc.model.AppFeature
-
 
 
 /**
@@ -469,5 +466,3 @@ fun EventoItemRow(evento: EventoItem, onDeleteConfirmed: () -> Unit) {
         }
     }
 }
-
-

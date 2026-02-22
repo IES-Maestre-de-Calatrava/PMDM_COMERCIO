@@ -42,7 +42,8 @@
     <string name="txt_crear">Create</string>
     <string name="txt_borrar">Delete</string>
     <string name="txt_redSocial">SOCIAL NETWORK</string>
-    <string name="txt_detalle">DISCHARGE</string>
+    <string name="txt_alta">DISCHARGE</string>
+    <string name="txt_edición">EDITING</string>
     <string name="txt_tareas">TASKS</string>
     <string name="txt_calendario">CALENDAR</string>
     <string name="txt_contactos">CONTACTS</string>
