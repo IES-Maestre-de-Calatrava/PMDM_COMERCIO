@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Card
@@ -211,10 +212,10 @@ fun ListaComentarios(viewModel: ComentarioViewModel) {
     val listaComentarios = viewModel.listaComentariosSupabase
     val context = LocalContext.current
 
-    LazyColumn(
+    LazyRow(
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(16.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        horizonalArragement = Arrangement.spacedBy(8.dp)
     ) {
         items(listaComentarios) { comentario ->
             ComentarioItem(
