@@ -14,7 +14,7 @@ data class ContactoItem(
     @SerialName("email_contacto")
     val email_contacto: String,
     @SerialName("empresa")
-    val empresa: String? = null,
+    val empresa: String,
     @SerialName("direccion_contacto")
     val direccion_contacto: String
 )

@@ -388,6 +388,7 @@ fun PantallaPerfil(preferencesViewModel: UserPreferencesViewModel) {
         ModalEditarPerfil(
             nombreActual = nombre,
             apellidoActual = apellido,
+            emailActual = email,
             edadActual = edad,
             cursoActual = curso,
             fotoActual = fotoPerfil,
@@ -462,6 +463,7 @@ fun ModalEditarPerfil(
 
     nombreActual: String,
     apellidoActual: String,
+    emailActual: String,
     edadActual: String,
     cursoActual: String,
     fotoActual: String?,
@@ -470,7 +472,7 @@ fun ModalEditarPerfil(
     onGuardar: (String, String, String, String, String?) -> Unit
 ) {
     var nombre by remember { mutableStateOf(nombreActual) }
-    var email by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf(emailActual) }
     var apellido by remember { mutableStateOf(apellidoActual) }
     var edad by remember { mutableStateOf(edadActual) }
     var curso by remember { mutableStateOf(cursoActual) }

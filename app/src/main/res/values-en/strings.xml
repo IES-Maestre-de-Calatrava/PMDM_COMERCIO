@@ -152,7 +152,12 @@
     <string name="txt_editar_comentario">To edit, you have to click on a post and you will be able to edit the tittle, the name and the comment</string>
     <string name="txt_eliminar_comentario">" To delete, you have to click on a post and you will see a button to delete it."</string>
     <string name="txt_btn_invitar">Invite</string>
-    <string name="txt_contenido_invitar">Pressing the invite button on the home screen will display a menu with several applications through which to share the application link.</string>
+    <string name="txt_contenido_invitar">Pressing the invite button on the home screen will display a menu with several applications to share the application link.</string>
+    <string name="invite_link">https://drive.google.com/drive/folders/1mHv4Lvo75Lju5s66vvnjbjlrvfHk14w3?usp=sharing</string>
+    <string name="invite_share_text">I invite you to join JUNTOS!
+Download link: %1$s</string>
+    <string name="invite_share_title">I invite you to join JUNTOS!</string>
+    <string name="invite_share_subject">Download JUNTOS</string>
     <string name="txt_btn_contactos">Contacts</string>
     <string name="txt_crear_contacto">To create a contact, you have to press the create button and enter the requested information.</string>
     <string name="txt_editar_contacto">To edit, you have to tap on the contact, modify the data you want, and tap save.</string>
@@ -183,4 +188,10 @@
     <string name="lb_empresa">Company</string>
 
 
+    <string name="filtro_nombre">Name</string>
+    <string name="filtro_empresa">Company</string>
+    <string name="filtro_telefono">Phone</string>
+    <string name="buscar_nombre">Search by name...</string>
+    <string name="buscar_empresa">Search by company...</string>
+    <string name="buscar_telefono">Search by phone...</string>
 </resources>
