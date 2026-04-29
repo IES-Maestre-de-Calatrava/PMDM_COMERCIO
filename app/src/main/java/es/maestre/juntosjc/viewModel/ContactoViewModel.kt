@@ -18,6 +18,8 @@ import kotlinx.coroutines.withContext
 /**
  * ViewModel de los contactos
  */
+enum class CampoFiltroContacto { NOMBRE, EMPRESA, TELEFONO }
+
 class ContactoViewModel(application: Application) : AndroidViewModel(application) {
 
     private val _listaContactosCompleta = mutableStateListOf<ContactoItem>()
@@ -26,22 +28,36 @@ class ContactoViewModel(application: Application) : AndroidViewModel(application
     var filtro by mutableStateOf("")
         private set
 
+    var campoFiltro by mutableStateOf(CampoFiltroContacto.NOMBRE)
+        private set
+
     fun actualizarFiltro(nuevoFiltro: String) {
         filtro = nuevoFiltro
         aplicarFiltroYOrden()
     }
 
-    /** Aplica el filtro de texto y la ordenación alfabética, filtra tanto por nombre, telefono, email y direccion de contacto */
+    fun actualizarCampoFiltro(nuevoCampo: CampoFiltroContacto) {
+        campoFiltro = nuevoCampo
+        filtro = ""
+        aplicarFiltroYOrden()
+    }
+
+    /** Aplica el filtro de texto y la ordenación alfabética según el campo elegido */
     private fun aplicarFiltroYOrden() {
         val filtrados = if (filtro.isBlank()) {
             _listaContactosCompleta.toList()
         } else {
             _listaContactosCompleta.filter { contacto ->
-                contacto.nombre_contacto.contains(filtro, ignoreCase = true) ||
-                        contacto.telefono_contacto.contains(filtro, ignoreCase = true) ||
-                        contacto.email_contacto.contains(filtro, ignoreCase = true) ||
-                        contacto.direccion_contacto.contains(filtro, ignoreCase = true) ||
+                when (campoFiltro) {
+                    CampoFiltroContacto.NOMBRE ->
+                        contacto.nombre_contacto.contains(filtro, ignoreCase = true)
+
+                    CampoFiltroContacto.EMPRESA ->
                         contacto.empresa.orEmpty().contains(filtro, ignoreCase = true)
+
+                    CampoFiltroContacto.TELEFONO ->
+                        contacto.telefono_contacto.contains(filtro, ignoreCase = true)
+                }
             }
         }
 

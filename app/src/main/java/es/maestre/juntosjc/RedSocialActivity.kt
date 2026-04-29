@@ -212,10 +212,10 @@ fun ListaComentarios(viewModel: ComentarioViewModel) {
     val listaComentarios = viewModel.listaComentariosSupabase
     val context = LocalContext.current
 
-    LazyRow(
+    LazyColumn(
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(16.dp),
-        horizonalArragement = Arrangement.spacedBy(8.dp)
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         items(listaComentarios) { comentario ->
             ComentarioItem(
