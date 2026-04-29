@@ -43,7 +43,7 @@
             android:name=".PerfilActivity"
             android:exported="false"
             android:label="Perfil"
-            android:theme="@style/Theme.JUNTOSJC" />
+            android:theme="@style/Theme.JUNTOSJC" />/>
         <activity
             android:name=".MainActivity"
             android:exported="true" />

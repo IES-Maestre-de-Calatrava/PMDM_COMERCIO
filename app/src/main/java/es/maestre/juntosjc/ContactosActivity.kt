@@ -29,7 +29,6 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -54,7 +53,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import es.maestre.juntosjc.model.Ayuda
 import es.maestre.juntosjc.model.ContactoItem
-import es.maestre.juntosjc.viewModel.CampoFiltroContacto
 import es.maestre.juntosjc.viewModel.ContactoViewModel
 
 import es.maestre.juntosjc.viewModel.UserPreferencesViewModel
@@ -202,66 +200,32 @@ fun MyAppContactos(viewModel: ContactoViewModel, preferencesViewModel: UserPrefe
 
 @Composable
 fun BarraBusquedaContactos(viewModel: ContactoViewModel) {
-    val placeholderTexto = when (viewModel.campoFiltro) {
-        CampoFiltroContacto.NOMBRE -> stringResource(R.string.buscar_nombre)
-        CampoFiltroContacto.EMPRESA -> stringResource(R.string.buscar_empresa)
-        CampoFiltroContacto.TELEFONO -> stringResource(R.string.buscar_telefono)
-    }
-
-    Column(
+    OutlinedTextField(
+        value = viewModel.filtro,
+        onValueChange = { viewModel.actualizarFiltro(it) },
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp)
-    ) {
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            FilterChip(
-                selected = viewModel.campoFiltro == CampoFiltroContacto.NOMBRE,
-                onClick = { viewModel.actualizarCampoFiltro(CampoFiltroContacto.NOMBRE) },
-                label = { Text(stringResource(R.string.filtro_nombre)) }
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+        placeholder = { Text("Buscar contacto...") },
+        shape = MaterialTheme.shapes.medium,
+        leadingIcon = {
+            Icon(
+                imageVector = Icons.Default.Search,
+                contentDescription = "Buscar"
             )
-
-            FilterChip(
-                selected = viewModel.campoFiltro == CampoFiltroContacto.EMPRESA,
-                onClick = { viewModel.actualizarCampoFiltro(CampoFiltroContacto.EMPRESA) },
-                label = { Text(stringResource(R.string.filtro_empresa)) }
-            )
-
-            FilterChip(
-                selected = viewModel.campoFiltro == CampoFiltroContacto.TELEFONO,
-                onClick = { viewModel.actualizarCampoFiltro(CampoFiltroContacto.TELEFONO) },
-                label = { Text(stringResource(R.string.filtro_telefono)) }
-            )
-        }
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        OutlinedTextField(
-            value = viewModel.filtro,
-            onValueChange = { viewModel.actualizarFiltro(it) },
-            modifier = Modifier.fillMaxWidth(),
-            placeholder = { Text(placeholderTexto) },
-            shape = MaterialTheme.shapes.medium,
-            leadingIcon = {
-                Icon(
-                    imageVector = Icons.Default.Search,
-                    contentDescription = "Buscar"
-                )
-            },
-            trailingIcon = {
-                if (viewModel.filtro.isNotEmpty()) {
-                    IconButton(onClick = { viewModel.actualizarFiltro("") }) {
-                        Icon(
-                            imageVector = Icons.Default.Clear,
-                            contentDescription = "Limpiar búsqueda"
-                        )
-                    }
+        },
+        trailingIcon = {
+            if (viewModel.filtro.isNotEmpty()) {
+                IconButton(onClick = { viewModel.actualizarFiltro("") }) {
+                    Icon(
+                        imageVector = Icons.Default.Clear,
+                        contentDescription = "Limpiar búsqueda"
+                    )
                 }
-            },
-            singleLine = true
-        )
-    }
+            }
+        },
+        singleLine = true
+    )
 }
 
 @Composable
@@ -334,11 +298,6 @@ fun ContactoItemRow(contacto: ContactoItem, onClick: () -> Unit) {
                 Text(
                     text = contacto.telefono_contacto,
                     style = MaterialTheme.typography.bodySmall,
-                    color = JuntosTheme.colors.content
-                )
-                Text(
-                    text = contacto.empresa,
-                    style = MaterialTheme.typography.titleMedium,
                     color = JuntosTheme.colors.content
                 )
             }

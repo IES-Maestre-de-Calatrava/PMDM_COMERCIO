@@ -135,11 +135,7 @@
     <string name="txt_editar_comentario">Para editar tienes que pulsar sobre una publicación y podras editar el titulo, el nombre y el comentario</string>
     <string name="txt_eliminar_comentario">Para borrar tienes que pulsar sobre una publicación y tendras un botón que es para eliminar</string>
     <string name="txt_btn_invitar">Invitar</string>
-    <string name="txt_contenido_invitar">Al pulsar el botón invitar que está en el inicio se mostrará un menú con varias aplicaciones para compartir el enlace de la aplicación.</string>
-    <string name="invite_link">https://drive.google.com/drive/folders/1mHv4Lvo75Lju5s66vvnjbjlrvfHk14w3?usp=sharing</string>
-    <string name="invite_share_text">¡Te invito a unirte a JUNTOS! Enlace de descarga: %1$s</string>
-    <string name="invite_share_title">¡Te invito a unirte a JUNTOS!</string>
-    <string name="invite_share_subject">Descargar JUNTOS</string>
+    <string name="txt_contenido_invitar">Al pulsar el botón invitar que esta en el inicio mostrará un menú con varias aplicaciones por las que compartir el enlace a la aplicación</string>
     <string name="txt_btn_contactos">Contactos</string>
     <string name="txt_crear_contacto">Para crear un contacto tienes que apretar el botón crear y escribir los datos que te pide</string>
     <string name="txt_editar_contacto">Para editar tienes que pulsar sobre el contacto, modificar los datos que quieres y pulsar guardar</string>
@@ -168,12 +164,5 @@
     <string name="txt_descripcion_calendario">Organiza tus eventos diarios de forma clara. Permite añadir nuevas citas con detalles (asistentes, hora y descripción) y visualizar rápidamente toda tu planificación.</string>
     <string name="descripcion_btnHacerFoto">Boton para ir a hacer foto</string>
     <string name="lb_empresa">Empresa</string>
-
-    <string name="filtro_nombre">Nombre</string>
-    <string name="filtro_empresa">Empresa</string>
-    <string name="filtro_telefono">Teléfono</string>
-    <string name="buscar_nombre">Buscar por nombre...</string>
-    <string name="buscar_empresa">Buscar por empresa...</string>
-    <string name="buscar_telefono">Buscar por telefono...</string>
 
 </resources>

@@ -1,7 +1,6 @@
 package es.maestre.juntosjc
 
 import android.app.Activity
-import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -183,8 +182,20 @@ fun GenerarComponentesMain(
                 feature = AppFeature.INVITAR,
                 titleRes = R.string.txt_invitar,
                 iconRes = R.drawable.invite_friends_svgrepo_com,
-                onClick = { ctx ->
-                    invitar(ctx)
+                onClick = { ctx ->val enlace = "https://drive.google.com/drive/folders/1mHv4Lvo75Lju5s66vvnjbjlrvfHk14w3?usp=sharing"
+
+                    val intent = Intent(Intent.ACTION_SEND).apply {
+                        type = "text/plain"
+                        putExtra(
+                            Intent.EXTRA_TEXT,
+                            "¡Te invito a unirte a JUNTOS! \n$enlace"
+                        )
+                    }
+
+                    ctx.startActivity(
+                        Intent.createChooser(intent, ctx.getString(R.string.txt_invitar))
+                    )
+
                 }
             ),
             MenuItemData(
@@ -339,39 +350,14 @@ fun GenerarComponentesMain(
 }
 
 private fun invitar(ctx: Context) {
-    val enlace = ctx.getString(R.string.invite_link)
-
-    val sendIntent = Intent(Intent.ACTION_SEND).apply {
+    val sendIntent: Intent = Intent().apply {
+        action = Intent.ACTION_SEND
+        putExtra(Intent.EXTRA_TEXT, "This is my text to send.")
         type = "text/plain"
-        putExtra(Intent.EXTRA_TEXT, ctx.getString(R.string.invite_share_text, enlace))
-        putExtra(Intent.EXTRA_TITLE, ctx.getString(R.string.invite_share_title))
-        putExtra(Intent.EXTRA_SUBJECT, ctx.getString(R.string.invite_share_subject))
     }
 
-    val componentesExcluidos = ctx.packageManager
-        .queryIntentActivities(sendIntent, 0)
-        .mapNotNull { resolveInfo ->
-            val info = resolveInfo.activityInfo ?: return@mapNotNull null
-            val packageName = info.packageName.lowercase()
-            val className = info.name.lowercase()
-
-            val excluir = packageName.contains("bluetooth") ||
-                className.contains("bluetooth") ||
-                className.contains("nearby") ||
-                className.contains("quickshare") ||
-                className.contains("sharesheet")
-
-            if (excluir) ComponentName(info.packageName, info.name) else null
-        }
-        .toTypedArray()
-
-    val chooser = Intent.createChooser(sendIntent, ctx.getString(R.string.txt_invitar)).apply {
-        if (componentesExcluidos.isNotEmpty()) {
-            putExtra(Intent.EXTRA_EXCLUDE_COMPONENTS, componentesExcluidos)
-        }
-    }
-
-    ctx.startActivity(chooser)
+    val shareIntent = Intent.createChooser(sendIntent, null)
+    ctx.startActivity(shareIntent)
 }
 
 /**
