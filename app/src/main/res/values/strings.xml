@@ -80,7 +80,7 @@
     <string name="confirmacionEliminar">¿Estás seguro/a?</string>
     <string name="title_activity_ayuda">AyudaActivity</string>
     <string name="title_activity_fotos">FotosActivity</string>
-    <string name="title_activity_perfil" translatable="false">PerfilActivity</string>
+    <string name="title_activity_perfil">PerfilActivity</string>
 
     <string name="lb_telefono">Teléfono</string>
     <string name="lb_email">Email</string>
@@ -175,5 +175,22 @@
     <string name="buscar_nombre">Buscar por nombre...</string>
     <string name="buscar_empresa">Buscar por empresa...</string>
     <string name="buscar_telefono">Buscar por telefono...</string>
+
+    <string name="crear_carpeta">Nueva Carpeta</string>
+    <string name="buscar_carpeta">Buscar Carpeta...</string>
+    <string name="sin_carpeta">Sin Carpeta</string>
+    <string name="documentos_carpeta">Documentos de la carpeta</string>
+    <string name="no_documentos">No hay documentos en esta carpeta</string>
+    <string name="subir_documento">Subir documento</string>
+    <string name="nombre_archivo">Nombre del archivo</string>
+    <string name="carpeta">Carpeta</string>
+    <string name="subir">Subir</string>
+    <string name="cancelar">Cancelar</string>
+    <string name="nombre_carpeta">Nombre de la carpeta</string>
+    <string name="crear">Crear</string>
+
+
+
+
 
 </resources>

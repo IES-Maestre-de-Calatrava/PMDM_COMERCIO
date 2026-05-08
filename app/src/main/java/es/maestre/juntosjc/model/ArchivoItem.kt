@@ -10,6 +10,7 @@ data class ArchivoItem(
     @SerialName("nombre_archivo")
     val nombre_archivo: String,
     @SerialName("ruta_archivo")
-    val ruta_archivo: String)
-
-
+    val ruta_archivo: String,
+    @SerialName("carpeta_id")
+    val carpeta_id: Long? = null
+)

@@ -57,6 +57,9 @@
             android:name=".DocumentoActivity"
             android:exported="true" />
         <activity
+            android:name=".DocumentosCarpetaActivity"
+            android:exported="true" />
+        <activity
             android:name=".RedSocialActivity"
             android:exported="true" />
         <activity

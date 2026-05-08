@@ -94,6 +94,7 @@
     <string name="title_activity_fotos">PhotosActivity</string>
     <string name="logout">Log out</string>
 
+    <string name="title_activity_perfil">ProfileActivity</string>
     <string name="lb_telefono">Phone</string>
     <string name="lb_email">Email</string>
     <string name="lb_direccion">Address</string>
@@ -194,4 +195,18 @@ Download link: %1$s</string>
     <string name="buscar_nombre">Search by name...</string>
     <string name="buscar_empresa">Search by company...</string>
     <string name="buscar_telefono">Search by phone...</string>
+
+    <string name="crear_carpeta">New Folder</string>
+    <string name="buscar_carpeta">Search Folder...</string>
+    <string name="sin_carpeta">No Folder</string>
+    <string name="documentos_carpeta">Folder archives</string>
+    <string name="no_documentos">No documents inside this folder</string>
+    <string name="subir_documento">Upload file</string>
+    <string name="nombre_archivo">File name</string>
+    <string name="carpeta">Folder</string>
+    <string name="subir">Upload</string>
+    <string name="cancelar">Cancel</string>
+    <string name="nombre_carpeta">Folder name</string>
+    <string name="crear">Create</string>
+
 </resources>
