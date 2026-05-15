@@ -230,6 +230,10 @@ fun AyudaDocumentos() {
 
     BotonAyuda(icono, stringResource(R.string.txt_btn_documentos), stringResource(R.string.txt_descripcion_documentos)){
         BotonTexto(
+            stringResource(R.string.carpeta_nueva),
+            stringResource(R.string.txt_crear_carpeta)
+        )
+        BotonTexto(
             stringResource(R.string.txt_subir),
             stringResource(R.string.txt_subir_documento)
         )
@@ -260,7 +264,6 @@ fun AyudaRedSocial() {
     }
 }
 
-//TODO Establecer textos correctamente
 @Composable
 fun AyudaInvitar(){
     val icono = R.drawable.invite_friends_svgrepo_com
@@ -292,6 +295,10 @@ fun AyudaFotos(){
 
     val icono = R.drawable.photo_album_svgrepo_com
     BotonAyuda(icono, stringResource(R.string.txt_btn_fotos), stringResource(R.string.txt_descripcion_fotos)){
+        BotonTexto(
+            stringResource(R.string.carpeta_nueva),
+            stringResource(R.string.txt_crear_carpeta)
+        )
         BotonTexto(stringResource(R.string.txt_foto),stringResource(R.string.txt_hacer_fotos) )
         BotonTexto(stringResource(R.string.txt_galeria),stringResource(R.string.txt_entrar_galeria) )
     }

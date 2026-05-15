@@ -35,6 +35,11 @@
             android:label="Galería Supabase"
             android:theme="@style/Theme.JUNTOSJC" />
         <activity
+            android:name=".FotosCarpetaActivity"
+            android:exported="false"
+            android:label="Fotos de carpeta"
+            android:theme="@style/Theme.JUNTOSJC" />
+        <activity
             android:name=".AyudaActivity"
             android:exported="false"
             android:label="@string/title_activity_ayuda"

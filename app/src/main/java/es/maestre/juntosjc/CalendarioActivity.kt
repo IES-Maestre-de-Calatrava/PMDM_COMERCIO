@@ -35,7 +35,7 @@ import es.maestre.juntosjc.viewModel.UserPreferencesViewModel
 import java.text.SimpleDateFormat
 import java.util.*
 
-class CalendarioActivity : FragmentActivity() {  // <-- FragmentActivity en lugar de ComponentActivity
+class CalendarioActivity : FragmentActivity() {
 
     private val viewModel: EventoViewModel by viewModels()
     private val preferencesViewModel: UserPreferencesViewModel by viewModels()
@@ -66,10 +66,10 @@ fun MyAppCalendario(viewModel: EventoViewModel, preferencesViewModel: UserPrefer
     val eventos = viewModel.listaEventosFiltrados
     val fechasConEventos = viewModel.fechasConEventos
 
-    // Fecha seleccionada, arrancamos con hoy
+    // Fecha seleccionada, por defecto coge la de hoy
     var fechaSeleccionada by remember { mutableStateOf(System.currentTimeMillis()) }
 
-    // Texto que mostramos en el botón con la fecha elegida
+    // Texto que muestra la fecha seleccionada
     val fechaFormateada = remember(fechaSeleccionada) {
         SimpleDateFormat("dd MMMM yyyy", Locale.getDefault()).format(Date(fechaSeleccionada))
     }
@@ -80,7 +80,7 @@ fun MyAppCalendario(viewModel: EventoViewModel, preferencesViewModel: UserPrefer
     var nuevosAsistentes by remember { mutableStateOf("") }
     var nuevaHora by remember { mutableStateOf("") }
 
-    // Cargamos todas las fechas con eventos al arrancar
+    // Cargamos todas las fechas con eventos al entrar
     LaunchedEffect(Unit) {
         viewModel.cargarTodasLasFechasConEventos()
         viewModel.obtenerEventosPorFechaSupabase(fechaSeleccionada)

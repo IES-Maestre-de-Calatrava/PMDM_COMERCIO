@@ -8,8 +8,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import es.maestre.juntosjc.model.ArchivoItem
-import es.maestre.juntosjc.model.CarpetaDocumentoItem
+import es.maestre.juntosjc.model.CarpetaFotoItem
+import es.maestre.juntosjc.model.FotoCamaraItem
 import es.maestre.juntosjc.supabase.SupabaseClient
 import es.maestre.juntosjc.supabase.parseStoragePathOrNull
 import io.github.jan.supabase.postgrest.from
@@ -19,36 +19,33 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.UUID
 
-/**
- * ViewModel de los documentos
- */
-class DocumentoViewModel(application: Application) : AndroidViewModel(application) {
+class FotoViewModel(application: Application) : AndroidViewModel(application) {
 
     companion object {
-        private const val BUCKET_NAME = "AppJUNTOS"
+        private const val BUCKET_NAME = "CameraPhotos"
     }
 
-    val listaArchivosSupabase = mutableStateListOf<ArchivoItem>()
-    val listaCarpetasSupabase = mutableStateListOf<CarpetaDocumentoItem>()
+    val listaFotosSupabase = mutableStateListOf<FotoCamaraItem>()
+    val listaCarpetasSupabase = mutableStateListOf<CarpetaFotoItem>()
 
-    var mostrarDialogoSubida by mutableStateOf(false)
+    var mostrarDialogoGuardarFoto by mutableStateOf(false)
     var mostrarDialogoCrearCarpeta by mutableStateOf(false)
 
     /**
-     * Select a todas los documentos del supabase
+     * Select a todas las fotos del supabase
      */
-    fun obtenerArchivosSupabase() {
+    fun obtenerFotosSupabase() {
         viewModelScope.launch {
             try {
-                val resultado = SupabaseClient.client.from("documento")
+                val resultado = SupabaseClient.client.from("fotosCamara")
                     .select()
-                    .decodeList<ArchivoItem>()
-                    .sortedBy { it.nombre_archivo.lowercase() }
+                    .decodeList<FotoCamaraItem>()
+                    .sortedBy { it.nombreOrdenable }
 
-                listaArchivosSupabase.clear()
-                listaArchivosSupabase.addAll(resultado)
+                listaFotosSupabase.clear()
+                listaFotosSupabase.addAll(resultado)
             } catch (e: Exception) {
-                Log.e("Supabase.Fetch", "Error obteniendo documentos: ${e.message}", e)
+                Log.e("Supabase.Fetch", "Error obteniendo fotos: ${e.message}", e)
             }
         }
     }
@@ -59,15 +56,15 @@ class DocumentoViewModel(application: Application) : AndroidViewModel(applicatio
     fun obtenerCarpetasSupabase() {
         viewModelScope.launch {
             try {
-                val resultado = SupabaseClient.client.from("carpetas_documentos")
+                val resultado = SupabaseClient.client.from("carpetas_fotos")
                     .select()
-                    .decodeList<CarpetaDocumentoItem>()
+                    .decodeList<CarpetaFotoItem>()
                     .sortedBy { it.nombre_carpeta.lowercase() }
 
                 listaCarpetasSupabase.clear()
                 listaCarpetasSupabase.addAll(resultado)
             } catch (e: Exception) {
-                Log.e("Supabase.Fetch", "Error obteniendo carpetas: ${e.message}", e)
+                Log.e("Supabase.Fetch", "Error obteniendo carpetas de fotos: ${e.message}", e)
             }
         }
     }
@@ -82,11 +79,8 @@ class DocumentoViewModel(application: Application) : AndroidViewModel(applicatio
     ) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val carpetaNueva = CarpetaDocumentoItem(
-                    nombre_carpeta = nombreCarpeta.trim()
-                )
-
-                SupabaseClient.client.from("carpetas_documentos").insert(carpetaNueva)
+                val carpetaNueva = CarpetaFotoItem(nombre_carpeta = nombreCarpeta.trim())
+                SupabaseClient.client.from("carpetas_fotos").insert(carpetaNueva)
                 obtenerCarpetasSupabase()
                 onSuccess()
             } catch (e: Exception) {
@@ -96,10 +90,10 @@ class DocumentoViewModel(application: Application) : AndroidViewModel(applicatio
     }
 
     /**
-     * Subir documento, tambien guarda la ruta y el id de la carpeta al que pertence en caso de elegir alguna
+     * Subir foto, tambien guarda la ruta y el id de la carpeta al que pertence en caso de elegir alguna
      * diferente a "Sin Carpeta"
      */
-    fun subirDocumento(
+    fun subirFoto(
         byteArray: ByteArray,
         nombrePersonalizado: String,
         carpetaId: Long?,
@@ -116,18 +110,20 @@ class DocumentoViewModel(application: Application) : AndroidViewModel(applicatio
 
                 val storageFileName = "${UUID.randomUUID()}_$nombreSeguro"
 
-                bucket.upload(storageFileName, byteArray)
+                bucket.upload(storageFileName, byteArray) {
+                    upsert = true
+                }
                 val publicUrl = bucket.publicUrl(storageFileName)
 
-                val nuevoArchivo = ArchivoItem(
-                    id_documento = null,
-                    nombre_archivo = nombrePersonalizado,
-                    ruta_archivo = publicUrl,
+                val nuevaFoto = FotoCamaraItem(
+                    id = null,
+                    urlImagen = publicUrl,
+                    nombre_foto = nombrePersonalizado,
                     carpeta_id = carpetaId
                 )
 
-                SupabaseClient.client.from("documento").insert(nuevoArchivo)
-                obtenerArchivosSupabase()
+                SupabaseClient.client.from("fotosCamara").insert(nuevaFoto)
+                obtenerFotosSupabase()
                 onSuccess(publicUrl)
             } catch (e: Exception) {
                 onError(e)
@@ -136,39 +132,39 @@ class DocumentoViewModel(application: Application) : AndroidViewModel(applicatio
     }
 
     /**
-     * Cuando eliminamos el archivo, se elimina del bucket y de la tabla fotos camara
+     * Cuando eliminamos la foto, se elimina del bucket y de la tabla fotos camara
      */
-    fun eliminarDocumentoSupabase(
-        archivo: ArchivoItem,
+    fun eliminarFotoSupabase(
+        foto: FotoCamaraItem,
         onSuccess: () -> Unit,
         onError: (Exception) -> Unit
     ) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val documentoId = archivo.id_documento ?: throw IllegalStateException("El documento no tiene identificador")
-                val storagePath = parseStoragePathOrNull(archivo.ruta_archivo, BUCKET_NAME)
+                val fotoId = foto.id ?: throw IllegalStateException("La foto no tiene identificador")
+                val storagePath = parseStoragePathOrNull(foto.urlImagen, BUCKET_NAME)
 
                 if (storagePath != null) {
                     SupabaseClient.client.storage.from(BUCKET_NAME).delete(listOf(storagePath))
                 }
 
-                SupabaseClient.client.from("documento").delete {
-                    filter { eq("id_documento", documentoId) }
+                SupabaseClient.client.from("fotosCamara").delete {
+                    filter { eq("id", fotoId) }
                 }
 
-                val documentoPersistente = SupabaseClient.client.from("documento")
+                val fotoPersistente = SupabaseClient.client.from("fotosCamara")
                     .select {
-                        filter { eq("id_documento", documentoId) }
+                        filter { eq("id", fotoId) }
                     }
-                    .decodeList<ArchivoItem>()
+                    .decodeList<FotoCamaraItem>()
                     .isNotEmpty()
 
-                if (documentoPersistente) {
-                    throw IllegalStateException("Supabase no ha borrado el documento de la base de datos. Revisa la política DELETE/RLS de la tabla documento.")
+                if (fotoPersistente) {
+                    throw IllegalStateException("Supabase no ha borrado la foto de la base de datos. Revisa la política DELETE/RLS de la tabla fotosCamara.")
                 }
 
                 withContext(Dispatchers.Main) {
-                    listaArchivosSupabase.removeAll { it.id_documento == documentoId }
+                    listaFotosSupabase.removeAll { it.id == fotoId }
                     onSuccess()
                 }
             } catch (e: Exception) {
@@ -183,31 +179,31 @@ class DocumentoViewModel(application: Application) : AndroidViewModel(applicatio
      * Elimina la carpeta, solo si NO tiene elementos dentro
      */
     fun eliminarCarpetaSupabase(
-        carpeta: CarpetaDocumentoItem,
+        carpeta: CarpetaFotoItem,
         onSuccess: () -> Unit,
         onError: (Exception) -> Unit
     ) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val carpetaId = carpeta.id_carpeta ?: throw IllegalStateException("La carpeta no tiene identificador")
-                val contieneDocumentos = listaArchivosSupabase.any { it.carpeta_id == carpetaId }
-                if (contieneDocumentos) {
-                    throw IllegalStateException("La carpeta contiene documentos")
+                val contieneFotos = listaFotosSupabase.any { it.carpeta_id == carpetaId }
+                if (contieneFotos) {
+                    throw IllegalStateException("La carpeta contiene fotos")
                 }
 
-                SupabaseClient.client.from("carpetas_documentos").delete {
+                SupabaseClient.client.from("carpetas_fotos").delete {
                     filter { eq("id_carpeta", carpetaId) }
                 }
 
-                val carpetaPersistente = SupabaseClient.client.from("carpetas_documentos")
+                val carpetaPersistente = SupabaseClient.client.from("carpetas_fotos")
                     .select {
                         filter { eq("id_carpeta", carpetaId) }
                     }
-                    .decodeList<CarpetaDocumentoItem>()
+                    .decodeList<CarpetaFotoItem>()
                     .isNotEmpty()
 
                 if (carpetaPersistente) {
-                    throw IllegalStateException("Supabase no ha borrado la carpeta de documentos de la base de datos. Revisa la política DELETE/RLS de la tabla carpetas_documentos.")
+                    throw IllegalStateException("Supabase no ha borrado la carpeta de fotos de la base de datos. Revisa la política DELETE/RLS de la tabla carpetas_fotos.")
                 }
 
                 withContext(Dispatchers.Main) {

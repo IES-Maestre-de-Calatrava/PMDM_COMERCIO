@@ -12,14 +12,13 @@ import android.media.ExifInterface
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
@@ -29,6 +28,7 @@ import androidx.camera.view.PreviewView
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -36,8 +36,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -50,71 +55,111 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
-import es.maestre.juntosjc.model.FotoCamaraItem
-import es.maestre.juntosjc.supabase.SupabaseClient
-import io.github.jan.supabase.postgrest.postgrest
-import io.github.jan.supabase.storage.storage
+import es.maestre.juntosjc.model.CarpetaFotoItem
+import es.maestre.juntosjc.ui.theme.JUNTOSJCTheme
+import es.maestre.juntosjc.viewModel.FotoViewModel
+import es.maestre.juntosjc.viewModel.UserPreferencesViewModel
 import kotlinx.coroutines.launch
 import okio.IOException
+import java.io.ByteArrayOutputStream
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-import es.maestre.juntosjc.viewModel.UserPreferencesViewModel
-import es.maestre.juntosjc.ui.theme.JUNTOSJCTheme
-import es.maestre.juntosjc.ui.theme.JuntosTheme
-import es.maestre.juntosjc.model.AppFeature
-
-/**
- * Clase FotosActivity: en esta clase se muestran dos botones, uno que permite abrir la cámara y echar una foto,
- * y el otro que te permite abrir la galería y visualizar las imágenes que has añadido anteriormente
- */
 class FotosActivity : ComponentActivity() {
-    // Estado de la imagen
-    private var imagenBitmap by mutableStateOf<Bitmap?>(null)
+    private val fotoViewModel: FotoViewModel by viewModels()
+    private val preferencesViewModel: UserPreferencesViewModel by viewModels()
 
-    // Launcher para escoger la imagen Nombre del archivo escrito por el usuario
-    private lateinit var pickMediaLauncher: ActivityResultLauncher<PickVisualMediaRequest>
+    private var imagenBitmap by mutableStateOf<Bitmap?>(null)
+    private var nombreSugerido by mutableStateOf("")
+    
+    // ImageCapture se guarda como propiedad para poder liberarlo correctamente
+    private var imageCapture: ImageCapture? = null
+
+    // Executor para procesamiento de imágenes en background
+    private val imageProcessingExecutor = java.util.concurrent.Executors.newSingleThreadExecutor()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        imageCapture = ImageCapture.Builder().build()
+        enableEdgeToEdge()
 
-        // Abrir la galería
-        pickMediaLauncher =
-            registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
-                if(uri != null) {
-                    imagenBitmap = MediaStore.Images.Media.getBitmap(contentResolver, uri)
-                }
-            }
+        fotoViewModel.obtenerCarpetasSupabase()
 
         setContent {
-            FullCameraScreen(
-                onFotoTomada = { bitmap ->
-                    imagenBitmap = bitmap
-                    guardarEnGaleria(bitmap)
-                },
-                onAbrirGaleria = {
-                    pickMediaLauncher.launch(
-                        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+            val isDarkTheme by preferencesViewModel.isDarkTheme.collectAsStateWithLifecycle()
+
+            JUNTOSJCTheme(darkTheme = isDarkTheme) {
+                if (fotoViewModel.mostrarDialogoGuardarFoto && imagenBitmap != null) {
+                    DialogoGuardarFoto(
+                        carpetas = fotoViewModel.listaCarpetasSupabase,
+                        nombreInicial = nombreSugerido,
+                        onConfirm = { nombreEscrito, carpetaId ->
+                            val nombreBase = nombreEscrito.trim().ifBlank { nombreSugerido }
+                            val nombreFinal = if (nombreBase.endsWith(".png", ignoreCase = true)) {
+                                nombreBase
+                            } else {
+                                "$nombreBase.png"
+                            }
+
+                            fotoViewModel.mostrarDialogoGuardarFoto = false
+                            imagenBitmap?.let { bitmap ->
+                                guardarEnGaleriaYSubir(bitmap, nombreFinal, carpetaId)
+                            }
+                            imagenBitmap = null
+                        },
+                        onDismiss = {
+                            fotoViewModel.mostrarDialogoGuardarFoto = false
+                            imagenBitmap = null
+                        }
                     )
                 }
-            )
+
+                FullCameraScreen(
+                    onFotoTomada = { bitmap ->
+                        imagenBitmap = bitmap
+                        nombreSugerido = "foto_${SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(System.currentTimeMillis())}"
+                        fotoViewModel.mostrarDialogoGuardarFoto = true
+                    }
+                )
+            }
         }
     }
 
-    // Guardar imagen en galeria y subir a Supabase
-    private fun guardarEnGaleria(bitmap: Bitmap) {
-        val nombre = "foto_${SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(System.currentTimeMillis())}"
+    override fun onStop() {
+        super.onStop()
+        // Desvinculamos la cámara del ciclo de vida para liberar recursos
+        try {
+            val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
+            cameraProviderFuture.addListener({
+                val cameraProvider = cameraProviderFuture.get()
+                cameraProvider.unbindAll()
+            }, ContextCompat.getMainExecutor(this))
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    override fun onDestroy() {
+        imageCapture = null
+        imageProcessingExecutor.shutdown()
+        super.onDestroy()
+    }
+
+    private fun guardarEnGaleriaYSubir(bitmap: Bitmap, nombreArchivo: String, carpetaId: Long?) {
+        val displayName = nombreArchivo.removeSuffix(".png")
 
         val contentValues = ContentValues().apply {
-            put(MediaStore.Images.Media.DISPLAY_NAME, nombre)
+            put(MediaStore.Images.Media.DISPLAY_NAME, displayName)
             put(MediaStore.Images.Media.MIME_TYPE, "image/png")
-            put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES)
+            put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + "/JuntosJC")
         }
 
         val uri = contentResolver.insert(
@@ -123,33 +168,55 @@ class FotosActivity : ComponentActivity() {
         )
 
         try {
-            val outputStream = contentResolver.openOutputStream(uri!!)
-            outputStream?.let {
+            val outputStream = uri?.let { contentResolver.openOutputStream(it) }
+            outputStream?.use {
                 bitmap.compress(Bitmap.CompressFormat.PNG, 100, it)
-                it.close()
-                Toast.makeText(this, "Imagen guardada en la galería", Toast.LENGTH_LONG).show()
-
-                // Convertir bitmap a archivo temporal y subir a Supabase
-                val archivoTemporal = convertBitmapToFile(bitmap, nombre)
-                lifecycleScope.launch {
-                    val urlImagen = subirAlBucket(archivoTemporal, "$nombre.png")
-                    if (urlImagen != null) {
-                        guardarEnBaseDatos(urlImagen)
-                    } else {
-                        Toast.makeText(this@FotosActivity, "Error al subir la imagen a Supabase", Toast.LENGTH_LONG).show()
-                    }
-                }
             }
-        } catch(e: IOException) {
+
+            if (uri == null) {
+                Toast.makeText(this, getString(R.string.error_guardar_imagen), Toast.LENGTH_LONG).show()
+                return
+            }
+
+            Toast.makeText(this, getString(R.string.foto_guardada_galeria), Toast.LENGTH_LONG).show()
+
+            val bytes = bitmapToPngByteArray(bitmap)
+            lifecycleScope.launch {
+                fotoViewModel.subirFoto(
+                    byteArray = bytes,
+                    nombrePersonalizado = nombreArchivo,
+                    carpetaId = carpetaId,
+                    onSuccess = {
+                        runOnUiThread {
+                            Toast.makeText(this@FotosActivity, getString(R.string.foto_guardada_supabase), Toast.LENGTH_LONG).show()
+                        }
+                    },
+                    onError = { e ->
+                        runOnUiThread {
+                            Toast.makeText(
+                                this@FotosActivity,
+                                getString(R.string.error_subir_imagen_supabase, e.message ?: ""),
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                    }
+                )
+            }
+        } catch (e: IOException) {
             e.printStackTrace()
-            Toast.makeText(this, "Error al guardar la imagen", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, getString(R.string.error_guardar_imagen), Toast.LENGTH_LONG).show()
         }
+    }
+
+    private fun bitmapToPngByteArray(bitmap: Bitmap): ByteArray {
+        val outputStream = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+        return outputStream.toByteArray()
     }
 
     @Composable
     fun FullCameraScreen(
-        onFotoTomada: (Bitmap) -> Unit,
-        onAbrirGaleria: () -> Unit
+        onFotoTomada: (Bitmap) -> Unit
     ) {
         val context = LocalContext.current
         val cameraPermissionGranted = remember { mutableStateOf(false) }
@@ -171,18 +238,23 @@ class FotosActivity : ComponentActivity() {
 
         if (!cameraPermissionGranted.value) {
             Box(
-                modifier = Modifier.fillMaxSize().background(Color.Black),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black),
                 contentAlignment = Alignment.Center
             ) {
-                Text("Permiso de cámara denegado", color = Color.White)
+                Text(stringResource(R.string.permiso_camara_denegado), color = Color.White)
             }
             return
         }
 
-        val imageCapture = remember { ImageCapture.Builder().build() }
+        // Usamos la instancia de ImageCapture almacenada para poder liberarla después
+        val imageCapture = imageCapture ?: ImageCapture.Builder().build()
 
         Box(
-            modifier = Modifier.fillMaxSize().background(Color.Black)
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Black)
         ) {
             CameraPreviewView(
                 imageCapture = imageCapture,
@@ -200,7 +272,6 @@ class FotosActivity : ComponentActivity() {
                         .padding(horizontal = 40.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    // Botón de galería
                     IconButton(
                         onClick = {
                             val intent = Intent(context, GaleriaFotosSupabaseActivity::class.java)
@@ -213,11 +284,11 @@ class FotosActivity : ComponentActivity() {
                     ) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_galeria),
-                            contentDescription = "Ver Galería",
+                            contentDescription = stringResource(R.string.ver_galeria),
                             tint = Color.White
                         )
                     }
-                    // Botón de hacer foto
+
                     Box(
                         modifier = Modifier
                             .size(80.dp)
@@ -225,7 +296,7 @@ class FotosActivity : ComponentActivity() {
                             .padding(2.dp)
                     ) {
                         Button(
-                            onClick = { echarFoto(context, imageCapture, onFotoTomada) },
+                            onClick = { echarFoto(context, onFotoTomada) },
                             modifier = Modifier.fillMaxSize(),
                             shape = CircleShape,
                             colors = ButtonDefaults.buttonColors(
@@ -283,96 +354,163 @@ class FotosActivity : ComponentActivity() {
 
     fun echarFoto(
         context: Context,
-        imageCapture: ImageCapture,
         onFotoTomada: (Bitmap) -> Unit
     ) {
+        val capture = imageCapture ?: ImageCapture.Builder().build()
         val archivo = File(context.cacheDir, "foto_temp.png")
         val outputOptions = ImageCapture.OutputFileOptions.Builder(archivo).build()
 
-        imageCapture.takePicture(
+        capture.takePicture(
             outputOptions,
             ContextCompat.getMainExecutor(context),
-            object : ImageCapture.OnImageSavedCallback  {
+            object : ImageCapture.OnImageSavedCallback {
                 override fun onError(exc: ImageCaptureException) {
-                    Toast.makeText(context, "Error al tomar foto", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, context.getString(R.string.error_tomar_foto), Toast.LENGTH_SHORT).show()
                 }
 
                 override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
-                    var bitmap = BitmapFactory.decodeFile(archivo.path)
-
-                    // Corregir rotación usando EXIF
-                    try {
-                        val exif = ExifInterface(archivo.path)
-                        val orientation = exif.getAttributeInt(
-                            ExifInterface.TAG_ORIENTATION,
-                            ExifInterface.ORIENTATION_UNDEFINED
-                        )
-
-                        val matrix = Matrix()
-                        when (orientation) {
-                            ExifInterface.ORIENTATION_ROTATE_90 -> matrix.postRotate(90f)
-                            ExifInterface.ORIENTATION_ROTATE_180 -> matrix.postRotate(180f)
-                            ExifInterface.ORIENTATION_ROTATE_270 -> matrix.postRotate(270f)
-                        }
-
-                        // Solo crear nuevo bitmap si es necesario rotar
-                        if (orientation != ExifInterface.ORIENTATION_NORMAL && orientation != ExifInterface.ORIENTATION_UNDEFINED) {
-                            val rotatedBitmap = Bitmap.createBitmap(
-                                bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true
+                    // Procesar imagen en background para evitar ANR
+                    imageProcessingExecutor.execute {
+                        var bitmap = BitmapFactory.decodeFile(archivo.path)
+                        
+                        // Escalar bitmap si es muy grande (>2048px en el lado más largo)
+                        val maxSize = 2048
+                        if (bitmap.width > maxSize || bitmap.height > maxSize) {
+                            val scale = maxSize.toFloat() / maxOf(bitmap.width, bitmap.height)
+                            val scaled = Bitmap.createScaledBitmap(
+                                bitmap,
+                                (bitmap.width * scale).toInt(),
+                                (bitmap.height * scale).toInt(),
+                                true
                             )
-                            bitmap = rotatedBitmap
+                            if (scaled != bitmap) {
+                                bitmap.recycle()
+                                bitmap = scaled
+                            }
                         }
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }
 
-                    onFotoTomada(bitmap)
+                        try {
+                            val exif = ExifInterface(archivo.path)
+                            val orientation = exif.getAttributeInt(
+                                ExifInterface.TAG_ORIENTATION,
+                                ExifInterface.ORIENTATION_UNDEFINED
+                            )
+
+                            val matrix = Matrix()
+                            when (orientation) {
+                                ExifInterface.ORIENTATION_ROTATE_90 -> matrix.postRotate(90f)
+                                ExifInterface.ORIENTATION_ROTATE_180 -> matrix.postRotate(180f)
+                                ExifInterface.ORIENTATION_ROTATE_270 -> matrix.postRotate(270f)
+                            }
+
+                            if (orientation != ExifInterface.ORIENTATION_NORMAL && orientation != ExifInterface.ORIENTATION_UNDEFINED) {
+                                val rotated = Bitmap.createBitmap(
+                                    bitmap,
+                                    0,
+                                    0,
+                                    bitmap.width,
+                                    bitmap.height,
+                                    matrix,
+                                    true
+                                )
+                                if (rotated != bitmap) {
+                                    bitmap.recycle()
+                                    bitmap = rotated
+                                }
+                            }
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
+
+                        // Devolver al hilo principal el bitmap procesado
+                        runOnUiThread {
+                            archivo.delete() // Limpiar archivo temporal
+                            onFotoTomada(bitmap)
+                        }
+                    }
                 }
             }
         )
     }
+}
 
-    private fun convertBitmapToFile(bitmap: Bitmap, nombreArchivo: String): File {
-        val file = File(cacheDir, "${nombreArchivo}_${System.currentTimeMillis()}.png")
-        file.outputStream().use { outputStream ->
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
-        }
-        return file
-    }
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DialogoGuardarFoto(
+    carpetas: List<CarpetaFotoItem>,
+    nombreInicial: String,
+    onConfirm: (String, Long?) -> Unit,
+    onDismiss: () -> Unit
+) {
+    var nombre by remember(nombreInicial) { mutableStateOf(nombreInicial) }
+    var expanded by remember { mutableStateOf(false) }
+    var carpetaSeleccionada by remember { mutableStateOf<CarpetaFotoItem?>(null) }
 
-    private suspend fun subirAlBucket(file: File, nombreArchivo: String): String? {
-        return try {
-            val bucket = SupabaseClient.client.storage.from("CameraPhotos")
-            val fileBytes = file.readBytes()
+    androidx.compose.material3.AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.subir_foto)) },
+        text = {
+            Column {
+                OutlinedTextField(
+                    value = nombre,
+                    onValueChange = { nombre = it },
+                    label = { Text(stringResource(R.string.nombre_foto)) },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
 
-            bucket.upload(nombreArchivo, fileBytes) {
-                upsert = true
+                ExposedDropdownMenuBox(
+                    expanded = expanded,
+                    onExpandedChange = { expanded = !expanded }
+                ) {
+                    OutlinedTextField(
+                        value = carpetaSeleccionada?.nombre_carpeta ?: stringResource(R.string.sin_carpeta),
+                        onValueChange = {},
+                        readOnly = true,
+                        label = { Text(stringResource(R.string.carpeta)) },
+                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                        modifier = Modifier
+                            .menuAnchor()
+                            .fillMaxWidth()
+                    )
+
+                    ExposedDropdownMenu(
+                        expanded = expanded,
+                        onDismissRequest = { expanded = false }
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text(stringResource(R.string.sin_carpeta)) },
+                            onClick = {
+                                carpetaSeleccionada = null
+                                expanded = false
+                            }
+                        )
+
+                        carpetas.forEach { carpeta ->
+                            DropdownMenuItem(
+                                text = { Text(carpeta.nombre_carpeta) },
+                                onClick = {
+                                    carpetaSeleccionada = carpeta
+                                    expanded = false
+                                }
+                            )
+                        }
+                    }
+                }
             }
-
-            // Usar método de la SDK para evitar errores de URL
-            val publicUrl = SupabaseClient.client.storage.from("CameraPhotos").publicUrl(nombreArchivo)
-            publicUrl
-        } catch (e: Exception) {
-            Log.e("FotosActivity", "Error subiendo al bucket: ${e.message}", e)
-            null
+        },
+        confirmButton = {
+            Button(
+                onClick = { onConfirm(nombre.trim(), carpetaSeleccionada?.id_carpeta) },
+                enabled = nombre.trim().isNotEmpty()
+            ) {
+                Text(stringResource(R.string.subir))
+            }
+        },
+        dismissButton = {
+            androidx.compose.material3.TextButton(onClick = onDismiss) {
+                Text(stringResource(R.string.cancelar))
+            }
         }
-    }
-
-    private suspend fun guardarEnBaseDatos(urlImagen: String) {
-        try {
-            val fotoCamara = FotoCamaraItem(
-                urlImagen = urlImagen
-            )
-
-            SupabaseClient.client.postgrest
-                .from("fotosCamara")
-                .insert(fotoCamara)
-
-            Log.d("FotosActivity", "Registro guardado en BD")
-            Toast.makeText(this, "Foto guardada en Supabase", Toast.LENGTH_LONG).show()
-        } catch (e: Exception) {
-            Log.e("FotosActivity", "Error guardando en BD: ${e.message}", e)
-            Toast.makeText(this, "Error al guardar en base de datos: ${e.message}", Toast.LENGTH_LONG).show()
-        }
-    }
+    )
 }

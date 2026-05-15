@@ -9,8 +9,9 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -188,6 +189,14 @@ class DocumentoActivity : ComponentActivity() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        preferencesViewModel.loadPreferences()
+        preferencesViewModel.recalculateTheme()
+        viewModel.obtenerArchivosSupabase()
+        viewModel.obtenerCarpetasSupabase()
+    }
+
     private fun obtenerExtensionDesdeMimeType(mimeType: String?): String {
         if (mimeType.isNullOrBlank()) return "bin"
         return MimeTypeMap.getSingleton().getExtensionFromMimeType(mimeType)
@@ -204,6 +213,7 @@ fun DocumentosHomeScreen(
 ) {
     val context = LocalContext.current
     var textoBusqueda by remember { mutableStateOf("") }
+    var carpetaPendienteEliminar by remember { mutableStateOf<CarpetaDocumentoItem?>(null) }
 
     val carpetasFiltradas = remember(viewModel.listaCarpetasSupabase.toList(), textoBusqueda) {
         viewModel.listaCarpetasSupabase
@@ -213,6 +223,31 @@ fun DocumentosHomeScreen(
 
     val documentosSinCarpeta = remember(viewModel.listaArchivosSupabase.toList()) {
         viewModel.listaArchivosSupabase.count { it.carpeta_id == null }
+    }
+
+    carpetaPendienteEliminar?.let { carpeta ->
+        DialogoConfirmarEliminacion(
+            titulo = stringResource(R.string.eliminar_carpeta_titulo),
+            mensaje = stringResource(R.string.eliminar_carpeta_mensaje, carpeta.nombre_carpeta),
+            onConfirm = {
+                carpetaPendienteEliminar = null
+                viewModel.eliminarCarpetaSupabase(
+                    carpeta = carpeta,
+                    onSuccess = {
+                        Toast.makeText(context, context.getString(R.string.carpeta_eliminada), Toast.LENGTH_SHORT).show()
+                    },
+                    onError = { e ->
+                        val message = if (e.message == "La carpeta contiene documentos") {
+                            context.getString(R.string.error_carpeta_no_vacia_documentos)
+                        } else {
+                            context.getString(R.string.error_eliminar_carpeta, e.message ?: "")
+                        }
+                        Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+                    }
+                )
+            },
+            onDismiss = { carpetaPendienteEliminar = null }
+        )
     }
 
     Scaffold(
@@ -352,7 +387,8 @@ fun DocumentosHomeScreen(
                                 putExtra(DocumentosCarpetaActivity.EXTRA_FOLDER_NAME, carpeta.nombre_carpeta)
                             }
                             context.startActivity(intent)
-                        }
+                        },
+                        onLongClick = { carpetaPendienteEliminar = carpeta }
                     )
                 }
             }
@@ -361,16 +397,46 @@ fun DocumentosHomeScreen(
 }
 
 @Composable
+fun DialogoConfirmarEliminacion(
+    titulo: String,
+    mensaje: String,
+    onConfirm: () -> Unit,
+    onDismiss: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(titulo) },
+        text = { Text(mensaje) },
+        confirmButton = {
+            TextButton(onClick = onConfirm) {
+                Text(stringResource(R.string.txt_eliminar))
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(R.string.cancelar))
+            }
+        }
+    )
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
 fun CarpetaGridItem(
     nombre: String,
     contador: Int,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    onLongClick: (() -> Unit)? = null,
+    iconRes: Int = R.drawable.favorite_file_svgrepo_com
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxWidth()
-            .clickable(onClick = onClick)
+            .combinedClickable(
+                onClick = onClick,
+                onLongClick = onLongClick
+            )
     ) {
         Card(
             modifier = Modifier.size(85.dp),
@@ -384,7 +450,7 @@ fun CarpetaGridItem(
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
-                    painter = painterResource(id = R.drawable.favorite_file_svgrepo_com),
+                    painter = painterResource(id = iconRes),
                     contentDescription = nombre,
                     modifier = Modifier.size(35.dp),
                     tint = Color.Unspecified

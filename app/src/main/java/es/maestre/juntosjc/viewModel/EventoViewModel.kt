@@ -23,7 +23,9 @@ class EventoViewModel(application: Application) : AndroidViewModel(application) 
     val fechasConEventos = mutableStateListOf<Long>()
     val listaEventosFiltrados = mutableStateListOf<EventoItem>()
 
-    // 1. Obtener los archivos de la tabla de supabase de evento
+    /**
+     *   Obtener los archivos de la tabla de supabase de eventos
+     */
     fun obtenerEventosPorFechaSupabase(fechaMilis: Long) {
         viewModelScope.launch {
             try {
@@ -42,7 +44,9 @@ class EventoViewModel(application: Application) : AndroidViewModel(application) 
         }
     }
 
-    // 2. Insertar los eventos
+    /**
+     *   Insertar los eventos
+     */
     fun insertarEventoSupabase(evento: EventoItem, onDone: () -> Unit) {
         viewModelScope.launch {
             try {
@@ -57,7 +61,9 @@ class EventoViewModel(application: Application) : AndroidViewModel(application) 
         }
     }
 
-    // 3. borrado de eventos
+    /**
+     *  Borrado de eventos
+     */
     fun borrarEventoSupabase(id: Int, fechaActual: Long) {
         viewModelScope.launch {
             try {
@@ -74,7 +80,9 @@ class EventoViewModel(application: Application) : AndroidViewModel(application) 
     }
 
 
-    // 4. Actualizar un evento existente
+    /**
+     *  Actualizar un evento existente
+     */
     fun actualizarEventoSupabase(evento: EventoItem, onDone: () -> Unit) {
         viewModelScope.launch {
             try {
@@ -90,6 +98,9 @@ class EventoViewModel(application: Application) : AndroidViewModel(application) 
         }
     }
 
+    /**
+     * Cargar todas las fechas con evento
+     */
     fun cargarTodasLasFechasConEventos() {
         viewModelScope.launch {
             try {

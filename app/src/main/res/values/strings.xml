@@ -118,7 +118,7 @@
     <string name="feature_contactos_desc">Gestionar tu lista de contactos</string>
     <string name="feature_fotos_desc">Capturar y compartir fotos</string>
     <string name="btn_volver">Volver</string>
-    <string name="txt_eventos_content">En la mitad inferior se muestran los eventos planeados para el día seleccionado</string>
+    <string name="txt_eventos_content">Para elegir el dia del calendario pulsamos el boton que contiene la fecha. Al hacerlo, se abre un calendario flotante; los días con evento están marcados con un puntito. En la mitad inferior se muestran los eventos planeados para el día seleccionado</string>
     <string name="txt_add_evento_content">Pulsa el botón en la parte inferior derecha con el símbolo más, introduce los detalles en el diálogo flotante y pulsa Guardar para añadir un nuevo evento al día seleccionado</string>
     <string name="txt_eliminar_evento">Pulsando un evento, en el editor de evento aparecerá el botón de guardado o para eliminar, pulsa eliminar para borrar el evento. Otra opción es, mantener pulsado el evento que quieras eliminar y pulsando "Eliminar" en el cuadro flotante</string>
     <string name="txt_add_tarea_content">Para añadir una nueva tarea pulsa el botón Crear, introduce los detalles y pulsa Guardar</string>
@@ -129,11 +129,11 @@
     <string name="password">Contraseña</string>
     <string name="suggest_login">¿Ya tienes una cuenta? Inicia Sesión</string>
     <string name="suggest_signup">¿No tienes cuenta? Registrate</string>
-    <string name="txt_subir_documento">Para subir un documento tienes que apretar el boton "Crear" en la esquina inferior derecha. Una vez seleccionado el documento, aparecerá un cuadro de diálogo para nombrar el documento</string>
+    <string name="txt_subir_documento">Para subir un documento tienes que apretar el boton "Crear" en la esquina inferior derecha. Una vez seleccionado el documento, aparecerá un cuadro de diálogo para nombrar el documento y seleccionar la carpeta donde quieras que esté ubicado</string>
     <string name="txt_descargar_documento">Para descargar el documento, haz clic en el documento que quieras descargar. Este abrirá una ventana donde podrás visualizar el archivo y descargarlo</string>
-    <string name="txt_crear_comentario">Para crear el comentario tienes que apretar el boton crear poner el titulo, el usuario  y el comentario</string>
-    <string name="txt_editar_comentario">Para editar tienes que pulsar sobre una publicación y podras editar el titulo, el nombre y el comentario</string>
-    <string name="txt_eliminar_comentario">Para borrar tienes que pulsar sobre una publicación y tendras un botón que es para eliminar</string>
+    <string name="txt_crear_comentario">Para crear el comentario tienes que apretar el boton crear poner el titulo y el comentario</string>
+    <string name="txt_editar_comentario">Para editar tienes que pulsar sobre un commentario y podras editar el titulo y el comentario, solo podrás modificar comentarios tuyos</string>
+    <string name="txt_eliminar_comentario">Para borrar tienes que pulsar sobre un comentario y tendrás un botón que és para eliminar, solo puedes borrar comentarios tuyos</string>
     <string name="txt_btn_invitar">Invitar</string>
     <string name="txt_contenido_invitar">Al pulsar el botón invitar que está en el inicio se mostrará un menú con varias aplicaciones para compartir el enlace de la aplicación.</string>
     <string name="invite_link">https://drive.google.com/drive/folders/1mHv4Lvo75Lju5s66vvnjbjlrvfHk14w3?usp=sharing</string>
@@ -154,16 +154,21 @@
     <string name="txt_añadir_informacion">Añadir información</string>
     <string name="txt_btn_fotos">Fotos</string>
     <string name="txt_foto">Hacer foto</string>
-    <string name="txt_hacer_fotos">Para realizar fotografías, primero debes conceder los permisos de cámara necesarios. Una vez activados, pulsa el botón circular situado en el centro de la pantalla para capturar la imagen.</string>
+    <string name="txt_hacer_fotos">Para realizar fotografías, primero debes conceder los permisos de cámara necesarios. Una vez activados, pulsa el botón con el icono de la camara situado en la esquina inferior derecha de la pantalla para capturar la imagen.</string>
     <string name="txt_galeria">GALERIA</string>
-    <string name="txt_entrar_galeria">Para acceder a tu galería, pulsa sobre la imagen circular de la previsualización. Al hacerlo, se mostrarán todas las fotos almacenadas en tu dispositivo.</string>
+    <string name="txt_entrar_galeria">Para acceder a tu galería, selecciona la carpeta deseada para abrir la lista de fotos. Al hacerlo, se mostrarán todas las fotos almacenadas en esa carpeta.</string>
     <string name="icono_estado">icono que representa el estado de la tarea</string>
     <string name="txt_descripcion_perfil">Te muestra los datos con el usuario que has iniciado.</string>
-    <string name="txt_descripcion_configuracion">"Panel de configuración donde puedes elegir el tema de la aplicación (automático) y seleccionar qué herramientas quieres ver en tu menú principal. "</string>
-    <string name="txt_descripcion_fotos">Permite tomar fotografías y acceder a la galería de imágenes mediante un botón de previsualización situado junto al disparador</string>
-    <string name="txt_descripcion_contactos">Permite visualizar, buscar, añadir y editar fácilmente la información de tus contactos desde una lista centralizada.</string>
+
+    <string name="txt_descripcion_contactos">Te permite ver, buscar, añadir y editar la informacion personal de un contacto desde una lista centralizada.</string>
     <string name="txt_descripcion_redsocial">Muro interactivo para publicar, editar y compartir mensajes en tiempo real con el resto del equipo.</string>
-    <string name="txt_descripcion_documentos">Muro interactivo para compartir mensajes con el equipo. Permite publicar textos, editarlos y visualizar imágenes adjuntas a pantalla completa con solo tocarlas.</string>
+    <string name="txt_descripcion_documentos">Es el gestor de documentos de la app. Aqui puedes organizar tus documentos en carpetas.</string>
+
+    <string name="carpeta_nueva">Crear Carpeta</string>
+    <string name="txt_crear_carpeta">Pulsando en el boton derecho superior, podemos crear diferentes carpetas. Solo escribe el nombre y pulsa aceptar.</string>
+
+    <string name="txt_descripcion_configuracion">"Panel de configuración donde puedes elegir el tema de la aplicación (automático) y seleccionar qué herramientas quieres ver en tu menú principal. "</string>
+    <string name="txt_descripcion_fotos">Permite tomar fotografías y acceder a carpetas de fotografias</string>
     <string name="txt_descripcion_tareas">Organiza tus pendientes con estados (Hecha, En Proceso, Pendiente). Pulsa los botones de colores superiores para filtrar la lista al instante y ver solo las tareas que tengan ese estado.</string>
     <string name="txt_descripcion_calendario">Organiza tus eventos diarios de forma clara. Permite añadir nuevas citas con detalles (asistentes, hora y descripción) y visualizar rápidamente toda tu planificación.</string>
     <string name="descripcion_btnHacerFoto">Boton para ir a hacer foto</string>
@@ -188,6 +193,36 @@
     <string name="cancelar">Cancelar</string>
     <string name="nombre_carpeta">Nombre de la carpeta</string>
     <string name="crear">Crear</string>
+    <string name="fotos_carpeta">Fotos de la carpeta</string>
+    <string name="no_fotos">No hay fotos en esta carpeta</string>
+    <string name="subir_foto">Guardar foto</string>
+    <string name="nombre_foto">Nombre de la foto</string>
+    <string name="foto_guardada_galeria">Foto guardada en la galería</string>
+    <string name="error_descargar_imagen">Error al descargar imagen</string>
+    <string name="error_generico">Error: %1$s</string>
+    <string name="permiso_camara_denegado">Permiso de cámara denegado</string>
+    <string name="ver_galeria">Ver galería</string>
+    <string name="error_tomar_foto">Error al tomar foto</string>
+    <string name="error_guardar_imagen">Error al guardar la imagen</string>
+    <string name="foto_guardada_supabase">Foto guardada en Supabase</string>
+    <string name="error_subir_imagen_supabase">Error al subir la imagen a Supabase: %1$s</string>
+    <string name="carpeta_creada_correctamente">Carpeta creada correctamente</string>
+    <string name="error_crear_carpeta">Error al crear carpeta: %1$s</string>
+    <string name="eliminar_documento_titulo">Eliminar documento</string>
+    <string name="eliminar_documento_mensaje">¿Quieres eliminar "%1$s"? También se borrará del almacenamiento.</string>
+    <string name="documento_eliminado">Documento eliminado correctamente</string>
+    <string name="error_eliminar_documento">Error al eliminar el documento: %1$s</string>
+    <string name="eliminar_foto_titulo">Eliminar foto</string>
+    <string name="eliminar_foto_mensaje">¿Quieres eliminar "%1$s"? También se borrará del almacenamiento.</string>
+    <string name="foto_eliminada">Foto eliminada correctamente</string>
+    <string name="error_eliminar_foto">Error al eliminar la foto: %1$s</string>
+    <string name="eliminar_carpeta_titulo">Eliminar carpeta</string>
+    <string name="eliminar_carpeta_mensaje">¿Quieres eliminar la carpeta "%1$s"?</string>
+    <string name="carpeta_eliminada">Carpeta eliminada correctamente</string>
+    <string name="error_eliminar_carpeta">Error al eliminar la carpeta: %1$s</string>
+    <string name="error_carpeta_no_vacia_documentos">Vacía la carpeta antes de eliminarla porque todavía contiene documentos</string>
+    <string name="error_carpeta_no_vacia_fotos">Vacía la carpeta antes de eliminarla porque todavía contiene fotos</string>
+    <string name="ayuda">Ayuda</string>
 
 
 

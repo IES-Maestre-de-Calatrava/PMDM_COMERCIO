@@ -6,7 +6,7 @@ import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.auth.providers.builtin.Email
 
 object AuthenticationRepositoryImpl : AuthenticationRepository {
-    // Clase para el inicio de sesion, registtro y eso
+    // Clase para el inicio de sesion, registro y eso
     override suspend fun signIn(email: String, password: String): Boolean {
         return try {
             SupabaseClient.client.auth.signInWith(Email) {

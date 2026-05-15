@@ -103,7 +103,7 @@
     <string name="txt_subir">Upload</string>
     <string name="txt_add">Add</string>
     <string name="txt_eliminar">Delete</string>
-    <string name="txt_eventos_content">The events planned for the selected day are shown in the lower half</string>
+    <string name="txt_eventos_content">Clicking on the main button we open the calendar. The event days have a point of distinction. The events planned for the selected day are shown in the lower half</string>
     <string name="txt_add_evento_content">Press the button that is at the bottom right with a plus symbol, enter the details in the floating dialog and press Save to add a new event to the selected date</string>
     <string name="txt_eliminar_evento">When you tap an event, the Save or Delete button will appear in the event editor. Tap Delete to remove the event. Alternatively, tap and hold the event you want to delete and then tap "Delete" in the pop-up window.</string>
     <string name="txt_btn_tareas">Tasks</string>
@@ -147,11 +147,11 @@
     <string name="password">Password</string>
     <string name="suggest_login">Already have an account? Log In</string>
     <string name="suggest_signup">Without an account? Sign Up</string>
-    <string name="txt_subir_documento">To upload a document, click the "Create" button in the bottom right corner. Once you have selected the document, a dialog box will appear where you can name it.</string>
+    <string name="txt_subir_documento">To upload a document, click the "Create" button in the bottom right corner. Once you have selected the document, a dialog box will appear where you can name it and select its folder.</string>
     <string name="txt_descargar_documento">To download the document, click on the document you want to download. This will open a window where you can view and download the file.</string>
-    <string name="txt_crear_comentario">To create a comment, you have to press the create button, enter the tittle, the username, and the comment.</string>
-    <string name="txt_editar_comentario">To edit, you have to click on a post and you will be able to edit the tittle, the name and the comment</string>
-    <string name="txt_eliminar_comentario">" To delete, you have to click on a post and you will see a button to delete it."</string>
+    <string name="txt_crear_comentario">To create a comment, you have to press the create button, enter the tittle and the comment.</string>
+    <string name="txt_editar_comentario">To edit, you have to click on a comment and you will be able to edit the tittle and the comment, you can only edit your comments</string>
+    <string name="txt_eliminar_comentario">To delete, you have to click on a comment and you will see a button to delete it, you can only delete your comments</string>
     <string name="txt_btn_invitar">Invite</string>
     <string name="txt_contenido_invitar">Pressing the invite button on the home screen will display a menu with several applications to share the application link.</string>
     <string name="invite_link">https://drive.google.com/drive/folders/1mHv4Lvo75Lju5s66vvnjbjlrvfHk14w3?usp=sharing</string>
@@ -173,20 +173,22 @@ Download link: %1$s</string>
     <string name="txt_añadir_informacion">" Add information"</string>
     <string name="txt_btn_fotos">Photos</string>
     <string name="txt_foto">" Take photo"</string>
-    <string name="txt_hacer_fotos">To take photos, you must first grant the necessary camera permissions. Once activated, press the circular button in the center of the screen to capture the image.</string>
+    <string name="txt_hacer_fotos">To take photos, you must first grant the necessary camera permissions. Once activated, press the button with the camera icon in bottom right corner of the screen to capture the image.</string>
     <string name="txt_galeria">GALLERY</string>
-    <string name="txt_entrar_galeria">To access your gallery, tap the circular preview image. This will display all the photos stored in your device.</string>
+    <string name="txt_entrar_galeria">To access your gallery, tap the desire folder. This will display all the photos stored in that folder.</string>
     <string name="icono_estado">representation icon of the tasks status</string>
     <string name="txt_descripcion_perfil">It shows you the data with the user you logged in with.</string>
     <string name="txt_descripcion_configuracion">Settings panel where you can choose the application theme (automatic) and select which tools you want to see in your main menu.</string>
-    <string name="txt_descripcion_fotos">It allows you to take photographs and access the image gallery using a preview button located next to the shutter release.</string>
+    <string name="txt_descripcion_fotos">It allows you to take photographs and access to photography folders.</string>
     <string name="txt_descripcion_contactos">It allows you to easily view, search, add, and edit your contact information from a centralized list.</string>
     <string name="txt_descripcion_redsocial">Interactive wall to publish, edit and share messages in real time with the rest of the team.</string>
-    <string name="txt_descripcion_documentos">Interactive wall for sharing messages with the team. Allows you to post text, edit it, and view attached images in full screen with just a tap.</string>
+    <string name="txt_descripcion_documentos">Its the files gestor of the app. Here you can organize your documents in folders</string>
     <string name="txt_descripcion_tareas">Organize your to-dos with statuses (Done, In Progress, Pending). Tap the colored buttons at the top to instantly filter the list and see only the tasks with that status.</string>
     <string name="txt_descripcion_calendario">Organize your daily events clearly. Add new appointments with details (attendees, time, and description) and quickly view your entire schedule.</string>
     <string name="descripcion_btnHacerFoto">Botton to take a picture</string>
     <string name="lb_empresa">Company</string>
+    <string name="carpeta_nueva">Create Folder</string>
+    <string name="txt_crear_carpeta">Clicking on the upper right button, we can create different forlders. Just write the name and press accept.</string>
 
 
     <string name="filtro_nombre">Name</string>
@@ -208,5 +210,35 @@ Download link: %1$s</string>
     <string name="cancelar">Cancel</string>
     <string name="nombre_carpeta">Folder name</string>
     <string name="crear">Create</string>
+    <string name="fotos_carpeta">Photos in the folder</string>
+    <string name="no_fotos">There are no photos in this folder</string>
+    <string name="subir_foto">Save photo</string>
+    <string name="nombre_foto">Photo name</string>
+    <string name="foto_guardada_galeria">Photo saved in gallery</string>
+    <string name="error_descargar_imagen">Error downloading image</string>
+    <string name="error_generico">Error: %1$s</string>
+    <string name="permiso_camara_denegado">Camera permission denied</string>
+    <string name="ver_galeria">View gallery</string>
+    <string name="error_tomar_foto">Error taking photo</string>
+    <string name="error_guardar_imagen">Error saving image</string>
+    <string name="foto_guardada_supabase">Photo saved in Supabase</string>
+    <string name="error_subir_imagen_supabase">Error uploading image to Supabase: %1$s</string>
+    <string name="carpeta_creada_correctamente">Folder created successfully</string>
+    <string name="error_crear_carpeta">Error creating folder: %1$s</string>
+    <string name="eliminar_documento_titulo">Delete document</string>
+    <string name="eliminar_documento_mensaje">Do you want to delete "%1$s"? It will also be removed from storage.</string>
+    <string name="documento_eliminado">Document deleted successfully</string>
+    <string name="error_eliminar_documento">Error deleting document: %1$s</string>
+    <string name="eliminar_foto_titulo">Delete photo</string>
+    <string name="eliminar_foto_mensaje">Do you want to delete "%1$s"? It will also be removed from storage.</string>
+    <string name="foto_eliminada">Photo deleted successfully</string>
+    <string name="error_eliminar_foto">Error deleting photo: %1$s</string>
+    <string name="eliminar_carpeta_titulo">Delete folder</string>
+    <string name="eliminar_carpeta_mensaje">Do you want to delete the folder "%1$s"?</string>
+    <string name="carpeta_eliminada">Folder deleted successfully</string>
+    <string name="error_eliminar_carpeta">Error deleting folder: %1$s</string>
+    <string name="error_carpeta_no_vacia_documentos">Empty the folder before deleting it because it still contains documents</string>
+    <string name="error_carpeta_no_vacia_fotos">Empty the folder before deleting it because it still contains photos</string>
+    <string name="ayuda">Help</string>
 
 </resources>

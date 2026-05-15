@@ -8,7 +8,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -22,14 +23,12 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Description
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -37,7 +36,9 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -83,8 +84,7 @@ class DocumentosCarpetaActivity : ComponentActivity() {
                     viewModel = viewModel,
                     folderId = folderId,
                     folderName = folderName,
-                    isUnfiled = isUnfiled,
-                    onBack = { finish() }
+                    isUnfiled = isUnfiled
                 )
             }
         }
@@ -97,10 +97,10 @@ fun DocumentosCarpetaScreen(
     viewModel: DocumentoViewModel,
     folderId: Long,
     folderName: String,
-    isUnfiled: Boolean,
-    onBack: () -> Unit
+    isUnfiled: Boolean
 ) {
     val context = LocalContext.current
+    var documentoPendienteEliminar by remember { mutableStateOf<ArchivoItem?>(null) }
 
     val documentos = remember(viewModel.listaArchivosSupabase.toList(), folderId, isUnfiled) {
         viewModel.listaArchivosSupabase
@@ -108,6 +108,30 @@ fun DocumentosCarpetaScreen(
                 if (isUnfiled) it.carpeta_id == null else it.carpeta_id == folderId
             }
             .sortedBy { it.nombre_archivo.lowercase() }
+    }
+
+    documentoPendienteEliminar?.let { documento ->
+        DialogoConfirmarEliminacion(
+            titulo = stringResource(R.string.eliminar_documento_titulo),
+            mensaje = stringResource(R.string.eliminar_documento_mensaje, documento.nombre_archivo),
+            onConfirm = {
+                documentoPendienteEliminar = null
+                viewModel.eliminarDocumentoSupabase(
+                    archivo = documento,
+                    onSuccess = {
+                        Toast.makeText(context, context.getString(R.string.documento_eliminado), Toast.LENGTH_SHORT).show()
+                    },
+                    onError = { e ->
+                        Toast.makeText(
+                            context,
+                            context.getString(R.string.error_eliminar_documento, e.message ?: ""),
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                )
+            },
+            onDismiss = { documentoPendienteEliminar = null }
+        )
     }
 
     Scaffold(
@@ -129,15 +153,6 @@ fun DocumentosCarpetaScreen(
                                 fontWeight = FontWeight.ExtraBold,
                                 color = JuntosTheme.colors.azulOscuroLogo
                             )
-                        )
-                    }
-                },
-                navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(
-                            imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "Volver",
-                            tint = JuntosTheme.colors.content
                         )
                     }
                 },
@@ -190,7 +205,8 @@ fun DocumentosCarpetaScreen(
                                 } catch (e: Exception) {
                                     Toast.makeText(context, "No se pudo abrir el enlace", Toast.LENGTH_SHORT).show()
                                 }
-                            }
+                            },
+                            onLongClick = { documentoPendienteEliminar = documento }
                         )
                     }
                 }
@@ -199,15 +215,20 @@ fun DocumentosCarpetaScreen(
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun DocumentoListaItem(
     archivo: ArchivoItem,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    onLongClick: () -> Unit
 ) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onClick() },
+            .combinedClickable(
+                onClick = onClick,
+                onLongClick = onLongClick
+            ),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         colors = CardDefaults.cardColors(containerColor = JuntosTheme.colors.container)
     ) {
