@@ -82,7 +82,7 @@ fun MyAppDetalleEvento(viewModel: EventoViewModel, idEvento: Int, eventoRecibido
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Icon(
-                            painter = painterResource(R.drawable.icono_tiendacampa_a),
+                            painter = painterResource(R.drawable.logo_nuevo),
                             contentDescription = null,
                             modifier = Modifier.size(30.dp),
                             tint = Color.Unspecified

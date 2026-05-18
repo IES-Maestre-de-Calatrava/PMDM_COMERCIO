@@ -239,7 +239,7 @@ fun GenerarComponentesMain(
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
-                        painter = painterResource(id = R.drawable.icono_tiendacampa_a),
+                        painter = painterResource(id = R.drawable.logo_nuevo),
                         contentDescription = null,
                         modifier = Modifier.size(30.dp),
                         tint = Color.Unspecified

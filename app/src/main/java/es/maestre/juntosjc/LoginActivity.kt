@@ -79,7 +79,7 @@ fun LoginScreen(
 
     val customColors = JuntosTheme.colors
 
-    // Definimos el estilo de los campos usando tu color 'content'
+    // Definimos el estilo de los campos usando 'content'
     val textFieldColors = OutlinedTextFieldDefaults.colors(
         focusedTextColor = customColors.text,
         unfocusedTextColor = customColors.text,
@@ -103,7 +103,7 @@ fun LoginScreen(
             verticalArrangement = Arrangement.Center
         ) {
             Image(
-                painter = painterResource(id = R.drawable.juntos),
+                painter = painterResource(id = R.drawable.retox),
                 contentDescription = "Logo Juntos",
                 modifier = Modifier
                     .size(250.dp)

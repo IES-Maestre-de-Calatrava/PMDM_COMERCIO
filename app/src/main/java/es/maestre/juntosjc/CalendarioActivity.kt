@@ -92,7 +92,7 @@ fun MyAppCalendario(viewModel: EventoViewModel, preferencesViewModel: UserPrefer
                 title = {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(
-                            painter = painterResource(R.drawable.icono_tiendacampa_a),
+                            painter = painterResource(R.drawable.logo_nuevo),
                             contentDescription = null,
                             modifier = Modifier.size(30.dp),
                             tint = Color.Unspecified

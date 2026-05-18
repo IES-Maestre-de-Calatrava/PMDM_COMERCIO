@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">JUNTOS</string>
+    <string name="app_name">RetoX</string>
     <string name="descripcion_imagenWorkUnit">Imagen de un grupo de trabajo</string>
     <string name="descripcion_logo">Logo de una tienda de campaña morado</string>
     <string name="txt_pantallaBienvenida">Convierte tu unidad de trabajo en un ambiente agradable y organizado</string>
@@ -30,22 +30,22 @@
     <string name="descripcion_descargarDocumento">boton para descargar un documento</string>
 
 
-    <string name="txt_Juntos">JUNTOS</string>
+    <string name="txt_Juntos">RetoX</string>
     <string name="txt_Archivos">ARCHIVOS</string>
-    <string name="txt_documentos">DOCUMENTOS</string>
+    <string name="txt_documentos">DOCUMENTOX</string>
     <string name="txt_descargar">Descargar</string>
-    <string name="txt_redSocial">RED SOCIAL</string>
+    <string name="txt_redSocial">REDEX</string>
     <string name="txt_alta">ALTA</string>
     <string name="txt_edición">EDICIÓN</string>
-    <string name="txt_tareas">TAREAS</string>
+    <string name="txt_tareas">RETOX</string>
     <string name="txt_calendario">CALENDARIO</string>
     <string name="txt_contactos">CONTACTOS</string>
     <string name="txt_invitar">INVITAR</string>
-    <string name="txt_fotos">FOTOS</string>
+    <string name="txt_fotos">IMAGLAB</string>
     <string name="txt_configuracion">CONFIGURAR</string>
 
 
-    <string name="txt_btnDocs">DOCUMENTOS</string>
+    <string name="txt_btnDocs">DOCUMENTOX</string>
 
     <string name="texto_ver_descargar_DESCARGAR">Toca para ver o descargar</string>
     <string name="texto_ver_COMENTARIO">Toca para ver</string>
@@ -136,10 +136,10 @@
     <string name="txt_eliminar_comentario">Para borrar tienes que pulsar sobre un comentario y tendrás un botón que és para eliminar, solo puedes borrar comentarios tuyos</string>
     <string name="txt_btn_invitar">Invitar</string>
     <string name="txt_contenido_invitar">Al pulsar el botón invitar que está en el inicio se mostrará un menú con varias aplicaciones para compartir el enlace de la aplicación.</string>
-    <string name="invite_link">https://drive.google.com/drive/folders/1mHv4Lvo75Lju5s66vvnjbjlrvfHk14w3?usp=sharing</string>
-    <string name="invite_share_text">¡Te invito a unirte a JUNTOS! Enlace de descarga: %1$s</string>
-    <string name="invite_share_title">¡Te invito a unirte a JUNTOS!</string>
-    <string name="invite_share_subject">Descargar JUNTOS</string>
+    <string name="invite_link">https://github.com/IES-Maestre-de-Calatrava/PMDM_COMERCIO/releases/download/v1.0.2/retox.apk</string>
+    <string name="invite_share_text">¡Te invito a unirte a RetoX! Enlace de descarga: %1$s</string>
+    <string name="invite_share_title">¡Te invito a unirte a RetoX!</string>
+    <string name="invite_share_subject">Descargar RetoX</string>
     <string name="txt_btn_contactos">Contactos</string>
     <string name="txt_crear_contacto">Para crear un contacto tienes que apretar el botón crear y escribir los datos que te pide</string>
     <string name="txt_editar_contacto">Para editar tienes que pulsar sobre el contacto, modificar los datos que quieres y pulsar guardar</string>
@@ -155,7 +155,7 @@
     <string name="txt_btn_fotos">Fotos</string>
     <string name="txt_foto">Hacer foto</string>
     <string name="txt_hacer_fotos">Para realizar fotografías, primero debes conceder los permisos de cámara necesarios. Una vez activados, pulsa el botón con el icono de la camara situado en la esquina inferior derecha de la pantalla para capturar la imagen.</string>
-    <string name="txt_galeria">GALERIA</string>
+    <string name="txt_galeria">IMAGLAB</string>
     <string name="txt_entrar_galeria">Para acceder a tu galería, selecciona la carpeta deseada para abrir la lista de fotos. Al hacerlo, se mostrarán todas las fotos almacenadas en esa carpeta.</string>
     <string name="icono_estado">icono que representa el estado de la tarea</string>
     <string name="txt_descripcion_perfil">Te muestra los datos con el usuario que has iniciado.</string>

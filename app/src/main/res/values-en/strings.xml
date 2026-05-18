@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">JUNTOS</string>
+    <string name="app_name">ChallengeX</string>
     <string name="descripcion_imagenWorkUnit">Unit work image</string>
     <string name="descripcion_logo">Purple tent logo</string>
     <string name="txt_pantallaBienvenida">Transform your work unit into an kind and tidy environment</string>
@@ -35,25 +35,25 @@
     <string name="descripcion_descargarDocumento">Button to download a document</string>
 
 
-    <string name="txt_Juntos">TOGETHER</string>
+    <string name="txt_Juntos">ChallengeX</string>
     <string name="txt_Archivos">FILES</string>
-    <string name="txt_documentos">FILES</string>
+    <string name="txt_documentos">FILEX</string>
     <string name="txt_descargar">Download</string>
     <string name="txt_crear">Create</string>
     <string name="txt_borrar">Delete</string>
-    <string name="txt_redSocial">SOCIAL NETWORK</string>
+    <string name="txt_redSocial">REDEX</string>
     <string name="txt_alta">DISCHARGE</string>
     <string name="txt_edición">EDITING</string>
-    <string name="txt_tareas">TASKS</string>
+    <string name="txt_tareas">CHALLENGEX</string>
     <string name="txt_calendario">CALENDAR</string>
     <string name="txt_contactos">CONTACTS</string>
     <string name="txt_invitar">INVITE</string>
-    <string name="txt_fotos">PHOTOS</string>
+    <string name="txt_fotos">IMAGLAB</string>
     <string name="txt_configuracion">SETTINGS</string>
 
 
 
-    <string name="txt_btnDocs">FILES</string>
+    <string name="txt_btnDocs">FILEX</string>
 
     <string name="texto_ver_descargar_DESCARGAR">Touch to see or download</string>
     <string name="texto_ver_COMENTARIO">Touch to see</string>
@@ -154,11 +154,12 @@
     <string name="txt_eliminar_comentario">To delete, you have to click on a comment and you will see a button to delete it, you can only delete your comments</string>
     <string name="txt_btn_invitar">Invite</string>
     <string name="txt_contenido_invitar">Pressing the invite button on the home screen will display a menu with several applications to share the application link.</string>
-    <string name="invite_link">https://drive.google.com/drive/folders/1mHv4Lvo75Lju5s66vvnjbjlrvfHk14w3?usp=sharing</string>
-    <string name="invite_share_text">I invite you to join JUNTOS!
+    <string name="invite_link">https://github.com/IES-Maestre-de-Calatrava/PMDM_COMERCIO/releases/download/v1.0.2/retox.apk</string>
+
+    <string name="invite_share_text">I invite you to join ChallengeX!
 Download link: %1$s</string>
-    <string name="invite_share_title">I invite you to join JUNTOS!</string>
-    <string name="invite_share_subject">Download JUNTOS</string>
+    <string name="invite_share_title">I invite you to join ChallengeX!</string>
+    <string name="invite_share_subject">Download ChallengeX</string>
     <string name="txt_btn_contactos">Contacts</string>
     <string name="txt_crear_contacto">To create a contact, you have to press the create button and enter the requested information.</string>
     <string name="txt_editar_contacto">To edit, you have to tap on the contact, modify the data you want, and tap save.</string>
@@ -174,7 +175,7 @@ Download link: %1$s</string>
     <string name="txt_btn_fotos">Photos</string>
     <string name="txt_foto">" Take photo"</string>
     <string name="txt_hacer_fotos">To take photos, you must first grant the necessary camera permissions. Once activated, press the button with the camera icon in bottom right corner of the screen to capture the image.</string>
-    <string name="txt_galeria">GALLERY</string>
+    <string name="txt_galeria">IMAGLAB</string>
     <string name="txt_entrar_galeria">To access your gallery, tap the desire folder. This will display all the photos stored in that folder.</string>
     <string name="icono_estado">representation icon of the tasks status</string>
     <string name="txt_descripcion_perfil">It shows you the data with the user you logged in with.</string>
