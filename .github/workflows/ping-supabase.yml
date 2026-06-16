@@ -34,7 +34,5 @@ jobs:
               if (error) {
                 console.error(error);
               }
-              console.log("Ping OK", data);
-
             })();
           "
